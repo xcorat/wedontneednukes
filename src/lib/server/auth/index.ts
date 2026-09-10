@@ -29,7 +29,7 @@ export function getAuth(env: App.Platform['env'], origin?: string) {
 	const trustedOrigins = [
 		'http://localhost:*',
 		'http://127.0.0.1:*',
-		'https://*.workers.dev',
+		'https://wedontneednukes.org',
 		'https://wedontneednukes.xcorat.workers.dev',
 		...(origin ? [origin] : []),
 		...(env.BETTER_AUTH_URL ? [env.BETTER_AUTH_URL] : [])
