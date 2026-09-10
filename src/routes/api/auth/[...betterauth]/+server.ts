@@ -11,7 +11,7 @@ const handler: RequestHandler = async (event) => {
 		return new Response('Auth not available in this environment', { status: 503 });
 	}
 
-	const auth = getAuth(env);
+	const auth = getAuth(env, event.url.origin);
 	return auth.handler(event.request);
 };
 

@@ -10,7 +10,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 	const env = event.platform?.env;
 
 	if (env) {
-		const auth = getAuth(env);
+		const auth = getAuth(env, event.url.origin);
 		const sessionData = await auth.api.getSession({
 			headers: event.request.headers
 		});
