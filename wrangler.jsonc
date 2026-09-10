@@ -11,8 +11,8 @@
 	"d1_databases": [
 		{
 			"binding": "DB",
-			"database_name": "wedontneednukes-db",
-			"database_id": "REPLACE_WITH_YOUR_D1_ID"
+			"database_name": "wedontneednukes-tmp",
+			"database_id": "2e4e10b5-9069-4081-b954-e8a453fe092a"
 		}
 	],
 	// Local dev vars — add secrets via `wrangler secret put`
