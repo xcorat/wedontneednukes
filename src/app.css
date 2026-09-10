@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+@theme {
+	--color-primary: #e53935;
+	--color-secondary: #ffd600;
+	--color-cream: #fffde7;
+	--color-surface: #ffffff;
+	--color-dark: #212121;
+	--color-muted: #757575;
+	--color-success: #43a047;
+	--font-display: "Fredoka", "Fredoka One", cursive, sans-serif;
+	--font-body: "Nunito", "Inter", sans-serif;
+}
+
+@layer base {
+	:root {
+		color-scheme: light;
+	}
+
+	html,
+	body {
+		@apply h-full;
+		background-color: #fffde7;
+		color: #212121;
+		font-family: var(--font-body);
+	}
+}
