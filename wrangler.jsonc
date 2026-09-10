@@ -11,8 +11,13 @@
 	"d1_databases": [
 		{
 			"binding": "DB",
-			"database_name": "wedontneednukes-tmp",
-			"database_id": "2e4e10b5-9069-4081-b954-e8a453fe092a"
+			"database_name": "wedontneednukes-db",
+			"database_id": "71ee76e9-ac81-4c66-b18c-4aaca12345e4"
+		}
+	],
+	"send_email": [
+		{
+			"name": "EMAIL"
 		}
 	],
 	// Environment variables can be configured here or in Cloudflare dashboard
