@@ -31,9 +31,25 @@ export function getAuth(env: App.Platform['env'], origin?: string) {
 		'http://127.0.0.1:*',
 		'https://*.workers.dev',
 		'https://wedontneednukes.xcorat.workers.dev',
+		'https://wedontneednukes.org',
+		'https://*.wedontneednukes.org',
 		...(origin ? [origin] : []),
 		...(env.BETTER_AUTH_URL ? [env.BETTER_AUTH_URL] : [])
 	];
+
+	const socialProviders: Record<string, { clientId: string; clientSecret: string }> = {};
+	if (env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET) {
+		socialProviders.github = {
+			clientId: env.GITHUB_CLIENT_ID,
+			clientSecret: env.GITHUB_CLIENT_SECRET
+		};
+	}
+	if (env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET) {
+		socialProviders.google = {
+			clientId: env.GOOGLE_CLIENT_ID,
+			clientSecret: env.GOOGLE_CLIENT_SECRET
+		};
+	}
 
 	return betterAuth({
 		database: drizzleAdapter(db, {
@@ -43,16 +59,7 @@ export function getAuth(env: App.Platform['env'], origin?: string) {
 		secret: env.BETTER_AUTH_SECRET,
 		baseURL,
 		trustedOrigins,
-		socialProviders: {
-			github: {
-				clientId: env.GITHUB_CLIENT_ID,
-				clientSecret: env.GITHUB_CLIENT_SECRET
-			},
-			google: {
-				clientId: env.GOOGLE_CLIENT_ID,
-				clientSecret: env.GOOGLE_CLIENT_SECRET
-			}
-		},
+		socialProviders,
 		plugins: [
 			magicLink({
 				sendMagicLink: async ({ email, url }) => {
