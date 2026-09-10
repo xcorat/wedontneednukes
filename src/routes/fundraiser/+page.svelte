@@ -5,36 +5,36 @@
 	<title>Fundraiser · We Don't Need Nukes</title>
 </svelte:head>
 
-<main class="flex min-h-dvh flex-col items-center justify-center bg-[#FFFDE7] px-6 py-12 text-[#212121]">
+<main class="flex min-h-dvh flex-col items-center justify-center bg-[#FFFDE7] px-6 py-12 text-[#212121] font-['Poppins',sans-serif]">
 	<div class="w-full max-w-lg">
 		<a
 			href="/"
-			class="mb-8 inline-flex items-center gap-2 rounded-full border-2 border-[#212121] bg-white px-4 py-2 font-['Nunito',sans-serif] text-sm font-bold text-[#212121] shadow-[0_3px_0_#212121] transition-all hover:translate-y-[1px] hover:shadow-[0_2px_0_#212121] active:translate-y-[3px] active:shadow-none"
+			class="mb-8 inline-flex items-center gap-2 border-2 border-[#212121] bg-white px-4 py-2 text-sm font-bold text-[#212121] shadow-[2px_2px_0_#212121] transition-all hover:translate-y-[1px] hover:shadow-[1px_1px_0_#212121] active:translate-x-[1px] active:translate-y-[2px] active:shadow-none"
 		>
 			← Back
 		</a>
 
-		<div class="mb-4 inline-block rounded-full border-2 border-[#212121] bg-[#FFD600] px-4 py-1 text-xs font-black uppercase tracking-wider text-[#212121]">
+		<div class="mb-4 inline-block border-2 border-[#212121] bg-[#FFD600] px-4 py-1 text-xs font-black uppercase tracking-wider text-[#212121]">
 			Community Funded
 		</div>
 
-		<h1 class="mb-6 font-['Fredoka',sans-serif] text-4xl sm:text-5xl font-extrabold tracking-tight text-[#212121]">
+		<h1 class="mb-6 text-4xl sm:text-5xl font-extrabold tracking-tight text-[#212121]">
 			Campaign Fundraiser
 		</h1>
 
-		<div class="space-y-4 font-['Nunito',sans-serif] text-base leading-relaxed text-[#212121]">
-			<div class="rounded-2xl border-2 border-[#212121] bg-white p-5 shadow-[0_4px_0_#212121]">
+		<div class="space-y-4 text-base leading-relaxed text-[#212121]">
+			<div class="border-2 border-[#212121] bg-white p-5 shadow-[3px_3px_0_#212121]">
 				<div class="flex items-center justify-between mb-2">
-					<h2 class="font-['Fredoka',sans-serif] text-lg font-bold text-[#212121]">Platform Milestone 1: MVP & Verification</h2>
-					<span class="rounded-full bg-[#E53935] px-2.5 py-0.5 text-xs font-bold text-white">Active</span>
+					<h2 class="text-lg font-bold text-[#212121]">Platform Milestone 1: MVP & Verification</h2>
+					<span class="border border-[#212121] bg-[#E53935] px-2.5 py-0.5 text-xs font-bold text-white">Active</span>
 				</div>
 				<p class="text-sm text-[#757575]">Funding infrastructure for anonymous & authenticated pledges, anti-bot verification, and real-time counter metrics.</p>
 			</div>
 
-			<div class="rounded-2xl border-2 border-[#212121] bg-white p-5 shadow-[0_4px_0_#212121]">
+			<div class="border-2 border-[#212121] bg-white p-5 shadow-[3px_3px_0_#212121]">
 				<div class="flex items-center justify-between mb-2">
-					<h2 class="font-['Fredoka',sans-serif] text-lg font-bold text-[#212121]">Platform Milestone 2: Viral Campaigns & Media</h2>
-					<span class="rounded-full bg-zinc-200 px-2.5 py-0.5 text-xs font-bold text-zinc-700">Upcoming</span>
+					<h2 class="text-lg font-bold text-[#212121]">Platform Milestone 2: Viral Campaigns & Media</h2>
+					<span class="border border-[#212121] bg-zinc-200 px-2.5 py-0.5 text-xs font-bold text-zinc-700">Upcoming</span>
 				</div>
 				<p class="text-sm text-[#757575]">Creator grants, video memes, community gallery upvoting, and internationalization.</p>
 			</div>
@@ -43,7 +43,7 @@
 		<div class="mt-8 flex justify-center">
 			<a
 				href="/"
-				class="inline-flex rounded-2xl border-[3px] border-[#212121] bg-[#E53935] px-8 py-3 font-['Fredoka',sans-serif] text-xl font-bold text-[#FFFDE7] shadow-[0_4px_0_#B71C1C] transition-all hover:translate-y-[1px] hover:shadow-[0_2px_0_#B71C1C] active:translate-y-[4px] active:shadow-none"
+				class="inline-flex border-[3px] border-[#212121] bg-[#E53935] px-8 py-3 text-xl font-bold text-[#FFFDE7] shadow-[3px_3px_0_#B71C1C] transition-all hover:translate-y-[1px] hover:shadow-[2px_2px_0_#B71C1C] active:translate-x-[2px] active:translate-y-[3px] active:shadow-none"
 			>
 				Back to Pledge
 			</a>

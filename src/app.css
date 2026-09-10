@@ -8,8 +8,8 @@
 	--color-dark: #212121;
 	--color-muted: #757575;
 	--color-success: #43a047;
-	--font-display: "Fredoka", "Fredoka One", cursive, sans-serif;
-	--font-body: "Nunito", "Inter", sans-serif;
+	--font-display: "Poppins", "Palatino", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+	--font-body: "Poppins", "Palatino", "Palatino Linotype", "Book Antiqua", Georgia, sans-serif;
 }
 
 @layer base {
