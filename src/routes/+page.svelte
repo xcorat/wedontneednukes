@@ -47,7 +47,7 @@
 				We don't need
 			</span>
 			<span class="block text-6xl sm:text-8xl md:text-9xl font-black mt-1 uppercase tracking-wider text-[#212121]">
-				Nukes
+				Nukes !
 			</span>
 		</h1>
 	</section>
@@ -56,7 +56,7 @@
 	<section class="order-2 sm:order-3 flex h-[10%] min-h-[44px] w-full items-center justify-center px-4">
 		<a
 			href="/why"
-			class="inline-flex items-center justify-center border-2 border-[#212121] bg-white px-7 py-2 text-base sm:text-lg font-bold text-[#212121] shadow-[2px_2px_0_#212121] transition-all hover:translate-y-[1px] hover:shadow-[1px_1px_0_#212121] active:translate-x-[1px] active:translate-y-[2px] active:shadow-none"
+			class="inline-flex items-center justify-center border-0 border-[#212121] bg-white px-7 py-2 text-base sm:text-lg font-bold text-[#212121] shadow-[2px_2px_0_#212121] transition-all hover:translate-y-[1px] hover:shadow-[1px_1px_0_#212121] active:translate-x-[1px] active:translate-y-[2px] active:shadow-none"
 		>
 			Why?
 		</a>
