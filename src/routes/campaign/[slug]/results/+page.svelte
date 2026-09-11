@@ -49,7 +49,13 @@
 				Community Results
 			</h1>
 			<p class="mb-6 text-sm text-[#757575] font-medium">
-				Over {data.stats.totalVotes.toLocaleString()} voices recorded worldwide. Here is where people stand:
+				{#if data.stats.totalVotes === 0}
+					No voices recorded yet. Your perspective will lead the way:
+				{:else if data.stats.totalVotes === 1}
+					1 voice recorded so far. Here is where the community stands:
+				{:else}
+					{data.stats.totalVotes.toLocaleString()} voices recorded worldwide. Here is where people stand:
+				{/if}
 			</p>
 
 			<!-- Results Bars -->
