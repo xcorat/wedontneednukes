@@ -37,10 +37,7 @@ export function getAuth(env: App.Platform['env'], origin?: string) {
 		...(env.BETTER_AUTH_URL ? [env.BETTER_AUTH_URL] : [])
 	];
 
-	const socialProviders: Record<
-		string,
-		{ clientId: string; clientSecret: string; configId?: string }
-	> = {};
+	const socialProviders: Record<string, Record<string, unknown>> = {};
 	if (env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET) {
 		socialProviders.github = {
 			clientId: env.GITHUB_CLIENT_ID,
@@ -59,6 +56,7 @@ export function getAuth(env: App.Platform['env'], origin?: string) {
 		socialProviders.facebook = {
 			clientId: facebookClientId,
 			clientSecret: facebookClientSecret,
+			mapProfileToUser: () => ({ emailVerified: true }),
 			...(env.FACEBOOK_BUSINESS_CONFIG_ID ? { configId: env.FACEBOOK_BUSINESS_CONFIG_ID } : {})
 		};
 	}
@@ -71,6 +69,12 @@ export function getAuth(env: App.Platform['env'], origin?: string) {
 		secret: env.BETTER_AUTH_SECRET,
 		baseURL,
 		trustedOrigins,
+		account: {
+			accountLinking: {
+				enabled: true,
+				trustedProviders: ['google', 'github', 'facebook']
+			}
+		},
 		socialProviders,
 		plugins: [
 			magicLink({
