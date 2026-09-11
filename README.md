@@ -1,42 +1,40 @@
-# sv
+# We Don't Need Nukes
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+> **Live Production**: [https://wedontneednukes.org](https://wedontneednukes.org)
 
-## Creating a project
+An edge-native, participatory campaign platform for nuclear disarmament. Built on SvelteKit 2 (Svelte 5 Runes), Cloudflare Workers, Cloudflare D1, and Better Auth.
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Tech Stack
 
-```sh
-# create a new project
-npx sv create my-app
-```
-
-To recreate this project with the same configuration:
-
-```sh
-# recreate this project
-npx sv@0.17.0 create --template minimal --types ts --no-install .
-```
+- **Framework**: [SvelteKit 2](https://svelte.dev) with [Svelte 5 Runes](https://svelte.dev/docs/svelte/what-are-runes)
+- **Runtime & Hosting**: [Cloudflare Workers](https://workers.cloudflare.com) with Static Assets (`@sveltejs/adapter-cloudflare`)
+- **Database**: [Cloudflare D1](https://developers.cloudflare.com/d1/) (SQLite) with [Drizzle ORM](https://orm.drizzle.team)
+- **Auth**: [Better Auth](https://better-auth.com) (Magic link, Google, GitHub, and Anonymous pledges)
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com)
 
 ## Developing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+1. Copy `.env.example` to `.dev.vars`:
+   ```sh
+   cp .env.example .dev.vars
+   ```
 
-```sh
-npm run dev
+2. Install dependencies:
+   ```sh
+   pnpm install
+   ```
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+3. Start development server:
+   ```sh
+   pnpm dev
+   ```
 
-## Building
+## Documentation
 
-To create a production version of your app:
+Full architectural documentation, guides, and roadmaps are in [`docs/`](docs/README.md):
 
-```sh
-npm run build
-```
+- [Deployment Guide](docs/guides/deployment.md)
+- [Local Development Guide](docs/guides/local-dev.md)
+- [Architecture Overview](docs/architecture/overview.md)
+- [Campaign Strategy](docs/campaigns/nukes/strategy.md)
 
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.

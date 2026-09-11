@@ -13,7 +13,7 @@ const isLocalhost = (url?: string) =>
  * D1 bindings are per-request, so auth must be a factory — not a singleton.
  *
  * @param env - The Cloudflare Workers platform env (from `event.platform.env`)
- * @param origin - The incoming request origin (e.g. `https://wedontneednukes.xcorat.workers.dev`)
+ * @param origin - The incoming request origin (e.g. `https://wedontneednukes.org`)
  */
 export function getAuth(env: App.Platform['env'], origin?: string) {
 	const db = getDb(env);
