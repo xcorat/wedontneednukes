@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { menuState } from '$lib/menu.svelte.js';
+	import MenuButton from '$lib/components/MenuButton.svelte';
 
 	function handleChoice(answer: 'agree' | 'other') {
 		// 'agree' -> agrees with "We don't need nukes" (answer=no to nukes)
@@ -30,16 +30,7 @@
 		</a>
 
 		<!-- Menubar button (sharp square, toggles menu drawer) -->
-		<button
-			type="button"
-			aria-label="Menu"
-			onclick={() => menuState.toggle()}
-			class="inline-flex h-10 w-10 items-center justify-center border-2 border-[#212121] bg-white text-[#212121] shadow-[2px_2px_0_#212121] transition-all hover:translate-y-[1px] hover:shadow-[1px_1px_0_#212121] active:translate-x-[1px] active:translate-y-[2px] active:shadow-none cursor-pointer"
-		>
-			<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-				<path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-			</svg>
-		</button>
+		<MenuButton />
 	</header>
 
 	<!-- Headline: We don't need / Nukes (~38-40% height on desktop, upper area on mobile) -->
