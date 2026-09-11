@@ -13,7 +13,7 @@
 	<title>Pledge · WeDoNotNeedNukes</title>
 </svelte:head>
 
-<main class="flex min-h-dvh flex-col items-center justify-center px-6 py-16 text-center">
+<main class="flex min-h-[calc(100dvh-2rem)] flex-col items-center justify-center px-6 py-16 text-center">
 	<span class="mb-6 text-5xl">{answeredNo ? '🕊️' : '🤔'}</span>
 
 	<h1 class="mb-3 text-3xl font-black text-white sm:text-4xl">{greeting}</h1>

@@ -5,7 +5,7 @@
 	<title>Why? · We Don't Need Nukes</title>
 </svelte:head>
 
-<main class="flex min-h-dvh flex-col items-center justify-center bg-[#FFFDE7] px-6 py-12 text-[#212121] font-['Poppins',sans-serif]">
+<main class="flex min-h-[calc(100dvh-2rem)] flex-col items-center justify-center bg-[#FFFDE7] px-6 py-12 text-[#212121] font-['Poppins',sans-serif]">
 	<div class="w-full max-w-lg">
 		<a
 			href="/"
