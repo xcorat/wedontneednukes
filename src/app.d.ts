@@ -28,6 +28,9 @@ declare global {
 			session: import('better-auth').Session | null;
 		}
 	}
+
+	const __APP_VERSION__: string;
+	const __GIT_COMMIT__: string;
 }
 
 export {};

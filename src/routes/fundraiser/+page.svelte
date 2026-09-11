@@ -1,18 +1,22 @@
 <script lang="ts">
+	import MenuButton from '$lib/components/MenuButton.svelte';
 </script>
 
 <svelte:head>
 	<title>Fundraiser · We Don't Need Nukes</title>
 </svelte:head>
 
-<main class="flex min-h-dvh flex-col items-center justify-center bg-[#FFFDE7] px-6 py-12 text-[#212121] font-['Poppins',sans-serif]">
+<main class="flex min-h-[calc(100dvh-2rem)] flex-col items-center justify-center bg-[#FFFDE7] px-6 py-12 text-[#212121] font-['Poppins',sans-serif]">
 	<div class="w-full max-w-lg">
-		<a
-			href="/"
-			class="mb-8 inline-flex items-center gap-2 border-2 border-[#212121] bg-white px-4 py-2 text-sm font-bold text-[#212121] shadow-[2px_2px_0_#212121] transition-all hover:translate-y-[1px] hover:shadow-[1px_1px_0_#212121] active:translate-x-[1px] active:translate-y-[2px] active:shadow-none"
-		>
-			← Back
-		</a>
+		<div class="mb-8 flex items-center justify-between gap-3">
+			<a
+				href="/"
+				class="inline-flex items-center gap-2 border-2 border-[#212121] bg-white px-4 py-2 text-sm font-bold text-[#212121] shadow-[2px_2px_0_#212121] transition-all hover:translate-y-[1px] hover:shadow-[1px_1px_0_#212121] active:translate-x-[1px] active:translate-y-[2px] active:shadow-none"
+			>
+				← Back
+			</a>
+			<MenuButton />
+		</div>
 
 		<div class="mb-4 inline-block border-2 border-[#212121] bg-[#FFD600] px-4 py-1 text-xs font-black uppercase tracking-wider text-[#212121]">
 			Community Funded

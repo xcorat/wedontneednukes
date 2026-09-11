@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import MenuButton from '$lib/components/MenuButton.svelte';
 
 	function handleChoice(answer: 'agree' | 'other') {
 		// 'agree' -> agrees with "We don't need nukes" (answer=no to nukes)
@@ -17,7 +18,7 @@
 	/>
 </svelte:head>
 
-<main class="flex h-dvh max-h-dvh w-full flex-col overflow-hidden bg-[#FFFDE7] text-[#212121] select-none font-['Poppins',sans-serif]">
+<main class="flex h-[calc(100dvh-2rem)] max-h-[calc(100dvh-2rem)] w-full flex-col overflow-hidden bg-[#FFFDE7] text-[#212121] select-none font-['Poppins',sans-serif]">
 	<!-- Button bar / Navbar: 10% of total height (on desktop at top, on mobile at bottom) -->
 	<header class="order-last sm:order-first flex h-[10%] min-h-[48px] w-full items-center justify-end px-4 sm:px-8 gap-3">
 		<a
@@ -28,16 +29,8 @@
 			<span>Fundraiser</span>
 		</a>
 
-		<!-- Menubar button (sharp square, empty for now) -->
-		<button
-			type="button"
-			aria-label="Menu"
-			class="inline-flex h-10 w-10 items-center justify-center border-2 border-[#212121] bg-white text-[#212121] shadow-[2px_2px_0_#212121] transition-all hover:translate-y-[1px] hover:shadow-[1px_1px_0_#212121] active:translate-x-[1px] active:translate-y-[2px] active:shadow-none cursor-pointer"
-		>
-			<svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-				<path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-			</svg>
-		</button>
+		<!-- Menubar button (sharp square, toggles menu drawer) -->
+		<MenuButton />
 	</header>
 
 	<!-- Headline: We don't need / Nukes (~38-40% height on desktop, upper area on mobile) -->
