@@ -1,4 +1,4 @@
-import type { D1Database } from '@cloudflare/workers-types';
+import type { D1Database, SendEmail } from '@cloudflare/workers-types';
 
 // See https://svelte.dev/docs/kit/types#app.d.ts
 
@@ -7,6 +7,7 @@ declare global {
 		interface Platform {
 			env: {
 				DB: D1Database;
+				EMAIL?: SendEmail;
 				GITHUB_CLIENT_ID: string;
 				GITHUB_CLIENT_SECRET: string;
 				GOOGLE_CLIENT_ID: string;

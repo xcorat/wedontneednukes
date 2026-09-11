@@ -7,7 +7,7 @@
 
 	const headline = $derived(
 		answeredNo
-			? "You are not alone, join the community."
+			? "Welcome to the community."
 			: "Hope you change your mind, but your voice matters."
 	);
 

@@ -66,9 +66,9 @@ export const campaign = sqliteTable('campaign', {
 
 export const pledge = sqliteTable('pledge', {
 	id: text('id').primaryKey(),
-	userId: text('user_id')
-		.notNull()
-		.references(() => user.id, { onDelete: 'cascade' }),
+	userId: text('user_id').references(() => user.id, { onDelete: 'cascade' }),
+	anonId: text('anon_id'),
+	choice: text('choice', { enum: ['no', 'yes'] }).notNull(),
 	campaignId: text('campaign_id')
 		.notNull()
 		.references(() => campaign.id, { onDelete: 'cascade' }),
