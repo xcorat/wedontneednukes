@@ -13,7 +13,7 @@ const isLocalhost = (url?: string) =>
  * D1 bindings are per-request, so auth must be a factory — not a singleton.
  *
  * @param env - The Cloudflare Workers platform env (from `event.platform.env`)
- * @param origin - The incoming request origin (e.g. `https://wedontneednukes.xcorat.workers.dev`)
+ * @param origin - The incoming request origin (e.g. `https://wedontneednukes.org`)
  */
 export function getAuth(env: App.Platform['env'], origin?: string) {
 	const db = getDb(env);
@@ -29,7 +29,7 @@ export function getAuth(env: App.Platform['env'], origin?: string) {
 	const trustedOrigins = [
 		'http://localhost:*',
 		'http://127.0.0.1:*',
-		'https://wedontneednukes.org',
+		'https://*.workers.dev',
 		'https://wedontneednukes.xcorat.workers.dev',
 		'https://wedontneednukes.org',
 		'https://*.wedontneednukes.org',
@@ -37,7 +37,10 @@ export function getAuth(env: App.Platform['env'], origin?: string) {
 		...(env.BETTER_AUTH_URL ? [env.BETTER_AUTH_URL] : [])
 	];
 
-	const socialProviders: Record<string, { clientId: string; clientSecret: string }> = {};
+	const socialProviders: Record<
+		string,
+		{ clientId: string; clientSecret: string; configId?: string }
+	> = {};
 	if (env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET) {
 		socialProviders.github = {
 			clientId: env.GITHUB_CLIENT_ID,
@@ -48,6 +51,15 @@ export function getAuth(env: App.Platform['env'], origin?: string) {
 		socialProviders.google = {
 			clientId: env.GOOGLE_CLIENT_ID,
 			clientSecret: env.GOOGLE_CLIENT_SECRET
+		};
+	}
+	const facebookClientId = env.FACEBOOK_CLIENT_ID || env.FACEBOOK_APP_ID;
+	const facebookClientSecret = env.FACEBOOK_CLIENT_SECRET || env.FACEBOOK_APP_SECRET;
+	if (facebookClientId && facebookClientSecret) {
+		socialProviders.facebook = {
+			clientId: facebookClientId,
+			clientSecret: facebookClientSecret,
+			...(env.FACEBOOK_BUSINESS_CONFIG_ID ? { configId: env.FACEBOOK_BUSINESS_CONFIG_ID } : {})
 		};
 	}
 
