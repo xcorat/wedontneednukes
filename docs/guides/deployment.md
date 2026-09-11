@@ -35,6 +35,9 @@ Configure the following variables in the Cloudflare Dashboard (**Workers & Pages
 | `BETTER_AUTH_SECRET` | Secret (Encrypted) | 32+ character random string for signing session cookies | Yes |
 | `GOOGLE_CLIENT_ID` | Variable / Secret | OAuth 2.0 Client ID from Google Cloud Console | For Google Auth |
 | `GOOGLE_CLIENT_SECRET` | Secret (Encrypted) | OAuth 2.0 Client Secret from Google Cloud Console | For Google Auth |
+| `FACEBOOK_APP_ID` | Variable / Secret | Meta App ID from Meta Developer Dashboard | For Facebook Auth |
+| `FACEBOOK_APP_SECRET` | Secret (Encrypted) | Meta App Secret from Meta Developer Dashboard | For Facebook Auth |
+| `FACEBOOK_BUSINESS_CONFIG_ID` | Variable | Optional Meta Business Login Configuration ID | Optional |
 | `GITHUB_CLIENT_ID` | Variable / Secret | OAuth App Client ID from GitHub | For GitHub Auth |
 | `GITHUB_CLIENT_SECRET` | Secret (Encrypted) | OAuth App Client Secret from GitHub | For GitHub Auth |
 | `TURNSTILE_SITE_KEY` | Variable | Cloudflare Turnstile public site key | For bot protection |
@@ -58,6 +61,14 @@ In [Google Cloud Console](https://console.cloud.google.com/apis/credentials):
 * **Authorized redirect URIs**:
   * `https://wedontneednukes.org/api/auth/callback/google`
   * `http://localhost:5173/api/auth/callback/google` *(local dev)*
+
+### Facebook / Meta OAuth
+In [Meta Developer Dashboard](https://developers.facebook.com/apps/):
+* Under **Facebook Login** → **Settings**:
+  * **Valid OAuth Redirect URIs**:
+    * `https://wedontneednukes.org/api/auth/callback/facebook`
+    * `http://localhost:5173/api/auth/callback/facebook` *(local dev)*
+* While in **Development Mode**, add testers under **App roles** ➔ **Roles** ➔ **Add Testers** (enter your personal Facebook account username/ID and accept the invite).
 
 ### GitHub OAuth
 In [GitHub Developer Settings](https://github.com/settings/developers):
