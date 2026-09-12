@@ -8,6 +8,12 @@
 	let connectingProvider = $state<string | null>(null);
 	let unlinkingProvider = $state<string | null>(null);
 	let clientError = $state<string | null>(null);
+	let showEmailForm = $state(false);
+	let emailInput = $state('');
+
+	$effect(() => {
+		emailInput = data.user.email ?? '';
+	});
 
 	const urlParams = $derived(page.url.searchParams);
 	const justLinked = $derived(urlParams.get('linked'));
@@ -129,27 +135,65 @@
 			{/if}
 
 			<!-- Primary Account Strip -->
-			<div class="mb-6 flex items-center gap-3.5 border-2 border-border bg-background p-4 rounded-theme shadow-theme-sm">
-				{#if data.user.image}
-					<img
-						src={data.user.image}
-						alt={data.user.name}
-						class="h-12 w-12 rounded-full border-2 border-border object-cover"
-					/>
-				{:else}
-					<div class="flex h-12 w-12 items-center justify-center rounded-full border-2 border-border bg-primary/20 text-lg font-black text-foreground">
-						{data.user.name ? data.user.name[0]?.toUpperCase() : 'U'}
+			<div class="mb-6 border-2 border-border bg-background p-4 rounded-theme shadow-theme-sm">
+				<div class="flex items-center gap-3.5">
+					{#if data.user.image}
+						<img
+							src={data.user.image}
+							alt={data.user.name}
+							class="h-12 w-12 rounded-full border-2 border-border object-cover"
+						/>
+					{:else}
+						<div class="flex h-12 w-12 items-center justify-center rounded-full border-2 border-border bg-primary/20 text-lg font-black text-foreground">
+							{data.user.name ? data.user.name[0]?.toUpperCase() : 'U'}
+						</div>
+					{/if}
+					<div class="flex-1 min-w-0">
+						<p class="text-xs font-bold uppercase tracking-wider text-muted-foreground font-display">
+							Primary Email Identity
+						</p>
+						{#if data.user.email}
+							<p class="text-sm font-bold text-foreground truncate">{data.user.email}</p>
+							<p class="text-[11px] text-muted-foreground">
+								{data.user.emailVerified ? '✓ Verified email' : 'Registered email address'}
+							</p>
+						{:else}
+							<p class="text-sm font-bold text-muted-foreground italic">No email linked (signed in via social)</p>
+							<p class="text-[11px] text-muted-foreground">
+								Add an email to receive campaign updates or enable magic link sign-in.
+							</p>
+						{/if}
 					</div>
-				{/if}
-				<div class="flex-1 min-w-0">
-					<p class="text-xs font-bold uppercase tracking-wider text-muted-foreground font-display">
-						Primary Email Identity
-					</p>
-					<p class="text-sm font-bold text-foreground truncate">{data.user.email}</p>
-					<p class="text-[11px] text-muted-foreground">
-						{data.user.emailVerified ? '✓ Verified email' : 'Registered email address'}
-					</p>
+
+					<div>
+						<button
+							type="button"
+							onclick={() => (showEmailForm = !showEmailForm)}
+							class="border-2 border-border bg-surface px-3 py-1.5 text-xs font-bold text-foreground rounded-theme shadow-theme-sm transition-all hover:bg-background cursor-pointer"
+						>
+							{showEmailForm ? 'Cancel' : data.user.email ? 'Change Email' : 'Add Email'}
+						</button>
+					</div>
 				</div>
+
+				{#if showEmailForm}
+					<form method="POST" action="?/updateEmail" class="mt-4 border-t-2 border-border pt-4 flex flex-col sm:flex-row gap-2.5">
+						<input
+							type="email"
+							name="email"
+							required
+							bind:value={emailInput}
+							placeholder="new-email@example.com"
+							class="flex-1 border-2 border-border bg-surface px-3.5 py-2 text-sm text-foreground rounded-theme shadow-theme-sm focus:outline-none"
+						/>
+						<button
+							type="submit"
+							class="border-2 border-border bg-primary px-4 py-2 text-xs font-bold text-primary-foreground rounded-theme shadow-theme-primary transition-all hover:translate-y-[1px] active:translate-x-[1px] active:translate-y-[2px] active:shadow-none cursor-pointer font-display"
+						>
+							Save Email
+						</button>
+					</form>
+				{/if}
 			</div>
 
 			<!-- Social Providers List -->

@@ -1,7 +1,9 @@
 import { fail, redirect } from '@sveltejs/kit';
+import { and, eq, ne } from 'drizzle-orm';
 import type { Actions, PageServerLoad } from './$types.js';
 import { getDb } from '$lib/server/db/client.js';
 import { getProvidersStatus, unlinkSocialAccount } from '$lib/server/account/index.js';
+import { user } from '$lib/server/db/schema.js';
 
 export const load: PageServerLoad = async ({ locals, platform }) => {
 	if (!locals.user) {
@@ -69,6 +71,46 @@ export const actions: Actions = {
 		return {
 			success: true,
 			message: `Successfully disconnected your ${providerId} account.`
+		};
+	},
+
+	updateEmail: async ({ request, locals, platform }) => {
+		if (!locals.user) {
+			redirect(302, '/auth?redirect=/settings/account');
+		}
+
+		if (!platform?.env?.DB) {
+			return fail(500, { message: 'Database connection is currently unavailable.' });
+		}
+
+		const formData = await request.formData();
+		const emailInput = formData.get('email')?.toString().trim();
+
+		if (!emailInput || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput)) {
+			return fail(400, { message: 'Please enter a valid email address.' });
+		}
+
+		const db = getDb(platform.env);
+
+		// Check if email is already taken by another account
+		const [existing] = await db
+			.select({ id: user.id })
+			.from(user)
+			.where(and(eq(user.email, emailInput), ne(user.id, locals.user.id)))
+			.limit(1);
+
+		if (existing) {
+			return fail(400, { message: 'This email address is already associated with another account.' });
+		}
+
+		await db
+			.update(user)
+			.set({ email: emailInput, emailVerified: false, updatedAt: new Date() })
+			.where(eq(user.id, locals.user.id));
+
+		return {
+			success: true,
+			message: 'Email address updated successfully.'
 		};
 	}
 };

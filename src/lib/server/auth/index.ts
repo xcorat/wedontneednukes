@@ -56,7 +56,10 @@ export function getAuth(env: App.Platform['env'], origin?: string) {
 		socialProviders.facebook = {
 			clientId: facebookClientId,
 			clientSecret: facebookClientSecret,
-			mapProfileToUser: () => ({ emailVerified: true }),
+			mapProfileToUser: (profile: { email?: string }) => ({
+				email: profile.email || null,
+				emailVerified: Boolean(profile.email)
+			}),
 			...(env.FACEBOOK_BUSINESS_CONFIG_ID ? { configId: env.FACEBOOK_BUSINESS_CONFIG_ID } : {})
 		};
 	}
@@ -64,7 +67,11 @@ export function getAuth(env: App.Platform['env'], origin?: string) {
 	if (env.TWITTER_CLIENT_ID && env.TWITTER_CLIENT_SECRET) {
 		socialProviders.twitter = {
 			clientId: env.TWITTER_CLIENT_ID,
-			clientSecret: env.TWITTER_CLIENT_SECRET
+			clientSecret: env.TWITTER_CLIENT_SECRET,
+			mapProfileToUser: (profile: { email?: string }) => ({
+				email: profile.email || null,
+				emailVerified: Boolean(profile.email)
+			})
 		};
 	}
 

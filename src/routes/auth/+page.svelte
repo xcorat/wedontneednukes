@@ -59,6 +59,12 @@
 				throw new Error(errorData.message || 'Failed to send one-time link. Please try again.');
 			}
 
+			const resData = (await res.json().catch(() => ({}))) as { twoFactorRedirect?: boolean };
+			if (resData?.twoFactorRedirect) {
+				window.location.href = `/auth/two-factor?callbackURL=${encodeURIComponent(callbackUrl)}`;
+				return;
+			}
+
 			emailSent = true;
 		} catch (err: unknown) {
 			errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred.';
