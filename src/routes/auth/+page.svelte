@@ -8,8 +8,8 @@
 
 	const headline = $derived(
 		answeredNo
-			? "Welcome to the community."
-			: "Hope you change your mind, but your voice matters."
+			? 'Welcome to the community.'
+			: 'Hope you change your mind, but your voice matters.'
 	);
 
 	const sub = $derived(
@@ -19,7 +19,7 @@
 	);
 
 	/** Redirect URL passed through to Better Auth's callbackURL */
-	const callbackUrl = $derived(`/campaign/${data.slug}/results?answer=${data.answer}`);
+	const callbackUrl = $derived(`/form?answer=${data.answer}`);
 
 	let email = $state('');
 	let isSubmitting = $state(false);
@@ -96,8 +96,7 @@
 	}
 
 	function continueAnonymously() {
-		// Turnstile verification will go here in Phase 2
-		window.location.href = `/campaign/${data.slug}/results?answer=${data.answer}&anon=1`;
+		window.location.href = `/form?answer=${data.answer}&anon=1`;
 	}
 </script>
 

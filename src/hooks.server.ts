@@ -1,5 +1,6 @@
+import { dev } from '$app/environment';
 import { getAuth } from '$lib/server/auth/index.js';
-import { type Handle } from '@sveltejs/kit';
+import { error, type Handle } from '@sveltejs/kit';
 
 /**
  * SvelteKit server hook.
@@ -7,6 +8,11 @@ import { type Handle } from '@sveltejs/kit';
  * - Stores user and session in `event.locals` for use in routes.
  */
 export const handle: Handle = async ({ event, resolve }) => {
+	// Restrict all /tests routes to dev mode only
+	if (event.url.pathname.startsWith('/tests') && !dev) {
+		error(404, 'Not found');
+	}
+
 	const env = event.platform?.env;
 
 	if (env) {
