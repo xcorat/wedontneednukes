@@ -2,9 +2,18 @@
 	import type { PageData } from './$types.js';
 	import MenuButton from '$lib/components/MenuButton.svelte';
 	import FundraiserButton from '$lib/components/FundraiserButton.svelte';
+	import InfoTooltip, { type HelpDisplayMode } from '$lib/components/InfoTooltip.svelte';
 	import { enhance } from '$app/forms';
 
 	let { data }: { data: PageData } = $props();
+
+	/**
+	 * Help text presentation mode:
+	 * - 'responsive': (i) tooltip on mobile, visible inline text on desktop
+	 * - 'inline': visible inline text on all screens
+	 * - 'tooltip': (i) hover/tap tooltip on all screens
+	 */
+	const helpMode: HelpDisplayMode = 'responsive';
 
 	const answeredNo = $derived(data.answer === 'no');
 
@@ -125,12 +134,18 @@
 				<div class="space-y-3" role="group" aria-label="Commitment Levels">
 					{#each pledgeOptions as opt}
 						{@const isSelected = selectedLevels.includes(opt.id)}
-						<button
-							type="button"
+						<div
 							role="checkbox"
+							tabindex="0"
 							aria-checked={isSelected}
 							onclick={() => toggleLevel(opt.id)}
-							class="w-full text-left border-2 border-border p-3.5 sm:p-4 transition-all cursor-pointer relative rounded-theme {isSelected
+							onkeydown={(e) => {
+								if (e.key === 'Enter' || e.key === ' ') {
+									e.preventDefault();
+									toggleLevel(opt.id);
+								}
+							}}
+							class="w-full text-left border-2 border-border p-3.5 sm:p-4 transition-all cursor-pointer relative rounded-theme select-none focus:outline-none focus:ring-2 focus:ring-primary {isSelected
 								? 'bg-background shadow-theme-sm translate-y-[-1px]'
 								: 'bg-surface shadow-theme-sm opacity-90 hover:opacity-100 hover:bg-background/50'}"
 						>
@@ -148,7 +163,7 @@
 
 								<!-- Content -->
 								<div class="flex-1 min-w-0">
-									<div class="flex flex-wrap items-center gap-2 mb-1">
+									<div class="flex flex-wrap items-center gap-2">
 										<span class="text-sm font-black text-foreground leading-snug font-display">
 											{opt.title}
 										</span>
@@ -161,15 +176,19 @@
 												{opt.badge}
 											</span>
 										{/if}
+										<InfoTooltip
+											text={opt.description}
+											title={opt.title}
+											mode={helpMode}
+											ariaLabel={`Learn more about ${opt.title}`}
+										/>
 									</div>
-									<p class="text-xs text-muted-foreground leading-relaxed">
-										{opt.description}
-									</p>
 								</div>
 							</div>
-						</button>
+						</div>
 					{/each}
 				</div>
+
 
 				<!-- Selected Count Helper -->
 				<div class="flex items-center justify-between text-xs text-muted-foreground font-medium px-1">
