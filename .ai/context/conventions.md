@@ -5,6 +5,7 @@
 - **Svelte 5**: ONLY use runes (`$state`, `$derived`, `$props`, `$effect`, `$bindable`). Legacy reactivity is strictly forbidden.
 - **Components**: Use `{#snippet}` for composition, NOT `<slot />`.
 - **CSS**: Tailwind utility-first. Custom theme tokens in `tailwind.config.js`.
+- **Package Manager**: **`pnpm` ONLY**. Never run `npm` or `npx`. Use `pnpm <script>` and `pnpm exec <cmd>` / `pnpm dlx <cmd>`.
 
 ## shadcn-svelte
 - Components live in `src/lib/components/ui/`.

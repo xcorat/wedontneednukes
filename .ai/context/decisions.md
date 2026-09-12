@@ -55,3 +55,16 @@
 **Context**: Bot protection for anonymous pledges.
 **Decision**: Cloudflare Turnstile.
 **Consequences**: Free, privacy-preserving, native CF integration.
+
+## ADR-9: Use pnpm over npm and Bun
+**Status**: Accepted
+**Date**: 2026-09-12
+**Context**: Selection of package manager and tooling for Cloudflare Workers & SvelteKit 2 development.
+**Decision**: Use `pnpm` exclusively. Do not use `npm` or switch to `bun`.
+**Consequences**:
+- **Workerd Alignment**: Cloudflare Workers runs production code in the `workerd` V8 runtime, not Bun. Vite and `@sveltejs/adapter-cloudflare` rely on standard Node.js module resolution.
+- **Miniflare Compatibility**: Local development uses Wrangler + Miniflare to simulate D1, KV, and bindings. Miniflare relies on Node.js built-ins and native packages that have known runtime incompatibilities when executed under Bun.
+- **Cloudflare CI/CD**: Cloudflare Pages / Workers build pipelines natively detect `pnpm-lock.yaml` and install via pnpm out of the box without custom scripts.
+- **Dependency Overrides**: Preserves required `"pnpm": { "overrides": { "kysely": ... } }` in `package.json` for Better-Auth D1 integration.
+- **Speed & Determinism**: Fast, content-addressable store without phantom dependencies.
+
