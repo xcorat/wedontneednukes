@@ -61,6 +61,13 @@ export function getAuth(env: App.Platform['env'], origin?: string) {
 		};
 	}
 
+	if (env.TWITTER_CLIENT_ID && env.TWITTER_CLIENT_SECRET) {
+		socialProviders.twitter = {
+			clientId: env.TWITTER_CLIENT_ID,
+			clientSecret: env.TWITTER_CLIENT_SECRET
+		};
+	}
+
 	return betterAuth({
 		database: drizzleAdapter(db, {
 			provider: 'sqlite',
@@ -72,7 +79,7 @@ export function getAuth(env: App.Platform['env'], origin?: string) {
 		account: {
 			accountLinking: {
 				enabled: true,
-				trustedProviders: ['google', 'github', 'facebook']
+				trustedProviders: ['google', 'github', 'facebook', 'twitter']
 			}
 		},
 		socialProviders,

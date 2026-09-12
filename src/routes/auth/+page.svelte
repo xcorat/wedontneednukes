@@ -23,7 +23,7 @@
 
 	let email = $state('');
 	let isSubmitting = $state(false);
-	let activeProvider = $state<'github' | 'google' | 'facebook' | null>(null);
+	let activeProvider = $state<'github' | 'google' | 'facebook' | 'twitter' | null>(null);
 	let emailSent = $state(false);
 	let errorMessage = $state<string | null>(null);
 
@@ -59,7 +59,7 @@
 		}
 	}
 
-	async function socialLogin(provider: 'github' | 'google' | 'facebook') {
+	async function socialLogin(provider: 'github' | 'google' | 'facebook' | 'twitter') {
 		if (isSubmitting) return;
 		isSubmitting = true;
 		activeProvider = provider;
@@ -269,6 +269,27 @@
 								<path d="M12 .5C5.37.5 0 5.87 0 12.5c0 5.31 3.435 9.813 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 6.844c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222 0 1.606-.015 2.896-.015 3.286 0 .322.216.694.825.576C20.565 22.31 24 17.807 24 12.5 24 5.87 18.627.5 12 .5z"/>
 							</svg>
 							<span>GitHub</span>
+						{/if}
+					</button>
+
+					<button
+						type="button"
+						onclick={() => socialLogin('twitter')}
+						disabled={isSubmitting}
+						class="flex w-full items-center justify-center gap-2.5 border-2 border-border bg-surface px-4 py-2.5 rounded-theme
+						       text-sm font-bold text-foreground shadow-theme-sm transition-all hover:translate-y-[1px] active:translate-x-[1px] active:translate-y-[2px] active:shadow-none disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
+					>
+						{#if activeProvider === 'twitter'}
+							<svg class="h-4 w-4 animate-spin text-foreground" viewBox="0 0 24 24" fill="none">
+								<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+								<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+							</svg>
+							<span>Connecting to X / Twitter...</span>
+						{:else}
+							<svg class="h-4 w-4 fill-foreground" viewBox="0 0 24 24" aria-hidden="true">
+								<path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+							</svg>
+							<span>X / Twitter</span>
 						{/if}
 					</button>
 				</div>

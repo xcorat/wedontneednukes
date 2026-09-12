@@ -60,6 +60,22 @@
 			</div>
 		</div>
 
+		<!-- Settings Navigation Tabs -->
+		<div class="mb-6 flex gap-2 border-b-2 border-border pb-2">
+			<a
+				href="/settings/profile"
+				class="border-2 border-border bg-primary px-4 py-2 text-xs sm:text-sm font-black text-primary-foreground rounded-theme shadow-theme-primary font-display"
+			>
+				👤 Profile &amp; Privacy
+			</a>
+			<a
+				href="/settings/account"
+				class="border-2 border-border bg-surface px-4 py-2 text-xs sm:text-sm font-bold text-muted-foreground rounded-theme shadow-theme-sm transition-all hover:text-foreground font-display"
+			>
+				🔗 Connected Accounts
+			</a>
+		</div>
+
 		<!-- Main Card -->
 		<div class="border-2 sm:border-[3px] border-border bg-surface p-6 sm:p-8 rounded-theme shadow-theme-md">
 			<header class="mb-6 border-b-2 border-border pb-4">

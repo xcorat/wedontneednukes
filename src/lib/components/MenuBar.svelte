@@ -85,6 +85,14 @@
 							<span>Profile Settings</span>
 							<span>⚙️</span>
 						</a>
+						<a
+							href="/settings/account"
+							onclick={() => menuState.close()}
+							class="flex items-center justify-between border-2 border-border bg-background px-3.5 py-2 text-sm font-bold text-foreground rounded-theme shadow-theme-sm hover:bg-secondary hover:text-secondary-foreground transition-all"
+						>
+							<span>Connected Accounts</span>
+							<span>🔗</span>
+						</a>
 					</div>
 				{:else}
 					<a
