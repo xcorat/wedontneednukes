@@ -21,7 +21,12 @@
 		}
 	],
 	// Environment variables can be configured here or in Cloudflare dashboard
-	"vars": {}
+	"vars": {},
+	// Edge Security & Rate Limiting:
+	// - Apply Cloudflare WAF rate limiting rules on the zone:
+	//   * Route: /api/auth/* -> Threshold: 15 requests per minute per IP action: Block or Managed Challenge.
+	//   * Bot Management: Cloudflare Turnstile token verified on /api/auth/sign-in/* and form submissions.
+	//   * DDOS: Cloudflare HTTP DDoS Attack Protection enabled by default.
 }
 
 // {

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types.js';
 	import MenuButton from '$lib/components/MenuButton.svelte';
+	import Turnstile from '$lib/components/Turnstile.svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -26,6 +27,7 @@
 	let activeProvider = $state<'github' | 'google' | 'facebook' | 'twitter' | null>(null);
 	let emailSent = $state(false);
 	let errorMessage = $state<string | null>(null);
+	let turnstileToken = $state<string | null>(null);
 
 	async function handleEmailSignIn(e: SubmitEvent) {
 		e.preventDefault();
@@ -35,14 +37,20 @@
 		errorMessage = null;
 
 		try {
+			const headers: Record<string, string> = {
+				'Content-Type': 'application/json'
+			};
+			if (turnstileToken) {
+				headers['cf-turnstile-response'] = turnstileToken;
+			}
+
 			const res = await fetch('/api/auth/sign-in/magic-link', {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
+				headers,
 				body: JSON.stringify({
 					email: email.trim(),
-					callbackURL: callbackUrl
+					callbackURL: callbackUrl,
+					turnstileToken
 				})
 			});
 
@@ -172,6 +180,12 @@
 							       shadow-theme-sm transition-colors focus:bg-background focus:outline-none disabled:opacity-50"
 						/>
 					</div>
+
+					<Turnstile
+						siteKey={data.turnstileSiteKey}
+						onSuccess={(token) => (turnstileToken = token)}
+						onError={(err) => (errorMessage = err)}
+					/>
 
 					<button
 						type="submit"
