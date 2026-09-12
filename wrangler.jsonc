@@ -21,7 +21,10 @@
 		}
 	],
 	// Environment variables can be configured here or in Cloudflare dashboard
-	"vars": {}
+	"vars": {
+    "BETTER_AUTH_URL": "https://wedontneednukes.org",
+    "FACEBOOK_APP_ID": "1059794736968380"
+  }
 }
 
 // {
