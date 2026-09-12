@@ -78,4 +78,24 @@ export const pledge = sqliteTable('pledge', {
 	createdAt: integer('created_at', { mode: 'timestamp' }).notNull()
 });
 
-export const schema = { user, session, account, verification, campaign, pledge };
+export const userProfile = sqliteTable('user_profile', {
+	userId: text('user_id')
+		.primaryKey()
+		.references(() => user.id, { onDelete: 'cascade' }),
+	displayName: text('display_name'),
+	isDisplayNamePublic: integer('is_display_name_public', { mode: 'boolean' }).notNull().default(false),
+	bio: text('bio'),
+	isBioPublic: integer('is_bio_public', { mode: 'boolean' }).notNull().default(false),
+	location: text('location'),
+	isLocationPublic: integer('is_location_public', { mode: 'boolean' }).notNull().default(false),
+	website: text('website'),
+	isWebsitePublic: integer('is_website_public', { mode: 'boolean' }).notNull().default(false),
+	isPledgePublic: integer('is_pledge_public', { mode: 'boolean' }).notNull().default(false),
+	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
+});
+
+export type UserProfile = typeof userProfile.$inferSelect;
+export type NewUserProfile = typeof userProfile.$inferInsert;
+
+export const schema = { user, session, account, verification, campaign, pledge, userProfile };

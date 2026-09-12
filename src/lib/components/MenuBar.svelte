@@ -1,7 +1,10 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import { menuState } from '$lib/menu.svelte.js';
 	import { VERSION_LABEL } from '$lib/version.js';
 	import ThemeSwitcher from '$lib/components/ThemeSwitcher.svelte';
+
+	const user = $derived(page.data.user);
 
 	function handleKeydown(event: KeyboardEvent) {
 		if (event.key === 'Escape' && menuState.isOpen) {
@@ -44,6 +47,57 @@
 
 		<!-- Menu content area -->
 		<div class="flex-1 overflow-y-auto p-5 space-y-6">
+			<!-- User Account / Auth Section -->
+			<div class="border-b-2 border-border/20 pb-4">
+				{#if user}
+					<div class="flex flex-col gap-2">
+						<div class="flex items-center gap-2.5 px-1 py-1">
+							{#if user.image}
+								<img
+									src={user.image}
+									alt={user.name}
+									class="h-8 w-8 rounded-full border-2 border-border object-cover"
+								/>
+							{:else}
+								<div class="flex h-8 w-8 items-center justify-center rounded-full border-2 border-border bg-secondary text-xs font-bold text-secondary-foreground">
+									{user.name ? user.name[0]?.toUpperCase() : 'U'}
+								</div>
+							{/if}
+							<div class="min-w-0 flex-1">
+								<p class="truncate text-xs font-bold text-foreground">{user.name}</p>
+								<p class="truncate text-[11px] text-muted-foreground">{user.email}</p>
+							</div>
+						</div>
+
+						<a
+							href="/profile"
+							onclick={() => menuState.close()}
+							class="flex items-center justify-between border-2 border-border bg-background px-3.5 py-2 text-sm font-bold text-foreground rounded-theme shadow-theme-sm hover:bg-secondary hover:text-secondary-foreground transition-all"
+						>
+							<span>My Profile</span>
+							<span>👤</span>
+						</a>
+						<a
+							href="/settings/profile"
+							onclick={() => menuState.close()}
+							class="flex items-center justify-between border-2 border-border bg-background px-3.5 py-2 text-sm font-bold text-foreground rounded-theme shadow-theme-sm hover:bg-secondary hover:text-secondary-foreground transition-all"
+						>
+							<span>Profile Settings</span>
+							<span>⚙️</span>
+						</a>
+					</div>
+				{:else}
+					<a
+						href="/auth"
+						onclick={() => menuState.close()}
+						class="flex items-center justify-between border-2 border-border bg-primary px-3.5 py-2 text-sm font-black text-primary-foreground rounded-theme shadow-theme-primary hover:translate-y-[1px] transition-all"
+					>
+						<span>Sign In / Join</span>
+						<span>✨</span>
+					</a>
+				{/if}
+			</div>
+
 			<!-- Quick Navigation Links -->
 			<nav class="flex flex-col gap-2">
 				<a
