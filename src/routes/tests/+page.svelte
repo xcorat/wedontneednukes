@@ -1,6 +1,7 @@
 <script lang="ts">
 	import FundraiserButton from '$lib/components/FundraiserButton.svelte';
 	import MenuButton from '$lib/components/MenuButton.svelte';
+	import ThemeSwitcher from '$lib/components/ThemeSwitcher.svelte';
 
 	const testSuites = [
 		{
@@ -44,13 +45,13 @@
 	<title>Test Lab Directory · We Don't Need Nukes</title>
 </svelte:head>
 
-<main class="min-h-[calc(100dvh-2rem)] bg-[#FFFDE7] px-4 py-8 text-[#212121] font-['Poppins',sans-serif]">
+<main class="min-h-[calc(100dvh-2rem)] bg-background px-4 py-8 text-foreground font-body">
 	<div class="mx-auto max-w-3xl">
 		<!-- Top Bar -->
 		<div class="mb-6 flex items-center justify-between gap-3">
 			<a
 				href="/"
-				class="inline-flex items-center gap-1.5 border-2 border-[#212121] bg-white px-3.5 py-1.5 text-sm font-bold text-[#212121] shadow-[2px_2px_0_#212121] transition-all hover:translate-y-[1px] hover:shadow-[1px_1px_0_#212121] active:translate-x-[1px] active:translate-y-[2px] active:shadow-none"
+				class="inline-flex items-center gap-1.5 border-2 border-border bg-surface px-3.5 py-1.5 text-sm font-bold text-foreground rounded-theme shadow-theme-sm font-display transition-all hover:translate-y-[1px] active:translate-x-[1px] active:translate-y-[2px] active:shadow-none"
 			>
 				← Back to Home
 			</a>
@@ -62,40 +63,45 @@
 		</div>
 
 		<!-- Hero Card -->
-		<div class="mb-8 border-3 border-[#212121] bg-white p-6 shadow-[4px_4px_0_#212121]">
-			<div class="mb-2 inline-block border border-[#212121] bg-[#FFD600] px-2.5 py-0.5 text-xs font-black uppercase tracking-wider text-[#212121]">
+		<div class="mb-6 border-3 border-border bg-surface p-6 rounded-theme shadow-theme-md">
+			<div class="mb-2 inline-block border border-border bg-secondary px-2.5 py-0.5 text-xs font-black uppercase tracking-wider text-secondary-foreground rounded-theme">
 				Lab &amp; Prototype Directory
 			</div>
-			<h1 class="text-3xl sm:text-4xl font-black text-[#212121]">
+			<h1 class="text-3xl sm:text-4xl font-black text-foreground font-display">
 				Available Test Routes
 			</h1>
-			<p class="mt-2 text-sm text-[#757575] leading-relaxed">
+			<p class="mt-2 text-sm text-muted-foreground leading-relaxed">
 				Directory of internal prototype, layout, and component test routes for the We Don't Need Nukes platform.
 			</p>
+		</div>
+
+		<!-- Global Theme Switcher Panel -->
+		<div class="mb-8 border-2 border-border bg-surface p-6 rounded-theme shadow-theme-sm">
+			<ThemeSwitcher />
 		</div>
 
 		<!-- Test Suites Listing -->
 		<div class="space-y-6">
 			{#each testSuites as suite}
-				<div class="border-2 border-[#212121] bg-white p-6 shadow-[3px_3px_0_#212121]">
-					<div class="flex flex-wrap items-center justify-between gap-2 border-b-2 border-[#212121] pb-3 mb-4">
+				<div class="border-2 border-border bg-surface p-6 rounded-theme shadow-theme-sm">
+					<div class="flex flex-wrap items-center justify-between gap-2 border-b-2 border-border pb-3 mb-4">
 						<div>
-							<span class="inline-block border border-[#212121] bg-[#E53935] px-2 py-0.5 text-[11px] font-black uppercase tracking-wider text-white">
+							<span class="inline-block border border-border bg-primary px-2 py-0.5 text-[11px] font-black uppercase tracking-wider text-primary-foreground rounded-theme">
 								{suite.badge}
 							</span>
-							<h2 class="mt-1 text-xl font-black text-[#212121]">{suite.title}</h2>
+							<h2 class="mt-1 text-xl font-black text-foreground font-display">{suite.title}</h2>
 						</div>
 
 						<a
 							href={suite.path}
-							class="inline-flex items-center gap-1.5 border-2 border-[#212121] bg-[#FFD600] px-3.5 py-1.5 text-xs font-black uppercase tracking-wider text-[#212121] shadow-[2px_2px_0_#212121] transition-all hover:translate-y-[1px] hover:shadow-[1px_1px_0_#212121] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
+							class="inline-flex items-center gap-1.5 border-2 border-border bg-secondary px-3.5 py-1.5 text-xs font-black uppercase tracking-wider text-secondary-foreground rounded-theme shadow-theme-sm font-display transition-all hover:translate-y-[1px] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
 						>
 							<span>Open Suite</span>
 							<span>→</span>
 						</a>
 					</div>
 
-					<p class="mb-4 text-xs text-[#757575] leading-relaxed">
+					<p class="mb-4 text-xs text-muted-foreground leading-relaxed">
 						{suite.description}
 					</p>
 
@@ -104,18 +110,18 @@
 						{#each suite.pages as page}
 							<a
 								href={page.path}
-								class="group flex flex-col sm:flex-row sm:items-center justify-between gap-2 border border-[#212121] bg-[#FFFDE7]/50 p-3 transition-all hover:border-[#212121] hover:bg-white hover:shadow-[2px_2px_0_#212121]"
+								class="group flex flex-col sm:flex-row sm:items-center justify-between gap-2 border border-border bg-background/50 p-3 rounded-theme transition-all hover:border-border hover:bg-surface hover:shadow-theme-sm"
 							>
 								<div class="flex-1">
 									<div class="flex items-center gap-2">
-										<span class="font-bold text-sm text-[#212121] group-hover:text-[#E53935]">
+										<span class="font-bold text-sm text-foreground group-hover:text-primary transition-colors">
 											{page.name}
 										</span>
-										<code class="text-[10px] text-zinc-500 font-mono">{page.path}</code>
+										<code class="text-[10px] text-muted-foreground font-mono">{page.path}</code>
 									</div>
-									<p class="mt-0.5 text-xs text-[#757575]">{page.desc}</p>
+									<p class="mt-0.5 text-xs text-muted-foreground">{page.desc}</p>
 								</div>
-								<span class="text-sm font-bold text-[#212121] group-hover:translate-x-1 transition-transform self-end sm:self-center">
+								<span class="text-sm font-bold text-foreground group-hover:translate-x-1 transition-transform self-end sm:self-center">
 									→
 								</span>
 							</a>

@@ -1,4 +1,4 @@
-import { redirect, fail } from '@sveltejs/kit';
+import { redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types.js';
 import { getDb } from '$lib/server/db/client.js';
 import { campaign, pledge, user } from '$lib/server/db/schema.js';
@@ -6,6 +6,9 @@ import { and, eq } from 'drizzle-orm';
 
 const CAMPAIGN_SLUG = 'nukes';
 const CAMPAIGN_ID = 'camp_nukes_001';
+
+type CommitmentLevel = 'passive' | 'active' | 'direct';
+const VALID_LEVELS: CommitmentLevel[] = ['passive', 'active', 'direct'];
 
 async function ensureCampaign(db: ReturnType<typeof getDb>) {
 	let [campaignRecord] = await db
@@ -66,6 +69,7 @@ export const load: PageServerLoad = async ({ locals, url, cookies, platform }) =
 
 	let existingName = locals.user?.name ?? '';
 	let existingFeedback = '';
+	let existingCommitmentLevels: CommitmentLevel[] = ['passive'];
 
 	if (platform?.env?.DB) {
 		const db = getDb(platform.env);
@@ -88,14 +92,28 @@ export const load: PageServerLoad = async ({ locals, url, cookies, platform }) =
 		}
 
 		if (existingPledge?.responses && typeof existingPledge.responses === 'object') {
-			const responses = existingPledge.responses as { name?: string; feedback?: string };
+			const responses = existingPledge.responses as {
+				name?: string;
+				feedback?: string;
+				commitmentLevels?: CommitmentLevel[];
+			};
 			if (responses.name) existingName = responses.name;
 			if (responses.feedback) existingFeedback = responses.feedback;
+			if (Array.isArray(responses.commitmentLevels) && responses.commitmentLevels.length > 0) {
+				existingCommitmentLevels = responses.commitmentLevels.filter((lvl): lvl is CommitmentLevel =>
+					VALID_LEVELS.includes(lvl)
+				);
+			} else if (existingPledge.commitmentLevel) {
+				existingCommitmentLevels = [existingPledge.commitmentLevel];
+			}
+		} else if (existingPledge?.commitmentLevel) {
+			existingCommitmentLevels = [existingPledge.commitmentLevel];
 		}
 	}
 
 	return {
 		answer,
+		commitmentLevels: existingCommitmentLevels,
 		name: existingName,
 		feedback: existingFeedback,
 		isAnon: !userId
@@ -106,6 +124,24 @@ export const actions: Actions = {
 	default: async ({ request, locals, url, cookies, platform }) => {
 		const answer = (url.searchParams.get('answer') === 'yes' ? 'yes' : 'no') as 'no' | 'yes';
 		const formData = await request.formData();
+
+		const rawCommitments = formData.getAll('commitmentLevels').map(String);
+		const commitmentLevels = rawCommitments.filter((lvl): lvl is CommitmentLevel =>
+			VALID_LEVELS.includes(lvl as CommitmentLevel)
+		);
+
+		// Fallback to ['passive'] if nothing submitted
+		const finalCommitmentLevels: CommitmentLevel[] =
+			commitmentLevels.length > 0 ? commitmentLevels : ['passive'];
+
+		// Highest tier for the single-value commitmentLevel DB column
+		const primaryCommitmentLevel: CommitmentLevel =
+			finalCommitmentLevels.includes('direct')
+				? 'direct'
+				: finalCommitmentLevels.includes('active')
+				? 'active'
+				: 'passive';
+
 		const name = formData.get('name')?.toString().trim() ?? '';
 		const feedback = formData.get('feedback')?.toString().trim() ?? '';
 
@@ -127,7 +163,8 @@ export const actions: Actions = {
 
 			const responsesData = {
 				name,
-				feedback
+				feedback,
+				commitmentLevels: finalCommitmentLevels
 			};
 
 			if (userId) {
@@ -142,6 +179,7 @@ export const actions: Actions = {
 						.update(pledge)
 						.set({
 							choice: answer,
+							commitmentLevel: primaryCommitmentLevel,
 							responses: responsesData,
 							completed: true
 						})
@@ -152,6 +190,7 @@ export const actions: Actions = {
 						userId,
 						choice: answer,
 						campaignId: campaignRecord.id,
+						commitmentLevel: primaryCommitmentLevel,
 						responses: responsesData,
 						completed: true,
 						createdAt: new Date()
@@ -176,6 +215,7 @@ export const actions: Actions = {
 						.update(pledge)
 						.set({
 							choice: answer,
+							commitmentLevel: primaryCommitmentLevel,
 							responses: responsesData,
 							completed: true
 						})
@@ -186,6 +226,7 @@ export const actions: Actions = {
 						anonId,
 						choice: answer,
 						campaignId: campaignRecord.id,
+						commitmentLevel: primaryCommitmentLevel,
 						responses: responsesData,
 						completed: true,
 						createdAt: new Date()

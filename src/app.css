@@ -1,27 +1,157 @@
 @import "tailwindcss";
 
-@theme {
-	--color-primary: #e53935;
-	--color-secondary: #ffd600;
-	--color-cream: #fffde7;
-	--color-surface: #ffffff;
-	--color-dark: #212121;
-	--color-muted: #757575;
-	--color-success: #43a047;
-	--font-display: "Poppins", "Palatino", "Palatino Linotype", "Book Antiqua", Georgia, serif;
-	--font-body: "Poppins", "Palatino", "Palatino Linotype", "Book Antiqua", Georgia, sans-serif;
-}
-
 @layer base {
 	:root {
 		color-scheme: light;
+		--background: #fffde7;
+		--foreground: #212121;
+		--surface: #ffffff;
+		--surface-foreground: #212121;
+		--primary: #e53935;
+		--primary-foreground: #fffde7;
+		--primary-shadow: #b71c1c;
+		--secondary: #ffd600;
+		--secondary-foreground: #212121;
+		--secondary-shadow: #c79a00;
+		--muted: #757575;
+		--muted-foreground: #616161;
+		--border: #212121;
+		--success: #43a047;
+		--success-foreground: #ffffff;
+		--radius: 0px;
+		--shadow-sm: 2px 2px 0 var(--border);
+		--shadow-md: 4px 4px 0 var(--border);
+		--shadow-lg: 6px 6px 0 var(--border);
+		--shadow-primary: 4px 4px 0 var(--primary-shadow);
+		--shadow-secondary: 4px 4px 0 var(--secondary-shadow);
+		--font-display: "Poppins", sans-serif;
+		--font-body: "Poppins", sans-serif;
+	}
+
+	[data-theme="game"] {
+		--background: #fffde7;
+		--foreground: #212121;
+		--surface: #ffffff;
+		--surface-foreground: #212121;
+		--primary: #e53935;
+		--primary-foreground: #ffffff;
+		--primary-shadow: #b71c1c;
+		--secondary: #ffd600;
+		--secondary-foreground: #212121;
+		--secondary-shadow: #c79a00;
+		--muted: #757575;
+		--border: #212121;
+		--success: #43a047;
+		--radius: 16px;
+		--shadow-sm: 0 2px 0 var(--border);
+		--shadow-md: 0 4px 0 var(--border);
+		--shadow-lg: 0 6px 0 var(--border);
+		--shadow-primary: 0 4px 0 var(--primary-shadow);
+		--shadow-secondary: 0 4px 0 var(--secondary-shadow);
+		--font-display: "Fredoka", "Nunito", sans-serif;
+		--font-body: "Nunito", sans-serif;
+	}
+
+	[data-theme="compact"] {
+		--radius: 0px;
+		--shadow-sm: 1.5px 1.5px 0 var(--border);
+		--shadow-md: 2px 2px 0 var(--border);
+		--shadow-lg: 3px 3px 0 var(--border);
+		--shadow-primary: 2px 2px 0 var(--primary-shadow);
+		--shadow-secondary: 2px 2px 0 var(--secondary-shadow);
+		--font-display: "Poppins", sans-serif;
+		--font-body: "Poppins", sans-serif;
+	}
+
+	[data-theme="minimal"] {
+		--background: #fcfbf7;
+		--foreground: #1e1e1e;
+		--surface: #ffffff;
+		--surface-foreground: #1e1e1e;
+		--primary: #d32f2f;
+		--primary-foreground: #ffffff;
+		--primary-shadow: transparent;
+		--secondary: #fbc02d;
+		--secondary-foreground: #1e1e1e;
+		--secondary-shadow: transparent;
+		--muted: #71717a;
+		--border: #27272a;
+		--radius: 8px;
+		--shadow-sm: 0 0 #0000;
+		--shadow-md: 0 0 #0000;
+		--shadow-lg: 0 0 #0000;
+		--shadow-primary: 0 0 #0000;
+		--shadow-secondary: 0 0 #0000;
+		--font-display: "Poppins", sans-serif;
+		--font-body: "Poppins", sans-serif;
+	}
+
+	[data-theme="dark"] {
+		color-scheme: dark;
+		--background: #141416;
+		--foreground: #f4f4f5;
+		--surface: #222227;
+		--surface-foreground: #f4f4f5;
+		--primary: #ef4444;
+		--primary-foreground: #ffffff;
+		--primary-shadow: #7f1d1d;
+		--secondary: #eab308;
+		--secondary-foreground: #141416;
+		--secondary-shadow: #713f12;
+		--muted: #a1a1aa;
+		--border: #e4e4e7;
+		--success: #22c55e;
+		--radius: 4px;
+		--shadow-sm: 2px 2px 0 var(--border);
+		--shadow-md: 4px 4px 0 var(--border);
+		--shadow-lg: 6px 6px 0 var(--border);
+		--shadow-primary: 4px 4px 0 var(--primary-shadow);
+		--shadow-secondary: 4px 4px 0 var(--secondary-shadow);
+		--font-display: "Poppins", sans-serif;
+		--font-body: "Poppins", sans-serif;
 	}
 
 	html,
 	body {
 		@apply h-full;
-		background-color: #fffde7;
-		color: #212121;
+		background-color: var(--background);
+		color: var(--foreground);
 		font-family: var(--font-body);
+		transition: background-color 0.15s ease, color 0.15s ease;
 	}
+}
+
+@theme inline {
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--color-surface: var(--surface);
+	--color-surface-foreground: var(--surface-foreground);
+	--color-primary: var(--primary);
+	--color-primary-foreground: var(--primary-foreground);
+	--color-secondary: var(--secondary);
+	--color-secondary-foreground: var(--secondary-foreground);
+	--color-muted: var(--muted);
+	--color-muted-foreground: var(--muted-foreground);
+	--color-border: var(--border);
+	--color-success: var(--success);
+	--color-success-foreground: var(--success-foreground);
+
+	/* Aliases for backwards-compatibility with existing styles */
+	--color-cream: var(--background);
+	--color-dark: var(--foreground);
+
+	--font-display: var(--font-display);
+	--font-body: var(--font-body);
+
+	--radius-theme-none: 0px;
+	--radius-theme-sm: calc(var(--radius) * 0.5);
+	--radius-theme: var(--radius);
+	--radius-theme-lg: calc(var(--radius) * 1.5);
+	--radius-theme-full: 9999px;
+
+	--shadow-theme-sm: var(--shadow-sm);
+	--shadow-theme-md: var(--shadow-md);
+	--shadow-theme-lg: var(--shadow-lg);
+	--shadow-theme-primary: var(--shadow-primary);
+	--shadow-theme-secondary: var(--shadow-secondary);
 }

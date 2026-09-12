@@ -1,65 +1,71 @@
 <script lang="ts">
 	import FundraiserButton from '$lib/components/FundraiserButton.svelte';
 	import MenuButton from '$lib/components/MenuButton.svelte';
+	import ThemeSwitcher from '$lib/components/ThemeSwitcher.svelte';
 </script>
 
 <svelte:head>
 	<title>UI Forms Style Test Suite · We Don't Need Nukes</title>
 </svelte:head>
 
-<main class="mx-auto max-w-4xl px-4 py-8">
+<main class="mx-auto max-w-4xl px-4 py-8 font-body">
 	<!-- Hero Header -->
-	<div class="mb-8 border-3 border-[#212121] bg-white p-6 shadow-[4px_4px_0_#212121]">
-		<div class="mb-2 inline-block border border-[#212121] bg-[#FFD600] px-2.5 py-0.5 text-xs font-black uppercase tracking-wider text-[#212121]">
+	<div class="mb-6 border-3 border-border bg-surface p-6 rounded-theme shadow-theme-md">
+		<div class="mb-2 inline-block border border-border bg-secondary px-2.5 py-0.5 text-xs font-black uppercase tracking-wider text-secondary-foreground rounded-theme">
 			Design Experiments
 		</div>
-		<h1 class="text-3xl sm:text-4xl font-black text-[#212121]">
+		<h1 class="text-3xl sm:text-4xl font-black text-foreground font-display">
 			Results / Form Page UI Styles
 		</h1>
-		<p class="mt-2 text-sm text-[#757575] leading-relaxed">
-			Addressing current design issues: <strong>excessive empty whitespace</strong>, <strong>oversized nested padding</strong> (e.g. nested p-8 and p-5), and <strong>heavy drop-shadow stacking</strong>.
-			Below are different design treatments using the Results &amp; Feedback Form page as the sample benchmark.
+		<p class="mt-2 text-sm text-muted-foreground leading-relaxed">
+			Addressing design treatments: whitespace density, border radiuses, and shadow styles.
+			Test different system themes below to see them live across all application views.
 		</p>
 
 		<!-- Quick Directory of Routes -->
-		<div class="mt-4 border-t-2 border-[#212121]/20 pt-4">
-			<div class="mb-2 text-xs font-black uppercase tracking-wider text-[#212121]">
-				Quick Route Listing:
+		<div class="mt-4 border-t-2 border-border/20 pt-4">
+			<div class="mb-2 text-xs font-black uppercase tracking-wider text-foreground font-display">
+				Style Benchmark Routes:
 			</div>
 			<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
 				<a
 					href="/tests/ui-forms/compact"
-					class="flex items-center justify-between border-2 border-[#212121] bg-[#FFFDE7] px-3 py-2 font-bold text-[#212121] shadow-[1.5px_1.5px_0_#212121] hover:bg-[#FFD600]"
+					class="flex items-center justify-between border-2 border-border bg-background px-3 py-2 font-bold text-foreground rounded-theme shadow-theme-sm hover:bg-secondary hover:text-secondary-foreground"
 				>
 					<span>1. Compact &amp; Tight</span>
-					<code class="text-[10px] text-zinc-600 font-mono">/compact →</code>
+					<code class="text-[10px] text-muted-foreground font-mono">/compact →</code>
 				</a>
 
 				<a
 					href="/tests/ui-forms/rounded-game"
-					class="flex items-center justify-between border-2 border-[#212121] bg-[#FFFDE7] px-3 py-2 font-bold text-[#212121] shadow-[1.5px_1.5px_0_#212121] hover:bg-[#FFD600]"
+					class="flex items-center justify-between border-2 border-border bg-background px-3 py-2 font-bold text-foreground rounded-theme shadow-theme-sm hover:bg-secondary hover:text-secondary-foreground"
 				>
 					<span>2. Rounded 2D Cartoon</span>
-					<code class="text-[10px] text-zinc-600 font-mono">/rounded-game →</code>
+					<code class="text-[10px] text-muted-foreground font-mono">/rounded-game →</code>
 				</a>
 
 				<a
 					href="/tests/ui-forms/flat-minimal"
-					class="flex items-center justify-between border-2 border-[#212121] bg-[#FFFDE7] px-3 py-2 font-bold text-[#212121] shadow-[1.5px_1.5px_0_#212121] hover:bg-[#FFD600]"
+					class="flex items-center justify-between border-2 border-border bg-background px-3 py-2 font-bold text-foreground rounded-theme shadow-theme-sm hover:bg-secondary hover:text-secondary-foreground"
 				>
 					<span>3. Clean Flat Minimal</span>
-					<code class="text-[10px] text-zinc-600 font-mono">/flat-minimal →</code>
+					<code class="text-[10px] text-muted-foreground font-mono">/flat-minimal →</code>
 				</a>
 
 				<a
 					href="/tests/ui-forms/inline-card"
-					class="flex items-center justify-between border-2 border-[#212121] bg-[#FFFDE7] px-3 py-2 font-bold text-[#212121] shadow-[1.5px_1.5px_0_#212121] hover:bg-[#FFD600]"
+					class="flex items-center justify-between border-2 border-border bg-background px-3 py-2 font-bold text-foreground rounded-theme shadow-theme-sm hover:bg-secondary hover:text-secondary-foreground"
 				>
 					<span>4. Unified Single-Card</span>
-					<code class="text-[10px] text-zinc-600 font-mono">/inline-card →</code>
+					<code class="text-[10px] text-muted-foreground font-mono">/inline-card →</code>
 				</a>
 			</div>
 		</div>
+	</div>
+
+	<!-- Live Theme Switcher Showcase -->
+	<div class="mb-8 border-2 border-border bg-surface p-6 rounded-theme shadow-theme-sm">
+		<ThemeSwitcher />
 	</div>
 
 	<!-- Fundraiser Button Variations Showcase -->

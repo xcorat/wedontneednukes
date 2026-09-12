@@ -45,7 +45,7 @@
 		{href}
 		{title}
 		aria-label={ariaLabel}
-		class="inline-flex h-10 w-10 shrink-0 items-center justify-center border-2 border-[#212121] bg-white text-[#212121] shadow-[2px_2px_0_#212121] transition-all hover:translate-y-[1px] hover:shadow-[1px_1px_0_#212121] active:translate-x-[1px] active:translate-y-[2px] active:shadow-none cursor-pointer {className}"
+		class="inline-flex h-10 w-10 shrink-0 items-center justify-center border-2 border-border bg-surface text-foreground shadow-theme-sm rounded-theme transition-all hover:translate-y-[1px] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none cursor-pointer {className}"
 	>
 		<span class="text-base select-none leading-none" role="img" aria-hidden="true">💛</span>
 	</a>
@@ -55,7 +55,7 @@
 		{href}
 		{title}
 		aria-label={ariaLabel}
-		class="inline-flex items-center gap-1.5 border-2 border-[#212121] bg-white px-3.5 py-1.5 text-sm font-bold text-[#212121] font-['Fredoka',sans-serif] shadow-[2px_2px_0_#212121] transition-all hover:translate-y-[1px] hover:shadow-[1px_1px_0_#212121] active:translate-x-[1px] active:translate-y-[2px] active:shadow-none cursor-pointer {className}"
+		class="inline-flex items-center gap-1.5 border-2 border-border bg-surface px-3.5 py-1.5 text-sm font-bold text-foreground font-display shadow-theme-sm rounded-theme transition-all hover:translate-y-[1px] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none cursor-pointer {className}"
 	>
 		<span class="text-base select-none leading-none" role="img" aria-hidden="true">💛</span>
 		<span class="text-[15px] tracking-wide">{text}</span>
@@ -66,7 +66,7 @@
 		{href}
 		{title}
 		aria-label={ariaLabel}
-		class="inline-flex items-center gap-1.5 border-2 border-[#212121] bg-white px-3.5 py-1.5 text-sm text-[#212121] shadow-[2px_2px_0_#212121] transition-all hover:translate-y-[1px] hover:shadow-[1px_1px_0_#212121] active:translate-x-[1px] active:translate-y-[2px] active:shadow-none cursor-pointer {className}"
+		class="inline-flex items-center gap-1.5 border-2 border-border bg-surface px-3.5 py-1.5 text-sm text-foreground shadow-theme-sm rounded-theme transition-all hover:translate-y-[1px] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none cursor-pointer {className}"
 	>
 		<span class="text-base select-none leading-none" role="img" aria-hidden="true">💛</span>
 		<span class="font-normal tracking-wide">{unicodeText}</span>
@@ -77,7 +77,7 @@
 		{href}
 		{title}
 		aria-label={ariaLabel}
-		class="inline-flex items-center gap-1.5 rounded-full border-2 border-[#212121] bg-[#FFD600] px-4 py-1.5 text-xs font-black uppercase tracking-wider text-[#212121] font-['Fredoka',sans-serif] shadow-[0_3px_0_#212121] transition-all hover:translate-y-[1px] hover:shadow-[0_2px_0_#212121] active:translate-y-[2px] active:shadow-none cursor-pointer {className}"
+		class="inline-flex items-center gap-1.5 rounded-full border-2 border-border bg-secondary px-4 py-1.5 text-xs font-black uppercase tracking-wider text-secondary-foreground font-display shadow-theme-sm transition-all hover:translate-y-[1px] active:translate-y-[1px] active:shadow-none cursor-pointer {className}"
 	>
 		<span class="text-sm select-none leading-none" role="img" aria-hidden="true">💛</span>
 		<span>{text}</span>
@@ -88,7 +88,7 @@
 		{href}
 		{title}
 		aria-label={ariaLabel}
-		class="inline-flex items-center gap-1 border-2 border-[#212121] bg-white px-2.5 py-1 text-xs font-bold text-[#212121] font-['Fredoka',sans-serif] shadow-[1.5px_1.5px_0_#212121] transition-all hover:translate-y-[1px] hover:shadow-none active:translate-x-[1px] active:translate-y-[1px] cursor-pointer {className}"
+		class="inline-flex items-center gap-1 border-2 border-border bg-surface px-2.5 py-1 text-xs font-bold text-foreground font-display shadow-theme-sm rounded-theme transition-all hover:translate-y-[1px] active:translate-x-[1px] active:translate-y-[1px] cursor-pointer {className}"
 	>
 		<span class="text-xs select-none leading-none" role="img" aria-hidden="true">💛</span>
 		<span>{text}</span>

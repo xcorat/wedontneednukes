@@ -4,9 +4,9 @@ import type { PageServerLoad } from './$types.js';
 export const load: PageServerLoad = ({ locals, url }) => {
 	const answer = url.searchParams.get('answer') ?? 'no';
 
-	// Already authenticated → skip auth gate and go directly to user form
+	// Already authenticated → skip auth gate and go directly to pledge level
 	if (locals.user) {
-		redirect(302, `/form?answer=${answer}`);
+		redirect(302, `/pledge?answer=${answer}`);
 	}
 
 	return {
