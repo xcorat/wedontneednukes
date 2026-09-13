@@ -1,32 +1,50 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import type { QuestionCardViewModel } from '$lib/types/qa-ui';
+	import type { AnswerChoice } from '$lib/types/qa';
 
 	interface Props {
+		model?: QuestionCardViewModel;
 		variant?: 'hero' | 'card' | 'compact';
 		headlineTop?: string;
 		headlineAccent?: string;
 		whyHref?: string;
-		selectedChoice?: 'agree' | 'other' | null;
-		onChoice?: (choice: 'agree' | 'other') => void;
+		selectedChoice?: string | null;
+		onChoice?: (choiceId: string, choiceValue: string) => void;
 		class?: string;
 	}
 
 	let {
-		variant = 'hero',
-		headlineTop = "We don't need",
-		headlineAccent = 'Nukes !',
-		whyHref = '/why',
+		model,
+		variant = model?.ui.layout === 'card' ? 'card' : 'hero',
+		headlineTop = model?.ui.headlineSplit?.prefix ?? "We don't need",
+		headlineAccent = model?.ui.headlineSplit?.highlight ?? 'Nukes !',
+		whyHref = model?.question.faq?.[0]?.link ?? '/why',
 		selectedChoice = null,
 		onChoice,
 		class: className = ''
 	}: Props = $props();
 
-	function handleChoiceClick(choice: 'agree' | 'other') {
+	// Resolved choices from model or default static choices
+	const choices: Array<{ id: string; value: string; label: string; variant: 'primary' | 'secondary' | 'outline' }> = $derived(
+		model && 'choices' in model.question.ans
+			? model.question.ans.choices.map((c) => ({
+					id: c.id,
+					value: c.value,
+					label: c.label,
+					variant: (model?.ui.choiceStyles?.[c.value]?.variant as any) ?? 'primary'
+				}))
+			: [
+					{ id: 'opt_agree', value: 'agree', label: 'Agree', variant: 'primary' },
+					{ id: 'opt_other', value: 'other', label: 'We do | Not sure', variant: 'secondary' }
+				]
+	);
+
+	function handleChoiceClick(choice: { id: string; value: string }) {
 		if (onChoice) {
-			onChoice(choice);
+			onChoice(choice.id, choice.value);
 		} else {
-			const queryAnswer = choice === 'agree' ? 'no' : 'yes';
-			goto(`/auth?answer=${queryAnswer}`);
+			goto(`/auth?choiceId=${choice.id}&choiceValue=${choice.value}`);
 		}
 	}
 </script>
@@ -57,27 +75,17 @@
 			</section>
 		{/if}
 
-		<!-- Agree button: Primary red -->
-		<section class="flex h-[24%] sm:h-[24%] w-full items-center justify-center px-4 sm:px-8 py-1.5 shrink-0">
-			<button
-				type="button"
-				onclick={() => handleChoiceClick('agree')}
-				class="flex h-full w-full max-w-2xl items-center justify-center border-4 border-border bg-primary px-6 text-3xl sm:text-4xl md:text-5xl font-black tracking-wide text-primary-foreground rounded-theme shadow-theme-primary font-display transition-all hover:translate-y-[1px] active:translate-x-[2px] active:translate-y-[4px] active:shadow-none cursor-pointer {selectedChoice === 'agree' ? 'ring-4 ring-foreground' : ''}"
-			>
-				Agree
-			</button>
-		</section>
-
-		<!-- We do | Not sure button: Secondary yellow -->
-		<section class="flex h-[24%] sm:h-[24%] w-full items-center justify-center px-4 sm:px-8 pt-1.5 pb-2 sm:pb-3 shrink-0">
-			<button
-				type="button"
-				onclick={() => handleChoiceClick('other')}
-				class="flex h-full w-full max-w-2xl items-center justify-center border-4 border-border bg-secondary px-6 text-3xl sm:text-4xl md:text-5xl font-black tracking-wide text-secondary-foreground rounded-theme shadow-theme-secondary font-display transition-all hover:translate-y-[1px] active:translate-x-[2px] active:translate-y-[4px] active:shadow-none cursor-pointer {selectedChoice === 'other' ? 'ring-4 ring-foreground' : ''}"
-			>
-				We do | Not sure
-			</button>
-		</section>
+		{#each choices as choice (choice.id)}
+			<section class="flex h-[24%] sm:h-[24%] w-full items-center justify-center px-4 sm:px-8 py-1.5 shrink-0">
+				<button
+					type="button"
+					onclick={() => handleChoiceClick(choice)}
+					class="flex h-full w-full max-w-2xl items-center justify-center border-4 border-border {choice.variant === 'secondary' ? 'bg-secondary text-secondary-foreground shadow-theme-secondary' : 'bg-primary text-primary-foreground shadow-theme-primary'} px-6 text-3xl sm:text-4xl md:text-5xl font-black tracking-wide rounded-theme font-display transition-all hover:translate-y-[1px] active:translate-x-[2px] active:translate-y-[4px] active:shadow-none cursor-pointer {selectedChoice === choice.id || selectedChoice === choice.value ? 'ring-4 ring-foreground' : ''}"
+				>
+					{choice.label}
+				</button>
+			</section>
+		{/each}
 	</div>
 {:else}
 	<!-- Card / Compact variant (for embedding in onboarding, cards, or test suites) -->
@@ -102,21 +110,15 @@
 		</div>
 
 		<div class="flex flex-col gap-3 mt-5">
-			<button
-				type="button"
-				onclick={() => handleChoiceClick('agree')}
-				class="w-full border-2 border-border bg-primary py-3.5 px-4 text-xl sm:text-2xl font-black text-primary-foreground rounded-theme shadow-theme-primary font-display transition-all hover:translate-y-[1px] active:translate-x-[1px] active:translate-y-[2px] active:shadow-none cursor-pointer {selectedChoice === 'agree' ? 'ring-2 ring-foreground' : ''}"
-			>
-				Agree
-			</button>
-
-			<button
-				type="button"
-				onclick={() => handleChoiceClick('other')}
-				class="w-full border-2 border-border bg-secondary py-3.5 px-4 text-xl sm:text-2xl font-black text-secondary-foreground rounded-theme shadow-theme-secondary font-display transition-all hover:translate-y-[1px] active:translate-x-[1px] active:translate-y-[2px] active:shadow-none cursor-pointer {selectedChoice === 'other' ? 'ring-2 ring-foreground' : ''}"
-			>
-				We do | Not sure
-			</button>
+			{#each choices as choice (choice.id)}
+				<button
+					type="button"
+					onclick={() => handleChoiceClick(choice)}
+					class="w-full border-2 border-border {choice.variant === 'secondary' ? 'bg-secondary text-secondary-foreground shadow-theme-secondary' : 'bg-primary text-primary-foreground shadow-theme-primary'} py-3.5 px-4 text-xl sm:text-2xl font-black rounded-theme font-display transition-all hover:translate-y-[1px] active:translate-x-[1px] active:translate-y-[2px] active:shadow-none cursor-pointer {selectedChoice === choice.id || selectedChoice === choice.value ? 'ring-2 ring-foreground' : ''}"
+				>
+					{choice.label}
+				</button>
+			{/each}
 		</div>
 	</div>
 {/if}

@@ -22,12 +22,10 @@ export const load: PageServerLoad = async ({ locals, url, cookies, platform }) =
 	let anonId = cookies.get('anon_id');
 	const userId = locals.user?.id;
 
-	// If not authenticated and not marked anonymous, send to auth screen
 	if (!userId && !anonId && !isAnonParam) {
-		redirect(302, `/auth?answer=${answer}`);
+		redirect(302, `/onboarding/join?answer=${answer}`);
 	}
 
-	// If anonymous, ensure anon_id cookie is initialized
 	if (!userId && !anonId) {
 		anonId = getOrCreateAnonId(cookies);
 	}
@@ -41,11 +39,9 @@ export const load: PageServerLoad = async ({ locals, url, cookies, platform }) =
 		const hero = await createHeroQuestion();
 		const commitmentQ = await createCommitmentQuestion();
 
-		// Ensure questions are seeded in SQLite
 		await insertQuestion(db, hero);
 		await insertQuestion(db, commitmentQ);
 
-		// Record the hero response if specified in query
 		const heroChoiceId = answer === 'no' ? hero.ans.choices[0].id : hero.ans.choices[1].id;
 		await recordUserResponse(db, {
 			questionId: hero.id,
@@ -55,7 +51,6 @@ export const load: PageServerLoad = async ({ locals, url, cookies, platform }) =
 			selectedChoiceIds: [heroChoiceId]
 		});
 
-		// Check for existing commitment response
 		const existingResp = await getUserResponse(db, {
 			questionId: commitmentQ.id,
 			userId,
@@ -117,12 +112,10 @@ export const actions: Actions = {
 			await insertQuestion(db, hero);
 			await insertQuestion(db, commitmentQ);
 
-			// Map selected commitment values to their choice IDs
 			const selectedChoiceIds = commitmentQ.ans.choices
 				.filter((c) => finalCommitmentLevels.includes(c.value as CommitmentLevel))
 				.map((c) => c.id);
 
-			// Record commitment question response
 			await recordUserResponse(db, {
 				questionId: commitmentQ.id,
 				contentSha256: commitmentQ.contentSha256,
@@ -140,7 +133,10 @@ export const actions: Actions = {
 			}
 		}
 
-		const isAnon = !userId;
-		redirect(303, `/results?answer=${answer}${isAnon ? '&anon=1' : ''}`);
+		if (userId) {
+			redirect(303, '/dashboard');
+		} else {
+			redirect(303, `/results?answer=${answer}&anon=1`);
+		}
 	}
 };

@@ -1,14 +1,22 @@
 import type { PageServerLoad } from './$types.js';
 import { getDb } from '$lib/server/db/client.js';
-import { campaign, pledge } from '$lib/server/db/schema.js';
-import { and, count, eq } from 'drizzle-orm';
-
-const CAMPAIGN_SLUG = 'nukes';
-const CAMPAIGN_ID = 'camp_nukes_001';
+import { createHeroQuestion } from '$lib/fixtures/heroQuestion.js';
+import {
+	insertQuestion,
+	recordUserResponse,
+	getUserResponse,
+	getQuestionStats
+} from '$lib/server/qa/repository.js';
+import { getOrCreateAnonId } from '$lib/server/qa/auth-claiming.js';
 
 export const load: PageServerLoad = async ({ url, locals, platform, cookies }) => {
-	const answer = (url.searchParams.get('answer') === 'yes' ? 'yes' : 'no') as 'no' | 'yes';
-	const isAnon = url.searchParams.get('anon') === '1';
+	const answerParam = url.searchParams.get('answer'); // 'no' (Agree) or 'yes' (Other)
+	const userId = locals.user?.id;
+	let anonId = cookies.get('anon_id');
+
+	if (!userId && !anonId) {
+		anonId = getOrCreateAnonId(cookies);
+	}
 
 	let stats = {
 		totalVotes: 0,
@@ -18,120 +26,51 @@ export const load: PageServerLoad = async ({ url, locals, platform, cookies }) =
 		otherPercentage: 0
 	};
 
+	let userChoice: 'no' | 'yes' | null = null;
+
 	if (platform?.env?.DB) {
 		const db = getDb(platform.env);
+		const hero = await createHeroQuestion();
 
-		// 1. Ensure campaign exists
-		let [campaignRecord] = await db
-			.select()
-			.from(campaign)
-			.where(eq(campaign.slug, CAMPAIGN_SLUG))
-			.limit(1);
+		// Ensure hero question is seeded
+		await insertQuestion(db, hero);
 
-		if (!campaignRecord) {
-			await db
-				.insert(campaign)
-				.values({
-					id: CAMPAIGN_ID,
-					slug: CAMPAIGN_SLUG,
-					title: 'Nuclear Disarmament',
-					description: 'Campaign pledge',
-					isActive: true,
-					createdAt: new Date()
-				})
-				.onConflictDoNothing();
+		const agreeChoiceId = hero.ans.choices[0].id;
+		const otherChoiceId = hero.ans.choices[1].id;
 
-			campaignRecord = {
-				id: CAMPAIGN_ID,
-				slug: CAMPAIGN_SLUG,
-				title: 'Nuclear Disarmament',
-				description: 'Campaign pledge',
-				flowDefinition: null,
-				isActive: true,
-				createdAt: new Date()
-			};
+		// If an answer was passed via query parameter, record it
+		if (answerParam === 'no' || answerParam === 'yes') {
+			const selectedChoiceId = answerParam === 'no' ? agreeChoiceId : otherChoiceId;
+			await recordUserResponse(db, {
+				questionId: hero.id,
+				contentSha256: hero.contentSha256,
+				userId: userId ?? null,
+				anonId: anonId ?? null,
+				selectedChoiceIds: [selectedChoiceId]
+			});
 		}
 
-		// 2. Identify user / anonymous visitor
-		const userId = locals.user?.id;
-		let anonId: string | undefined = undefined;
+		// Retrieve user/anon's recorded response
+		const recordedResp = await getUserResponse(db, {
+			questionId: hero.id,
+			userId,
+			anonId
+		});
 
-		if (!userId) {
-			anonId = cookies.get('anon_id');
-			if (!anonId) {
-				anonId = crypto.randomUUID();
-				cookies.set('anon_id', anonId, {
-					path: '/',
-					maxAge: 60 * 60 * 24 * 365,
-					httpOnly: true,
-					sameSite: 'lax'
-				});
+		if (recordedResp) {
+			const choiceIds = (recordedResp.selectedChoiceIds as string[]) ?? [];
+			if (choiceIds.includes(agreeChoiceId)) {
+				userChoice = 'no';
+			} else if (choiceIds.includes(otherChoiceId)) {
+				userChoice = 'yes';
 			}
 		}
 
-		// 3. Record or update pledge in DB
-		if (userId) {
-			const [existingPledge] = await db
-				.select()
-				.from(pledge)
-				.where(and(eq(pledge.userId, userId), eq(pledge.campaignId, campaignRecord.id)))
-				.limit(1);
-
-			if (existingPledge) {
-				if (existingPledge.choice !== answer) {
-					await db
-						.update(pledge)
-						.set({ choice: answer })
-						.where(eq(pledge.id, existingPledge.id));
-				}
-			} else {
-				await db.insert(pledge).values({
-					id: crypto.randomUUID(),
-					userId,
-					choice: answer,
-					campaignId: campaignRecord.id,
-					createdAt: new Date()
-				});
-			}
-		} else if (anonId) {
-			const [existingPledge] = await db
-				.select()
-				.from(pledge)
-				.where(and(eq(pledge.anonId, anonId), eq(pledge.campaignId, campaignRecord.id)))
-				.limit(1);
-
-			if (existingPledge) {
-				if (existingPledge.choice !== answer) {
-					await db
-						.update(pledge)
-						.set({ choice: answer })
-						.where(eq(pledge.id, existingPledge.id));
-				}
-			} else {
-				await db.insert(pledge).values({
-					id: crypto.randomUUID(),
-					anonId,
-					choice: answer,
-					campaignId: campaignRecord.id,
-					createdAt: new Date()
-				});
-			}
-		}
-
-		// 4. Compute live community consensus numbers
-		const [agreeResult] = await db
-			.select({ value: count() })
-			.from(pledge)
-			.where(and(eq(pledge.campaignId, campaignRecord.id), eq(pledge.choice, 'no')));
-
-		const [otherResult] = await db
-			.select({ value: count() })
-			.from(pledge)
-			.where(and(eq(pledge.campaignId, campaignRecord.id), eq(pledge.choice, 'yes')));
-
-		const agreeCount = agreeResult?.value ?? 0;
-		const otherCount = otherResult?.value ?? 0;
-		const totalVotes = agreeCount + otherCount;
+		// Compute live community consensus numbers
+		const statsResult = await getQuestionStats(db, hero.id);
+		const agreeCount = statsResult.countsByChoiceId[agreeChoiceId] ?? 0;
+		const otherCount = statsResult.countsByChoiceId[otherChoiceId] ?? 0;
+		const totalVotes = statsResult.totalResponses;
 
 		const agreePercentage = totalVotes > 0 ? Math.round((agreeCount / totalVotes) * 100) : 0;
 		const otherPercentage = totalVotes > 0 ? 100 - agreePercentage : 0;
@@ -146,8 +85,8 @@ export const load: PageServerLoad = async ({ url, locals, platform, cookies }) =
 	}
 
 	return {
-		answer,
-		isAnon: isAnon || !locals.user,
-		stats
+		answer: userChoice ?? (answerParam === 'yes' ? 'yes' : 'no'),
+		stats,
+		isAnon: !userId
 	};
 };

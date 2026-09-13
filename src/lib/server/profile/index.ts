@@ -1,6 +1,9 @@
 import { and, eq } from 'drizzle-orm';
-import { campaign, pledge, user, userProfile, type UserProfile } from '$lib/server/db/schema.js';
+import { campaign, user, userProfile, type UserProfile } from '$lib/server/db/schema.js';
 import type { getDb } from '$lib/server/db/client.js';
+import { createHeroQuestion } from '$lib/fixtures/heroQuestion.js';
+import { createCommitmentQuestion } from '$lib/fixtures/commitmentQuestion.js';
+import { getUserResponse } from '$lib/server/qa/repository.js';
 
 export type DbClient = ReturnType<typeof getDb>;
 
@@ -236,43 +239,44 @@ export async function updateUserProfile(
  * Fetch all pledges submitted by a given user, including campaign details.
  */
 export async function getUserPledges(db: DbClient, userId: string): Promise<UserPledgeInfo[]> {
-	const records = await db
-		.select({
-			id: pledge.id,
-			campaignId: campaign.id,
-			campaignTitle: campaign.title,
-			campaignSlug: campaign.slug,
-			choice: pledge.choice,
-			commitmentLevel: pledge.commitmentLevel,
-			responses: pledge.responses,
-			createdAt: pledge.createdAt
-		})
-		.from(pledge)
-		.innerJoin(campaign, eq(pledge.campaignId, campaign.id))
-		.where(eq(pledge.userId, userId));
+	const hero = await createHeroQuestion();
+	const commitmentQ = await createCommitmentQuestion();
 
-	return records.map((r) => {
-		let commitmentLevels: string[] = [];
-		if (r.responses && typeof r.responses === 'object') {
-			const res = r.responses as { commitmentLevels?: string[] };
-			if (Array.isArray(res.commitmentLevels) && res.commitmentLevels.length > 0) {
-				commitmentLevels = res.commitmentLevels;
-			}
-		}
-		if (commitmentLevels.length === 0 && r.commitmentLevel) {
-			commitmentLevels = [r.commitmentLevel];
-		}
+	const [heroResp, commitmentResp] = await Promise.all([
+		getUserResponse(db, { questionId: hero.id, userId }),
+		getUserResponse(db, { questionId: commitmentQ.id, userId })
+	]);
 
-		return {
-			id: r.id,
-			campaignId: r.campaignId,
-			campaignTitle: r.campaignTitle,
-			campaignSlug: r.campaignSlug,
-			choice: r.choice as 'no' | 'yes',
-			commitmentLevels,
-			createdAt: r.createdAt
-		};
-	});
+	if (!heroResp && !commitmentResp) {
+		return [];
+	}
+
+	const [campaignRecord] = await db
+		.select()
+		.from(campaign)
+		.where(eq(campaign.slug, 'nukes'))
+		.limit(1);
+
+	const agreeChoiceId = hero.ans.choices[0].id;
+	const heroChoiceIds = (heroResp?.selectedChoiceIds as string[]) ?? [];
+	const isAgree = heroChoiceIds.includes(agreeChoiceId);
+
+	const commitmentChoiceIds = (commitmentResp?.selectedChoiceIds as string[]) ?? [];
+	const commitmentLevels = commitmentQ.ans.choices
+		.filter((c) => commitmentChoiceIds.includes(c.id))
+		.map((c) => c.value);
+
+	return [
+		{
+			id: commitmentResp?.id ?? heroResp?.id ?? 'pledge_default',
+			campaignId: campaignRecord?.id ?? 'camp_nukes_001',
+			campaignTitle: campaignRecord?.title ?? 'Nuclear Disarmament',
+			campaignSlug: campaignRecord?.slug ?? 'nukes',
+			choice: isAgree ? 'no' : 'yes',
+			commitmentLevels: commitmentLevels.length > 0 ? commitmentLevels : ['passive'],
+			createdAt: commitmentResp?.createdAt ?? heroResp?.createdAt ?? new Date()
+		}
+	];
 }
 
 /**
