@@ -24,7 +24,9 @@
 	// Environment variables can be configured here or in Cloudflare dashboard
 	"vars": {
     "BETTER_AUTH_URL": "https://wedontneednukes.org",
-    "FACEBOOK_APP_ID": "1059794736968380"
+    "FACEBOOK_APP_ID": "1059794736968380",
+    "TURNSTILE_SITE_KEY": "0x4AAAAAAEx_YB7mO4Q24vS9",
+    "TWITTER_CLIENT_ID": "ejN3VXFUTXlQYnRLQ3c1Q3lfZmg6MTpjaQ"
   }
 	// Edge Security & Rate Limiting:
 	// - Apply Cloudflare WAF rate limiting rules on the zone:
