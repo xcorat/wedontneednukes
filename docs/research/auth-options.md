@@ -1,4 +1,6 @@
-# [RESEARCH / EXPLORATION] Authentication Options
+# [RESEARCH / EXPLORATION] Authentication Options (Historical)
+
+> **Pointer.** The decision (Better Auth on D1 via per-request factory) is locked by **ADR-3** in [`.ai/context/decisions.md`](../../.ai/context/decisions.md). Implementation reference: [`.ai/context/tech-stack.md`](../../.ai/context/tech-stack.md). This file is retained for historical comparison only — do not edit it as a source of truth.
 
 This document outlines the authentication solutions evaluated for the WeDoNotNeedNukes project.
 

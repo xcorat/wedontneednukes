@@ -31,20 +31,21 @@
 	//   * Route: /api/auth/* -> Threshold: 15 requests per minute per IP action: Block or Managed Challenge.
 	//   * Bot Management: Cloudflare Turnstile token verified on /api/auth/sign-in/* and form submissions.
 	//   * DDOS: Cloudflare HTTP DDoS Attack Protection enabled by default.
-}
 
-// {
-//   "observability": {
-//     "logs": {
-//       "enabled": true,
-//       "head_sampling_rate": 1,
-//       "invocation_logs": true,
-//       "persist": true
-//     },
-//     "traces": {
-//       "enabled": false,
-//       "head_sampling_rate": 1,
-//       "persist": true
-//     }
-//   }
-// }
+  // TODO: enable only when debugging.
+  //
+  //   "observability": {
+  //     "logs": {
+  //       "enabled": true,
+  //       "head_sampling_rate": 1,
+  //       "invocation_logs": true,
+  //       "persist": true
+  //     },
+  //     "traces": {
+  //       "enabled": false,
+  //       "head_sampling_rate": 1,
+  //       "persist": true
+  //     }
+  //   }
+//
+}

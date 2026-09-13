@@ -1,19 +1,21 @@
-# [DRAFT] Roadmap Phases
+# [ESTABLISHED] Roadmap Phases
 
-## Phase 0: Documentation & Architecture (CURRENT)
-- Project structure setup.
-- Writing AI agent docs and context files.
-- Research and architectural decisions.
-- Defining the pledge flow engine concept.
+## Phase 0: Documentation & Architecture (COMPLETED)
+- [x] Project structure setup and documentation framework.
+- [x] AI agent context files (`.ai/AGENTS.md`, `architecture.md`, `conventions.md`, `decisions.md`).
+- [x] Architectural Decision Records (ADRs 1–13).
+- [x] Defining the pledge flow engine and gated questions concepts.
 
-## Phase 1: Foundation (MVP)
-- **Scaffold**: SvelteKit 2 initialization.
-- **Design**: Implement the design system (shadcn-svelte).
-- **Auth**: Integrate Better Auth (per-request factory).
-- **Engine**: Build the Pledge Flow Engine.
-- **Database**: Set up D1 and repository pattern.
-- **Content**: Campaign landing, FAQ, and about pages.
-- **Deployment**: Initial launch on Cloudflare Pages/Workers.
+## Phase 1: Foundation & Modularization (ACTIVE)
+- [x] **Scaffold**: SvelteKit 2 on Cloudflare Workers (`@sveltejs/adapter-cloudflare`).
+- [x] **Design & Themes**: Neo-brutalist styling with runtime theme switching (`src/lib/theme.svelte.ts`, Tailwind v4).
+- [x] **Auth**: Better Auth per-request factory (`getAuth(platform.env)`), email magic links, 2FA (`/auth/two-factor`), social logins (Google, GitHub, Facebook, Twitter/X).
+- [x] **Bot Mitigation**: Cloudflare Turnstile token validation for auth and anonymous pledges.
+- [x] **Database**: Cloudflare D1 with Drizzle ORM schemas (`user`, `session`, `account`, `campaign`, `pledge`).
+- [x] **Modular Widgets**: Independent, composable widgets under `src/lib/components/widgets/` (`QuestionHeroWidget`, `JoinFormWidget`, `PledgeFormWidget`, `ResultsWidget`, `ClaimVoteBanner`, `StepHeaderWidget`).
+- [x] **Anonymous Support**: HTTP-only `anon_id` cookie tracking and atomic vote claiming into `user_id`.
+- [ ] **Gated Questions Schema**: Migrating from single pledge table to dynamic question tree (`question`, `question_option`, `question_gate`, `user_response`).
+- [ ] **Dedicated Onboarding Steps**: Standalone routes `/onboarding/wedontneednukes`, `/onboarding/join`, `/onboarding/pledge`.
 
 ## Phase 2: Community & Growth
 - **Content Upload**: Integrate R2 for user-generated content (memes, videos).

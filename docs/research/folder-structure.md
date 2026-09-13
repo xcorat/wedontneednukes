@@ -1,38 +1,40 @@
-# [RESEARCH / EXPLORATION] Folder Structure
+# [ESTABLISHED] Folder Structure
 
-This document outlines the proposed directory structure for the WeDoNotNeedNukes project.
+This document outlines the implemented directory structure for the WeDoNotNeedNukes project.
 
 ## Directory Tree
 
 ```
 wedontneednukes/
 ├── .ai/                          # AI-first development context
-│   ├── AGENTS.md                 # Master agent instructions
-│   ├── context/                  # Shared context for all agents
-│   │   ├── architecture.md
-│   │   ├── conventions.md
-│   │   ├── glossary.md
-│   │   └── decisions.md
-│   ├── prompts/                  # Reusable prompt templates
-│   │   ├── feature.md
-│   │   ├── bugfix.md
-│   │   └── review.md
-│   └── tools/
-│       └── mcp.json
+│   ├── AGENTS.md                 # Master agent guide
+│   ├── context/                  # Shared context for coding agents
+│   │   ├── architecture.md       # Subsystem designs & layers
+│   │   ├── conventions.md        # Coding & testing standards
+│   │   ├── glossary.md           # Domain terminology
+│   │   └── decisions.md          # Architectural Decision Records (ADRs)
+│   └── prompts/                  # Reusable prompt templates
+│       ├── feature.md
+│       ├── bugfix.md
+│       └── review.md
 │
 ├── docs/                         # Human & AI documentation
 │   ├── README.md
 │   ├── CONTRIBUTING.md
 │   ├── architecture/
 │   │   ├── overview.md
-│   │   └── pledge-engine.md
+│   │   ├── pledge-engine.md
+│   │   └── community-media.md
 │   ├── campaigns/nukes/
+│   │   ├── strategy.md
+│   │   ├── goals-and-financials.md
 │   │   ├── pledge-flow.md
 │   │   ├── faq-content.md
 │   │   └── copy.md
 │   ├── design/
 │   │   ├── design-system.md
-│   │   └── user-flows.md
+│   │   ├── user-flows.md
+│   │   └── user-flows-and-data-architecture.md
 │   ├── guides/
 │   │   ├── local-dev.md
 │   │   └── deployment.md
@@ -47,111 +49,82 @@ wedontneednukes/
 │
 ├── src/
 │   ├── app.html
-│   ├── app.css
+│   ├── app.css                   # Tailwind v4 theme variables & presets
 │   ├── app.d.ts                  # App.Platform (D1, KV, R2), App.Locals
-│   ├── hooks.server.ts           # Auth session, request lifecycle
+│   ├── hooks.server.ts           # Auth session population, request lifecycle
 │   │
 │   ├── lib/
-│   │   ├── components/
-│   │   │   ├── ui/               # shadcn-svelte primitives
-│   │   │   ├── layout/           # Shell, nav, footer
-│   │   │   └── common/           # Counter, ProgressBar, ShareButton
+│   │   ├── theme.svelte.ts       # Runes-based reactive theme store
+│   │   ├── menu.svelte.ts        # Drawer navigation menu state
 │   │   │
-│   │   ├── features/             # Domain feature modules
-│   │   │   ├── pledge/
-│   │   │   │   ├── components/
-│   │   │   │   ├── engine/       # State machine + flow definitions
-│   │   │   │   │   ├── types.ts
-│   │   │   │   │   ├── engine.ts
-│   │   │   │   │   ├── loader.ts
-│   │   │   │   │   └── flows/
-│   │   │   │   │       └── nukes.json
-│   │   │   │   ├── stores.ts
-│   │   │   │   └── index.ts
-│   │   │   ├── auth/
-│   │   │   │   ├── components/
-│   │   │   │   ├── stores.ts
-│   │   │   │   └── index.ts
-│   │   │   ├── content/
-│   │   │   │   ├── components/
-│   │   │   │   ├── stores.ts
-│   │   │   │   └── index.ts
-│   │   │   ├── faq/
-│   │   │   │   ├── components/
-│   │   │   │   └── index.ts
-│   │   │   └── campaign/
-│   │   │       ├── stores.ts
+│   │   ├── components/
+│   │   │   ├── FundraiserButton.svelte
+│   │   │   ├── InfoTooltip.svelte
+│   │   │   ├── MenuBar.svelte
+│   │   │   ├── MenuButton.svelte
+│   │   │   ├── ThemeSwitcher.svelte
+│   │   │   ├── Turnstile.svelte
+│   │   │   │
+│   │   │   └── widgets/          # Independent, composable form/page widgets
+│   │   │       ├── StepHeaderWidget.svelte
+│   │   │       ├── QuestionHeroWidget.svelte
+│   │   │       ├── JoinFormWidget.svelte
+│   │   │       ├── PledgeFormWidget.svelte
+│   │   │       ├── ResultsWidget.svelte
+│   │   │       ├── ClaimVoteBanner.svelte
 │   │   │       └── index.ts
 │   │   │
-│   │   ├── server/               # Server-only (SvelteKit enforced)
-│   │   │   ├── db/
-│   │   │   │   ├── index.ts      # DB factory
-│   │   │   │   ├── types.ts      # Repository interfaces
-│   │   │   │   ├── schema.ts     # Drizzle schema
-│   │   │   │   ├── client.ts     # Drizzle D1 client factory
-│   │   │   │   ├── adapters/     # d1.ts, turso.ts, memory.ts
-│   │   │   │   └── repositories/ # pledge.ts, user.ts, campaign.ts, content.ts, faq.ts
-│   │   │   ├── auth/
-│   │   │   │   ├── index.ts      # betterAuth factory
-│   │   │   │   └── providers.ts
-│   │   │   ├── turnstile.ts
-│   │   │   └── services/         # pledge.ts, campaign.ts, content.ts, analytics.ts
-│   │   │
-│   │   ├── config/               # campaigns.ts, theme.ts, constants.ts
-│   │   └── utils/                # cn.ts, share.ts, format.ts, validation.ts
+│   │   └── server/               # Server-only boundary (SvelteKit enforced)
+│   │       ├── db/
+│   │       │   ├── client.ts     # D1 / SQLite client factory
+│   │       │   └── schema.ts     # Drizzle ORM schema definitions
+│   │       ├── auth/
+│   │       │   └── index.ts      # Better Auth per-request factory & plugins
+│   │       ├── profile/
+│   │       │   └── index.ts      # Profile filtering & privacy controls
+│   │       ├── account/
+│   │       │   └── index.ts      # Account linking & unlink safety
+│   │       ├── security/
+│   │       │   ├── sessions.ts   # Device parser & active session tracking
+│   │       │   └── turnstile.ts  # Cloudflare Turnstile token validation
+│   │       └── email.ts          # Magic link delivery
 │   │
 │   └── routes/                   # Thin composition layer
 │       ├── +layout.svelte
 │       ├── +layout.server.ts
-│       ├── +page.svelte
-│       ├── +error.svelte
-│       ├── campaign/[slug]/
-│       │   ├── +page.svelte
+│       ├── +page.svelte          # Root hero question
+│       ├── auth/
+│       │   ├── +page.svelte      # Join / magic link / social
 │       │   ├── +page.server.ts
-│       │   ├── auth/+page.svelte
-│       │   ├── pledge/+page.svelte
-│       │   ├── actions/+page.svelte
-│       │   ├── faq/+page.svelte
-│       │   ├── faq/[topic]/+page.svelte
-│       │   └── stats/+page.svelte
-│       ├── about/
-│       │   ├── +page.svelte
-│       │   ├── mission/+page.svelte
-│       │   ├── privacy/+page.svelte
-│       │   └── support/+page.svelte
+│       │   └── two-factor/       # TOTP verification
+│       ├── pledge/
+│       │   ├── +page.svelte      # Commitment tiers selection
+│       │   └── +page.server.ts
+│       ├── results/
+│       │   ├── +page.svelte      # Consensus statistics & claim banner
+│       │   └── +page.server.ts
+│       ├── profile/
+│       ├── settings/
+│       │   ├── account/
+│       │   ├── profile/
+│       │   └── security/
+│       ├── fundraiser/
+│       ├── tests/
+│       │   └── ui-forms/         # Style benchmarks & theme test suite
 │       └── api/
-│           ├── auth/[...betterauth]/+server.ts
-│           ├── pledge/+server.ts
-│           ├── pledge/stats/+server.ts
-│           ├── content/+server.ts
-│           ├── campaign/+server.ts
-│           └── captcha/+server.ts
+│           └── auth/[...betterauth]/+server.ts
 │
-├── static/                       # favicon.svg, og-image.png, fonts/
-├── tests/                        # unit/, integration/, e2e/
-├── drizzle/                      # migrations/
-├── .github/
-│   ├── ISSUE_TEMPLATE/           # feature.md, bug.md, content.md
-│   └── workflows/                # ci.yml, deploy.yml
-│
-├── svelte.config.js
-├── tailwind.config.js
-├── drizzle.config.ts
-├── vite.config.ts
-├── tsconfig.json
+├── drizzle/                      # D1 SQL migration files
+├── tests/                        # Automated unit tests (*.test.ts)
+├── wrangler.jsonc                # Cloudflare Workers configuration
 ├── package.json
-├── wrangler.jsonc
-├── .env.example
-├── .gitignore
-├── .prettierrc
-├── .eslintrc.cjs
-├── LICENSE
-└── README.md
+└── tsconfig.json
 ```
 
 ## Structural Decisions & Rationale
 
-- **Feature-Driven Architecture (`src/lib/features/`)**: Organizing by domain (pledge, auth, content, faq) rather than by type (components, stores) makes it easier to reason about self-contained modules.
-- **Server Boundary (`src/lib/server/`)**: SvelteKit strictly enforces that this directory cannot be imported into client-side code, preventing accidental leaks of secrets, database credentials, or server-only dependencies.
-- **Thin Routes (`src/routes/`)**: SvelteKit routes simply compose the logic provided by `src/lib`. Controllers, data access, and core logic live in `lib/features` or `lib/server`, making testing easier and reducing duplication.
-- **AI-First Context (`.ai/`)**: Crucial for AI agent workflows, providing centralized memory and instructions without polluting standard documentation.
+- **Modular Independent Widgets (`src/lib/components/widgets/`)**: Decomposing core page sections into self-contained widgets enables rapid re-use across full onboarding paths, compact cards, test benchmarks, and future modal embeds.
+- **Server Boundary (`src/lib/server/`)**: SvelteKit strictly prevents importing this directory into client bundles, guaranteeing that DB queries, secret keys, and auth logic never leak.
+- **Thin Composition Routes (`src/routes/`)**: SvelteKit routes simply orchestrate loaders, form actions, and widget layouts without bloated presentation markup.
+- **Per-Request Bindings**: Concurrency-safe factory pattern ensures Cloudflare bindings (`platform.env.DB`, secrets) are cleanly scoped to the active request.
+- **AI-First Context (`.ai/`)**: Provides comprehensive guidelines, coding standards, and architectural memory directly to coding agents.

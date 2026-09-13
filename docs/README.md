@@ -2,6 +2,12 @@
 
 Welcome to the WeDoNotNeedNukes documentation.
 
+## How to read these docs
+
+- **`.ai/`** is the agent-facing surface. Coding agents (and humans doing AI-assisted development) should start at [`.ai/AGENTS.md`](../.ai/AGENTS.md); its **Quick References** table routes to the dense `.ai/context/` files covering stack versions, schema, design tokens, campaign strings, deployment, and the live roadmap status.
+- **`docs/`** is the human-facing surface. This index, the contributor guide, campaign authoring prose, design rationale, fundraising analysis, and roadmap context live here.
+- **The two surfaces don't drift.** Each `.ai/context/<name>.md` has a corresponding `docs/...` file with deeper prose. The historical `docs/research/*.md` documents each carry a short pointer at the top directing readers to the authoritative `.ai/context/*.md`.
+
 ## Core Documentation
 - [Project README](../README.md): High-level overview and vision.
 - [Agent Master Guide](../.ai/AGENTS.md): The entry point for all AI interactions and coding norms.
@@ -28,9 +34,10 @@ Welcome to the WeDoNotNeedNukes documentation.
 - [FAQ Content](campaigns/nukes/faq-content.md)
 - [UI Copy & Messaging](campaigns/nukes/copy.md)
 
-## Design `[DRAFT]`
-- [Design System](design/design-system.md)
-- [User Flows](design/user-flows.md)
+## Design `[ACTIVE]`
+- [Design System](design/design-system.md): Neo-Brutalist design tokens, themes, and font systems.
+- [User Flows](design/user-flows.md): Core user interaction workflows.
+- [User Flows, Form Modularization & Gated Questions Architecture](design/user-flows-and-data-architecture.md): Full component modularization, anonymous state strategy, and question tree specifications.
 
 ## Research `[RESEARCH / EXPLORATION]`
 - [Tech Stack](research/tech-stack.md)

@@ -1,4 +1,6 @@
-# [RESEARCH / EXPLORATION] Tech Stack Research
+# [RESEARCH / EXPLORATION] Tech Stack Research (Historical)
+
+> **Pointer.** The current, authoritative tech-stack reference is [`.ai/context/tech-stack.md`](../../.ai/context/tech-stack.md). This file is retained for historical comparison only — do not edit it as a source of truth.
 
 This document outlines the technical stack chosen for the WeDoNotNeedNukes project.
 

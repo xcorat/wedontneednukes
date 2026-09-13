@@ -1,4 +1,12 @@
-# [RESEARCH / EXPLORATION] Data Model
+# [RESEARCH / EXPLORATION] Data Model (Historical v0 Sketch)
+
+> **Pointer.** The current authoritative schema is split across:
+>
+> - [`.ai/context/data-model.md`](../../.ai/context/data-model.md) — unified reference (auth tables + gated questions + community media).
+> - [`docs/design/user-flows-and-data-architecture.md`](../design/user-flows-and-data-architecture.md) §4 — gated questions target shape (Phase 1 implementation target).
+> - [`docs/architecture/community-media.md`](../architecture/community-media.md) — Phase 2 community media tables.
+>
+> The schema below is the original v0 sketch. It is retained for historical comparison only — do not edit it as a source of truth.
 
 This document outlines the proposed database schema for the WeDoNotNeedNukes project.
 
