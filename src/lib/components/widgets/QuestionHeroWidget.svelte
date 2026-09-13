@@ -44,7 +44,8 @@
 		if (onChoice) {
 			onChoice(choice.id, choice.value);
 		} else {
-			goto(`/auth?choiceId=${choice.id}&choiceValue=${choice.value}`);
+			const queryAnswer = choice.value === 'agree' ? 'no' : 'yes';
+			goto(`/onboarding/join?answer=${queryAnswer}`);
 		}
 	}
 </script>

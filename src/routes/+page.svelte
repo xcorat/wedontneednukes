@@ -1,10 +1,16 @@
 <script lang="ts">
 	import type { PageData } from './$types.js';
+	import { goto } from '$app/navigation';
 	import MenuButton from '$lib/components/MenuButton.svelte';
 	import FundraiserButton from '$lib/components/FundraiserButton.svelte';
 	import { QuestionHeroWidget, ResultsWidget, ClaimVoteBanner } from '$lib/components/widgets/index.js';
 
 	let { data }: { data: PageData } = $props();
+
+	function handleChoice(_choiceId: string, choiceValue: string) {
+		const queryAnswer = choiceValue === 'agree' ? 'no' : 'yes';
+		goto(`/onboarding/join?answer=${queryAnswer}`);
+	}
 </script>
 
 <svelte:head>
@@ -37,7 +43,7 @@
 			<!-- Retake button / secondary action -->
 			<div class="mt-4 text-center">
 				<a
-					href="/onboarding/pledge"
+					href={`/onboarding/pledge?answer=${data.userChoice}&anon=1`}
 					class="text-xs font-bold text-muted-foreground hover:text-foreground underline underline-offset-4"
 				>
 					Update your pledge commitments →
@@ -58,6 +64,6 @@
 		</header>
 
 		<!-- Iconic Hero Question Widget -->
-		<QuestionHeroWidget model={data.viewModel} />
+		<QuestionHeroWidget model={data.viewModel} onChoice={handleChoice} />
 	</main>
 {/if}

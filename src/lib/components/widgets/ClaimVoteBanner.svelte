@@ -61,7 +61,7 @@
 				{/if}
 
 				<a
-					href={`/auth?answer=${answer}`}
+					href="/auth?redirect=/dashboard"
 					class="w-full sm:w-auto text-center border-2 border-border bg-surface px-4 py-2 text-xs sm:text-sm font-bold text-foreground rounded-theme shadow-theme-sm font-display transition-all hover:translate-y-[1px] active:translate-x-[1px] active:translate-y-[2px] active:shadow-none"
 				>
 					Go to full sign in page
@@ -84,6 +84,7 @@
 				<JoinFormWidget
 					{answer}
 					{turnstileSiteKey}
+					callbackUrl="/dashboard"
 					allowAnonymous={false}
 					variant="inline"
 				/>

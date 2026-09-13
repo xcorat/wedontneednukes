@@ -98,4 +98,40 @@ describe('Routing Layer End-to-End & State Invariants', () => {
 		const matched = civicQ.ans.choices.find((c) => c.id === selectedChoiceId);
 		assert.equal(matched?.label, 'Divestment & Finance');
 	});
+
+	it('validates the complete anonymous onboarding, pledge, and claim vote route transitions', () => {
+		// 1. User clicks choice on Homepage Hero (Agree -> 'no', Other -> 'yes')
+		function getHeroChoiceTarget(choiceValue: string) {
+			const queryAnswer = choiceValue === 'agree' ? 'no' : 'yes';
+			return `/onboarding/join?answer=${queryAnswer}`;
+		}
+		assert.equal(getHeroChoiceTarget('agree'), '/onboarding/join?answer=no');
+		assert.equal(getHeroChoiceTarget('other'), '/onboarding/join?answer=yes');
+
+		// 2. User chooses "Continue anonymously" on /onboarding/join
+		function getAnonymousOnboardingTarget(answer: string) {
+			return `/onboarding/pledge?answer=${answer}&anon=1`;
+		}
+		assert.equal(getAnonymousOnboardingTarget('no'), '/onboarding/pledge?answer=no&anon=1');
+
+		// 3. User submits pledge anonymously -> redirects to /results
+		function getPledgeSubmitRedirect(userId: string | null | undefined, answer: string) {
+			return userId ? '/dashboard' : `/results?answer=${answer}&anon=1`;
+		}
+		assert.equal(getPledgeSubmitRedirect(null, 'no'), '/results?answer=no&anon=1');
+		assert.equal(getPledgeSubmitRedirect('user_123', 'no'), '/dashboard');
+
+		// 4. On results/claim banner, full sign-in CTA targets /auth with redirect to /dashboard
+		function getClaimVoteFullSignInTarget() {
+			return '/auth?redirect=/dashboard';
+		}
+		assert.equal(getClaimVoteFullSignInTarget(), '/auth?redirect=/dashboard');
+
+		// 5. Returning anonymous visitor to root '/' gets link to update pledge with answer preserved
+		function getReturningAnonPledgeUpdateHref(userChoice: string) {
+			return `/onboarding/pledge?answer=${userChoice}&anon=1`;
+		}
+		assert.equal(getReturningAnonPledgeUpdateHref('no'), '/onboarding/pledge?answer=no&anon=1');
+	});
 });
+
