@@ -8,11 +8,20 @@
 
 import { error } from '@sveltejs/kit';
 import type { WikiManifest } from '$lib/types/wiki.js';
+import staticManifest from '../../../static/wiki/manifest.json' with { type: 'json' };
 
-export async function loadWikiManifest(fetch: typeof globalThis.fetch): Promise<WikiManifest> {
-	const res = await fetch('/wiki/manifest.json');
-	if (!res.ok) {
+export async function loadWikiManifest(fetch?: typeof globalThis.fetch): Promise<WikiManifest> {
+	if (staticManifest && Array.isArray((staticManifest as WikiManifest).entries)) {
+		return staticManifest as WikiManifest;
+	}
+
+	if (fetch) {
+		const res = await fetch('/wiki/manifest.json');
+		if (res.ok) {
+			return (await res.json()) as WikiManifest;
+		}
 		throw error(500, `Wiki manifest missing (${res.status})`);
 	}
-	return (await res.json()) as WikiManifest;
+
+	throw error(500, 'Wiki manifest missing');
 }
