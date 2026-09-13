@@ -3,6 +3,7 @@
 	import { menuState } from '$lib/menu.svelte.js';
 	import { VERSION_LABEL } from '$lib/version.js';
 	import ThemeSwitcher from '$lib/components/ThemeSwitcher.svelte';
+	import SocialLinks from '$lib/components/SocialLinks.svelte';
 	import { isPlaceholderEmail } from '$lib/utils/email.js';
 
 	const user = $derived(page.data.user);
@@ -185,6 +186,14 @@
 					<span>🧪</span>
 				</a>
 			</nav>
+
+			<!-- Official Social Channels -->
+			<div class="border-t-2 border-border/20 pt-4">
+				<p class="text-xs font-black uppercase tracking-wider text-muted-foreground font-display mb-2.5">
+					Follow the Campaign
+				</p>
+				<SocialLinks variant="icons" />
+			</div>
 
 			<!-- Theme Switcher section -->
 			<div class="border-t-2 border-border/20 pt-4">

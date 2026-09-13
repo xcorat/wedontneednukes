@@ -3,6 +3,8 @@
 	import { enhance } from '$app/forms';
 	import MenuButton from '$lib/components/MenuButton.svelte';
 	import FundraiserButton from '$lib/components/FundraiserButton.svelte';
+	import ShareButton from '$lib/components/ShareButton.svelte';
+	import BotButton from '$lib/components/BotButton.svelte';
 	import { ResultsWidget } from '$lib/components/widgets/index.js';
 
 	let { data }: { data: PageData } = $props();
@@ -49,6 +51,8 @@
 
 			<div class="flex items-center gap-2">
 				<FundraiserButton variant="icon" />
+				<ShareButton />
+				<BotButton />
 				<MenuButton />
 			</div>
 		</header>

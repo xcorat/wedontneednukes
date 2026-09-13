@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { WikiArticle, WikiManifestEntry } from '$lib/types/wiki.js';
+	import SocialShareWidget from './SocialShareWidget.svelte';
 
 	interface Props {
 		article: WikiArticle;
@@ -33,6 +34,15 @@
 	<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 	<div class="wiki-prose">
 		{@html article.html}
+	</div>
+
+	<!-- Share this FAQ article -->
+	<div class="border-t-2 border-border/30 pt-4">
+		<SocialShareWidget
+			variant="compact"
+			title={article.title}
+			text={`"${article.title}" — Learn more on We Don't Need Nukes:`}
+		/>
 	</div>
 
 	{#if relatedEntries.length}

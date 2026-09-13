@@ -1,6 +1,11 @@
 <script lang="ts">
 	import type { PageData } from './$types.js';
 	import MenuButton from '$lib/components/MenuButton.svelte';
+	import FundraiserButton from '$lib/components/FundraiserButton.svelte';
+	import ShareButton from '$lib/components/ShareButton.svelte';
+	import BotButton from '$lib/components/BotButton.svelte';
+	import SocialLinks from '$lib/components/SocialLinks.svelte';
+	import { SocialShareWidget } from '$lib/components/widgets/index.js';
 
 	let { data }: { data: PageData } = $props();
 </script>
@@ -22,7 +27,12 @@
 			>
 				← Home
 			</a>
-			<MenuButton />
+			<div class="flex items-center gap-2">
+				<FundraiserButton variant="icon" />
+				<ShareButton />
+				<BotButton />
+				<MenuButton />
+			</div>
 		</div>
 
 		<!-- Main Article Card -->
@@ -49,8 +59,24 @@
 				{@html data.html}
 			</div>
 
+			<!-- Connect & Share Section -->
+			<div class="border-t-2 border-border/20 pt-6 flex flex-col gap-4">
+				<div>
+					<h3 class="text-sm font-black uppercase tracking-wider text-foreground font-display mb-2">
+						Follow the Campaign
+					</h3>
+					<SocialLinks variant="pill" />
+				</div>
+				<div class="pt-2">
+					<SocialShareWidget
+						title="Spread the word"
+						variant="card"
+					/>
+				</div>
+			</div>
+
 			<!-- Quick Action Footer -->
-			<div class="mt-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-t-2 border-border/20 pt-6">
+			<div class="mt-2 flex flex-col sm:flex-row items-center justify-between gap-4 border-t-2 border-border/20 pt-6">
 				<a
 					href="/wiki"
 					class="text-sm font-bold text-muted-foreground hover:text-foreground underline underline-offset-4"
