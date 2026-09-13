@@ -1,8 +1,8 @@
 import type { PageServerLoad } from './$types.js';
-import { getAboutContent } from '$lib/server/content/loader.js';
+import { getCampaignsContent } from '$lib/server/content/loader.js';
 
 export const load: PageServerLoad = () => {
-	const content = getAboutContent();
+	const content = getCampaignsContent();
 
 	return {
 		title: content.title,

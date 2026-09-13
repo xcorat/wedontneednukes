@@ -7,15 +7,14 @@
 // browser-safe because manifest.ts has no Node imports.
 
 import { error } from '@sveltejs/kit';
-import { parseFrontmatter } from '$lib/utils/wiki-frontmatter.js';
-import { renderMarkdown } from '$lib/utils/wiki-render.js';
+import { getWikiArticleContent } from '$lib/server/content/loader.js';
 import type { WikiArticle, WikiManifest } from '$lib/types/wiki.js';
 
 const SLUG_RE = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
 
 export async function loadWikiArticle(
 	slug: string,
-	fetch: typeof globalThis.fetch,
+	_fetch: typeof globalThis.fetch,
 	manifest: WikiManifest
 ): Promise<WikiArticle> {
 	if (!SLUG_RE.test(slug)) {
@@ -25,28 +24,17 @@ export async function loadWikiArticle(
 		throw error(404, 'Article not found');
 	}
 
-	const res = await fetch(`/wiki/faq/${slug}.md`);
-	if (res.status === 404) {
-		throw error(404, 'Article not found');
-	}
-	if (!res.ok) {
-		throw error(500, `Failed to load article (${res.status})`);
-	}
-
-	const text = await res.text();
-	const { frontmatter, body } = parseFrontmatter(text);
-	const html = renderMarkdown(body);
+	const content = getWikiArticleContent(slug);
+	const manifestEntry = manifest.entries.find((e) => e.slug === slug);
 
 	return {
 		slug,
-		title: (frontmatter.title as string | undefined) ?? slug,
-		category: (frontmatter.category as string | undefined) ?? 'Uncategorised',
-		order: typeof frontmatter.order === 'number' ? frontmatter.order : 0,
-		summary: (frontmatter.summary as string | undefined) ?? '',
-		related: Array.isArray(frontmatter.related)
-			? (frontmatter.related as unknown[]).filter((v): v is string => typeof v === 'string')
-			: [],
-		html,
-		updatedAt: typeof frontmatter.updatedAt === 'string' ? frontmatter.updatedAt : undefined
+		title: content.title || manifestEntry?.title || slug,
+		category: content.category || manifestEntry?.category || 'Uncategorised',
+		order: content.order ?? manifestEntry?.order ?? 0,
+		summary: content.summary || manifestEntry?.summary || '',
+		related: content.related ?? manifestEntry?.related ?? [],
+		html: content.html,
+		updatedAt: content.updatedAt
 	};
 }

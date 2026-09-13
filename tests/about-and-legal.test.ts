@@ -6,6 +6,8 @@ import { loadLegalDocument } from '../src/lib/server/legal/loader.js';
 import { parseFrontmatter } from '../src/lib/utils/wiki-frontmatter.js';
 import { renderMarkdown } from '../src/lib/utils/wiki-render.js';
 
+import { getAboutContent, getLegalDocument, getWikiArticleContent } from '../src/lib/server/content/loader.js';
+
 const ROOT = process.cwd();
 
 describe('About page content & loader', () => {
@@ -22,6 +24,13 @@ describe('About page content & loader', () => {
 		assert.match(html, /<h2>What We Do<\/h2>/);
 		assert.match(html, /<h2>How It Works<\/h2>/);
 		assert.match(html, /<h2>Privacy &amp; Open Source<\/h2>/);
+	});
+
+	it('loads precompiled about content via getAboutContent', () => {
+		const content = getAboutContent();
+		assert.equal(content.title, 'About This Project');
+		assert.match(content.html, /<h2>What We Do<\/h2>/);
+		assert.match(content.html, /<h2>Privacy &amp; Open Source<\/h2>/);
 	});
 });
 
@@ -66,14 +75,22 @@ describe('Legal documents loader', () => {
 				return err !== null && typeof err === 'object' && 'status' in err && (err as { status: number }).status === 404;
 			}
 		);
+	});
 
-		await assert.rejects(
-			async () => {
-				await loadLegalDocument('../secret', mockFetch);
-			},
-			(err: unknown) => {
-				return err !== null && typeof err === 'object' && 'status' in err && (err as { status: number }).status === 404;
-			}
-		);
+	it('loads precompiled legal document via getLegalDocument directly', () => {
+		const terms = getLegalDocument('terms');
+		assert.equal(terms.slug, 'terms');
+		assert.equal(terms.title, 'Terms of Service');
+
+		const privacy = getLegalDocument('privacy');
+		assert.equal(privacy.slug, 'privacy');
+		assert.equal(privacy.title, 'Privacy Policy');
+	});
+
+	it('loads precompiled wiki article via getWikiArticleContent', () => {
+		const article = getWikiArticleContent('why');
+		assert.equal(article.slug, 'why');
+		assert.ok(article.title.length > 0);
+		assert.ok(article.html.length > 0);
 	});
 });

@@ -80,8 +80,10 @@ src/
 │       │   ├── sessions.ts           # Device parser & active session tracking
 │       │   └── turnstile.ts          # Cloudflare Turnstile token validation
 │       ├── email.ts                  # Magic link delivery
+│       ├── content/
+│       │   └── loader.ts             # Precompiled in-memory Markdown snippet loader (Option C)
 │       ├── legal/
-│       │   └── loader.ts             # Legal documents fetcher & parser
+│       │   └── loader.ts             # Legal documents helper (delegates to content/loader)
 │       └── wiki/
 │           └── loader.ts             # Single-article fetcher (server-only)
 │

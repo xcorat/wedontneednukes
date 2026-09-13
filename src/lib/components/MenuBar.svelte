@@ -145,6 +145,22 @@
 					<span>ℹ️</span>
 				</a>
 				<a
+					href="/campaigns"
+					onclick={() => menuState.close()}
+					class="flex items-center justify-between border-2 border-border bg-background px-3.5 py-2 text-sm font-bold text-foreground rounded-theme shadow-theme-sm hover:bg-secondary hover:text-secondary-foreground transition-all"
+				>
+					<span>Active Campaigns</span>
+					<span>📣</span>
+				</a>
+				<a
+					href="/organizations"
+					onclick={() => menuState.close()}
+					class="flex items-center justify-between border-2 border-border bg-background px-3.5 py-2 text-sm font-bold text-foreground rounded-theme shadow-theme-sm hover:bg-secondary hover:text-secondary-foreground transition-all"
+				>
+					<span>Partner Organizations</span>
+					<span>🌐</span>
+				</a>
+				<a
 					href="/wiki"
 					onclick={() => menuState.close()}
 					class="flex items-center justify-between border-2 border-border bg-background px-3.5 py-2 text-sm font-bold text-foreground rounded-theme shadow-theme-sm hover:bg-secondary hover:text-secondary-foreground transition-all"

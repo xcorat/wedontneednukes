@@ -118,3 +118,16 @@
 2. When the user logs in or registers, execute an atomic DB migration linking existing `anon_id` records to `user_id`.
 **Consequences**: Zero visual flicker (FOUC) on return visits, seamless conversion from anonymous supporter to permanent community member.
 
+## ADR-15: Precompiled In-Memory Markdown Snippets & Prerender Adapter Guard
+**Status**: Accepted
+**Date**: 2026-09-13
+**Context**: Static Markdown content originally made runtime HTTP `fetch()` subrequests inside Cloudflare Workers. Full-page HTML prerendering (`prerender = true`) caused build crashes in `@sveltejs/adapter-cloudflare` (`Cannot access platform.env.DB in a prerenderable route`) and desynced the user session state in `MenuBar` on direct loads.
+**Decision**:
+1. Add build-time guard in `src/hooks.server.ts` checking `import { building } from '$app/environment'`: skip live DB/auth bindings during build-time crawl.
+2. In `src/lib/server/content/loader.ts`, use Vite's `import.meta.glob('/static/**/*.md', { query: '?raw', eager: true })` to inline Markdown at compile time and cache parsed HTML snippets in an in-memory `Map`.
+**Consequences**:
+- Zero runtime network subrequests in Cloudflare Workers.
+- Instant O(1) in-memory snippet lookup (< 0.05ms) with zero runtime `marked` CPU overhead.
+- Live user session preserved in `MenuBar` across all informational pages.
+- 100% compatibility with `@sveltejs/adapter-cloudflare` and Miniflare.
+

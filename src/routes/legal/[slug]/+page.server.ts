@@ -1,7 +1,7 @@
 import type { PageServerLoad } from './$types.js';
-import { loadLegalDocument } from '$lib/server/legal/loader.js';
+import { getLegalDocument } from '$lib/server/content/loader.js';
 
-export const load: PageServerLoad = async ({ params, fetch }) => {
-	const document = await loadLegalDocument(params.slug, fetch);
+export const load: PageServerLoad = ({ params }) => {
+	const document = getLegalDocument(params.slug);
 	return { document };
 };
