@@ -3,22 +3,22 @@
 	import { StepHeaderWidget, JoinFormWidget } from '$lib/components/widgets/index.js';
 
 	let { data }: { data: PageData } = $props();
-
-	const answeredNo = $derived(data.answer === 'no');
 </script>
 
 <svelte:head>
-	<title>{answeredNo ? 'Join the pledge' : 'Share your view'} · We Don't Need Nukes</title>
+	<title>Sign In · We Don't Need Nukes</title>
 </svelte:head>
 
 <main class="flex min-h-[calc(100dvh-2rem)] flex-col items-center justify-center bg-background px-4 py-12 text-foreground font-body">
 	<div class="w-full max-w-md">
-		<!-- Top Bar: Back link, Answer badge & Menu -->
-		<StepHeaderWidget backHref="/" answer={data.answer} />
+		<!-- Top Bar: Back link & Menu -->
+		<StepHeaderWidget backHref="/" answer={null} />
 
 		<!-- Main Auth Form Card -->
 		<JoinFormWidget
-			answer={data.answer}
+			answer=""
+			callbackUrl={data.redirectUrl}
+			allowAnonymous={false}
 			turnstileSiteKey={data.turnstileSiteKey}
 		/>
 

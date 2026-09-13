@@ -37,7 +37,9 @@
 			: 'Sign in and record your perspective.'
 	);
 
-	const resolvedCallbackUrl = $derived(callbackUrl ?? `/pledge?answer=${answer}`);
+	const resolvedCallbackUrl = $derived(
+		callbackUrl ?? (answer ? `/onboarding/pledge?answer=${answer}` : '/dashboard')
+	);
 
 	let email = $state('');
 	let isSubmitting = $state(false);
@@ -131,7 +133,7 @@
 		if (onAnonymous) {
 			onAnonymous();
 		} else {
-			window.location.href = `/pledge?answer=${answer}&anon=1`;
+			window.location.href = `/onboarding/pledge?answer=${answer}&anon=1`;
 		}
 	}
 

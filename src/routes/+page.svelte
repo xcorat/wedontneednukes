@@ -37,7 +37,7 @@
 			<!-- Retake button / secondary action -->
 			<div class="mt-4 text-center">
 				<a
-					href="/pledge"
+					href="/onboarding/pledge"
 					class="text-xs font-bold text-muted-foreground hover:text-foreground underline underline-offset-4"
 				>
 					Update your pledge commitments →

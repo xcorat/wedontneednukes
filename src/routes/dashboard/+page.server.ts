@@ -1,19 +1,26 @@
-import { redirect } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types.js';
+import { fail, redirect } from '@sveltejs/kit';
+import type { Actions, PageServerLoad } from './$types.js';
 import { getDb } from '$lib/server/db/client.js';
 import { createHeroQuestion } from '$lib/fixtures/heroQuestion.js';
 import { createCommitmentQuestion } from '$lib/fixtures/commitmentQuestion.js';
-import { getUserResponse, getQuestionStats } from '$lib/server/qa/repository.js';
+import { createCivicActionQuestion, civicActionViewModel } from '$lib/fixtures/civicActionQuestion.js';
+import {
+	getUserResponse,
+	getQuestionStats,
+	insertQuestion,
+	recordUserResponse
+} from '$lib/server/qa/repository.js';
 
 export const load: PageServerLoad = async ({ locals, platform }) => {
 	// Must be logged in to view dashboard
 	if (!locals.user) {
-		redirect(302, '/auth');
+		redirect(302, '/auth?redirect=/dashboard');
 	}
 
 	const userId = locals.user.id;
 	const hero = await createHeroQuestion();
 	const commitmentQ = await createCommitmentQuestion();
+	const civicQ = await createCivicActionQuestion();
 
 	let userChoice: 'no' | 'yes' | null = null;
 	let commitmentLevels: string[] = ['passive'];
@@ -24,13 +31,22 @@ export const load: PageServerLoad = async ({ locals, platform }) => {
 		otherCount: 0,
 		otherPercentage: 0
 	};
+	let answeredCivicAction: string | null = null;
 
 	if (platform?.env?.DB) {
 		const db = getDb(platform.env);
 
-		const [heroResp, commitmentResp] = await Promise.all([
+		// Ensure questions are seeded in DB
+		await Promise.all([
+			insertQuestion(db, hero),
+			insertQuestion(db, commitmentQ),
+			insertQuestion(db, civicQ)
+		]);
+
+		const [heroResp, commitmentResp, civicResp] = await Promise.all([
 			getUserResponse(db, { questionId: hero.id, userId }),
-			getUserResponse(db, { questionId: commitmentQ.id, userId })
+			getUserResponse(db, { questionId: commitmentQ.id, userId }),
+			getUserResponse(db, { questionId: civicQ.id, userId })
 		]);
 
 		const agreeChoiceId = hero.ans.choices[0].id;
@@ -55,6 +71,14 @@ export const load: PageServerLoad = async ({ locals, platform }) => {
 			}
 		}
 
+		if (civicResp) {
+			const choiceIds = (civicResp.selectedChoiceIds as string[]) ?? [];
+			const matchedChoice = civicQ.ans.choices.find((c) => choiceIds.includes(c.id));
+			if (matchedChoice) {
+				answeredCivicAction = matchedChoice.label;
+			}
+		}
+
 		const statsResult = await getQuestionStats(db, hero.id);
 		const agreeCount = statsResult.countsByChoiceId[agreeChoiceId] ?? 0;
 		const otherCount = statsResult.countsByChoiceId[otherChoiceId] ?? 0;
@@ -75,6 +99,48 @@ export const load: PageServerLoad = async ({ locals, platform }) => {
 		user: locals.user,
 		userChoice: userChoice ?? 'no',
 		commitmentLevels,
-		stats
+		stats,
+		nextQuestion: answeredCivicAction
+			? null
+			: {
+					question: civicQ,
+					viewModel: civicActionViewModel(civicQ)
+			  },
+		answeredCivicAction
 	};
+};
+
+export const actions: Actions = {
+	answerNextQuestion: async ({ request, locals, platform }) => {
+		if (!locals.user) {
+			redirect(302, '/auth?redirect=/dashboard');
+		}
+
+		const formData = await request.formData();
+		const choiceId = formData.get('choiceId')?.toString();
+
+		if (!choiceId) {
+			return fail(400, { error: 'No choice selected' });
+		}
+
+		if (platform?.env?.DB) {
+			const db = getDb(platform.env);
+			const civicQ = await createCivicActionQuestion();
+			await insertQuestion(db, civicQ);
+
+			const validChoice = civicQ.ans.choices.find((c) => c.id === choiceId);
+			if (!validChoice) {
+				return fail(400, { error: 'Invalid choice' });
+			}
+
+			await recordUserResponse(db, {
+				questionId: civicQ.id,
+				contentSha256: civicQ.contentSha256,
+				userId: locals.user.id,
+				selectedChoiceIds: [choiceId]
+			});
+		}
+
+		return { success: true };
+	}
 };

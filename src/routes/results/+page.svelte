@@ -13,7 +13,7 @@
 	<div class="w-full max-w-lg">
 		<!-- Navigation bar -->
 		<StepHeaderWidget
-			backHref={`/pledge?answer=${data.answer}${data.isAnon ? '&anon=1' : ''}`}
+			backHref={`/onboarding/pledge?answer=${data.answer}${data.isAnon ? '&anon=1' : ''}`}
 			backLabel="← Edit pledge"
 			showFundraiser={true}
 		/>

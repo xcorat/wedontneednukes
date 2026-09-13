@@ -70,6 +70,15 @@
 						</div>
 
 						<a
+							href="/dashboard"
+							onclick={() => menuState.close()}
+							class="flex items-center justify-between border-2 border-border bg-primary px-3.5 py-2 text-sm font-black text-primary-foreground rounded-theme shadow-theme-primary hover:translate-y-[1px] transition-all"
+						>
+							<span>My Dashboard</span>
+							<span>📊</span>
+						</a>
+
+						<a
 							href="/profile"
 							onclick={() => menuState.close()}
 							class="flex items-center justify-between border-2 border-border bg-background px-3.5 py-2 text-sm font-bold text-foreground rounded-theme shadow-theme-sm hover:bg-secondary hover:text-secondary-foreground transition-all"

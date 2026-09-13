@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types.js';
+	import { enhance } from '$app/forms';
 	import MenuButton from '$lib/components/MenuButton.svelte';
 	import FundraiserButton from '$lib/components/FundraiserButton.svelte';
 	import { ResultsWidget } from '$lib/components/widgets/index.js';
@@ -13,6 +14,9 @@
 		active: { label: 'Active Advocate', badge: 'Civic Engagement', emoji: '🗣️' },
 		direct: { label: 'Direct Contributor', badge: 'Direct Action', emoji: '🤝' }
 	};
+
+	let selectedChoiceId = $state<string | null>(null);
+	let isSubmittingQuestion = $state(false);
 </script>
 
 <svelte:head>
@@ -67,7 +71,7 @@
 				</div>
 
 				<a
-					href={`/pledge?answer=${data.userChoice}`}
+					href={`/onboarding/pledge?answer=${data.userChoice}`}
 					class="shrink-0 border-2 border-border bg-background px-3 py-1.5 text-xs font-bold text-foreground rounded-theme shadow-theme-sm font-display transition-all hover:translate-y-[1px]"
 				>
 					Edit pledge
@@ -93,6 +97,88 @@
 				</div>
 			</div>
 		</section>
+
+		<!-- Gated Next Question or Completion Badge -->
+		{#if data.nextQuestion}
+			{@const q = data.nextQuestion.question}
+			<section class="border-2 sm:border-[3px] border-border bg-secondary/15 p-6 rounded-theme shadow-theme-md">
+				<div class="flex items-center justify-between gap-3 mb-3">
+					<div class="inline-block border border-border bg-secondary px-2.5 py-0.5 text-xs font-black uppercase tracking-wider text-secondary-foreground rounded-theme">
+						Next Step · Follow-Up Question
+					</div>
+					{#if q.faq?.[0]}
+						<a
+							href={q.faq[0].link}
+							class="text-xs font-bold text-muted-foreground hover:text-foreground underline"
+						>
+							{q.faq[0].text}
+						</a>
+					{/if}
+				</div>
+
+				<h2 class="text-xl sm:text-2xl font-black text-foreground font-display">
+					{q.text}
+				</h2>
+				{#if q.context}
+					<p class="mt-1 text-xs sm:text-sm text-muted-foreground">{q.context}</p>
+				{/if}
+
+				<form
+					method="POST"
+					action="?/answerNextQuestion"
+					use:enhance={() => {
+						isSubmittingQuestion = true;
+						return async ({ update }) => {
+							await update();
+							isSubmittingQuestion = false;
+						};
+					}}
+					class="mt-5 space-y-3"
+				>
+					<div class="space-y-2">
+						{#if q.type === 'single_choice'}
+							{#each q.ans.choices as choice}
+								<label
+									class="flex items-start gap-3 border-2 border-border bg-background p-3.5 rounded-theme cursor-pointer transition-all hover:translate-y-[1px] {selectedChoiceId === choice.id ? 'ring-2 ring-foreground bg-primary/10' : ''}"
+								>
+									<input
+										type="radio"
+										name="choiceId"
+										value={choice.id}
+										bind:group={selectedChoiceId}
+										class="mt-1 accent-primary"
+									/>
+									<div>
+										<p class="text-sm font-bold text-foreground font-display">{choice.label}</p>
+										{#if choice.description}
+											<p class="text-xs text-muted-foreground mt-0.5">{choice.description}</p>
+										{/if}
+									</div>
+								</label>
+							{/each}
+						{/if}
+					</div>
+
+					<button
+						type="submit"
+						disabled={!selectedChoiceId || isSubmittingQuestion}
+						class="w-full border-2 border-border bg-primary py-2.5 px-4 text-sm font-black text-primary-foreground rounded-theme shadow-theme-primary font-display transition-all hover:translate-y-[1px] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+					>
+						{isSubmittingQuestion ? 'Saving...' : 'Record Priority →'}
+					</button>
+				</form>
+			</section>
+		{:else if data.answeredCivicAction}
+			<section class="border-2 border-border bg-surface p-5 rounded-theme shadow-theme-sm">
+				<div class="flex items-center gap-3">
+					<span class="text-2xl">🎯</span>
+					<div>
+						<p class="text-xs font-bold uppercase tracking-wider text-muted-foreground">Action Priority Selected</p>
+						<p class="text-base font-black text-foreground font-display">{data.answeredCivicAction}</p>
+					</div>
+				</div>
+			</section>
+		{/if}
 
 		<!-- Live Community Results -->
 		<section>
