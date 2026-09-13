@@ -41,17 +41,27 @@ describe('Optional User Email & Social Sign-In Support', () => {
 		assert.ok(socialProviders.facebook);
 
 		// Test mapProfileToUser for Twitter (no email in profile)
-		const twitterUser = socialProviders.twitter.mapProfileToUser({ name: 'TwitterUser' });
-		assert.equal(twitterUser.email, null);
+		const twitterUser = socialProviders.twitter.mapProfileToUser({
+			data: { id: '14611186', name: 'TwitterUser' }
+		});
+		assert.equal(twitterUser.email, '14611186@twitter.placeholder.invalid');
 		assert.equal(twitterUser.emailVerified, false);
 
+		// Test mapProfileToUser for Twitter (with email in profile)
+		const twitterUserWithEmail = socialProviders.twitter.mapProfileToUser({
+			data: { id: '14611186', name: 'TwitterUser', email: 'twitter@example.com' }
+		});
+		assert.equal(twitterUserWithEmail.email, 'twitter@example.com');
+		assert.equal(twitterUserWithEmail.emailVerified, true);
+
 		// Test mapProfileToUser for Facebook without email (phone signup)
-		const fbUserNoEmail = socialProviders.facebook.mapProfileToUser({ name: 'FBUser' });
-		assert.equal(fbUserNoEmail.email, null);
+		const fbUserNoEmail = socialProviders.facebook.mapProfileToUser({ id: 'fb_123', name: 'FBUser' });
+		assert.equal(fbUserNoEmail.email, 'fb_123@facebook.placeholder.invalid');
 		assert.equal(fbUserNoEmail.emailVerified, false);
 
 		// Test mapProfileToUser for Facebook with email
 		const fbUserWithEmail = socialProviders.facebook.mapProfileToUser({
+			id: 'fb_123',
 			name: 'FBUser',
 			email: 'user@example.com'
 		});
@@ -94,5 +104,27 @@ describe('Optional User Email & Social Sign-In Support', () => {
 		assert.ok(twitterMultiple?.isConnected);
 		// Multiple login methods even with NO email -> CAN unlink
 		assert.equal(twitterMultiple?.canUnlink, true);
+	});
+
+	it('safely handles unlinking rules when user has a placeholder email', async () => {
+		const mockDbSingle = {
+			select: () => ({
+				from: () => ({
+					where: async () => [
+						{ id: 'acc_1', providerId: 'twitter', accountId: 'tw_123', createdAt: new Date() }
+					]
+				})
+			})
+		} as any;
+
+		// Single login method and PLACEHOLDER email -> cannot unlink (would be locked out)
+		const statusesSingle = await getProvidersStatus(
+			mockDbSingle,
+			'usr_1',
+			'14611186@twitter.placeholder.invalid'
+		);
+		const twitterSingle = statusesSingle.find((p) => p.providerId === 'twitter');
+		assert.ok(twitterSingle?.isConnected);
+		assert.equal(twitterSingle?.canUnlink, false);
 	});
 });

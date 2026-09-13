@@ -3,6 +3,7 @@
 	import { menuState } from '$lib/menu.svelte.js';
 	import { VERSION_LABEL } from '$lib/version.js';
 	import ThemeSwitcher from '$lib/components/ThemeSwitcher.svelte';
+	import { isPlaceholderEmail } from '$lib/utils/email.js';
 
 	const user = $derived(page.data.user);
 
@@ -65,7 +66,9 @@
 							{/if}
 							<div class="min-w-0 flex-1">
 								<p class="truncate text-xs font-bold text-foreground">{user.name}</p>
-								<p class="truncate text-[11px] text-muted-foreground">{user.email}</p>
+								<p class="truncate text-[11px] text-muted-foreground">
+									{user.email && !isPlaceholderEmail(user.email) ? user.email : 'Social account'}
+								</p>
 							</div>
 						</div>
 

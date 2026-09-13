@@ -1,6 +1,9 @@
 import { eq, and } from 'drizzle-orm';
 import type { DrizzleD1Database } from 'drizzle-orm/d1';
 import { account, user, type schema } from '$lib/server/db/schema.js';
+import { isPlaceholderEmail } from '$lib/utils/email.js';
+
+export { isPlaceholderEmail };
 
 export type SupportedSocialProvider = 'google' | 'github' | 'facebook' | 'twitter';
 
@@ -63,9 +66,11 @@ export async function getProvidersStatus(
 	}
 
 	// Calculate if the user has an alternative login method:
-	// 1. A registered email address for magic link sign-in.
+	// 1. A registered, real email address for magic link sign-in.
 	// 2. Or more than one linked social provider.
-	const hasEmailLogin = Boolean(userEmail && userEmail.trim().length > 0);
+	const hasEmailLogin = Boolean(
+		userEmail && userEmail.trim().length > 0 && !isPlaceholderEmail(userEmail)
+	);
 	const totalLinkedAccounts = linkedAccounts.length;
 
 	return SUPPORTED_PROVIDERS.map((provider) => {
@@ -118,7 +123,11 @@ export async function unlinkSocialAccount(
 		return { success: false, error: `No linked account found for provider "${providerId}".` };
 	}
 
-	const hasEmailLogin = Boolean(currentUser.email && currentUser.email.trim().length > 0);
+	const hasEmailLogin = Boolean(
+		currentUser.email &&
+			currentUser.email.trim().length > 0 &&
+			!isPlaceholderEmail(currentUser.email)
+	);
 	if (!hasEmailLogin && linkedAccounts.length <= 1) {
 		return {
 			success: false,

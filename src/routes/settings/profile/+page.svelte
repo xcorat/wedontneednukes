@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { ActionData, PageData } from './$types.js';
 	import MenuButton from '$lib/components/MenuButton.svelte';
+	import { isPlaceholderEmail } from '$lib/utils/email.js';
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
 
@@ -127,7 +128,11 @@
 						<p class="text-xs font-bold uppercase tracking-wider text-muted-foreground font-display">
 							Connected Account
 						</p>
-						<p class="text-sm font-bold text-foreground truncate">{data.user.email}</p>
+						<p class="text-sm font-bold text-foreground truncate">
+							{data.user.email && !isPlaceholderEmail(data.user.email)
+								? data.user.email
+								: 'No public email (Social Login)'}
+						</p>
 					</div>
 				</div>
 
