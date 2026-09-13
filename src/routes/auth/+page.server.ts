@@ -2,7 +2,7 @@ import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types.js';
 
 export const load: PageServerLoad = ({ locals, url, platform }) => {
-	const answer = url.searchParams.get('answer') ?? 'no';
+	const answer = (url.searchParams.get('answer') === 'yes' ? 'yes' : 'no') as 'no' | 'yes';
 
 	// Already authenticated → skip auth gate and go directly to pledge level
 	if (locals.user) {
