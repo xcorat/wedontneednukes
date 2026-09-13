@@ -20,12 +20,15 @@ export interface RenderedContent {
 // In raw Node.js test environments (tsx), import.meta.glob is not defined, so we provide a safe fallback.
 let rawFiles: Record<string, string> = {};
 
-if (typeof import.meta.glob === 'function') {
+try {
 	rawFiles = import.meta.glob<string>('/static/**/*.md', {
 		query: '?raw',
 		import: 'default',
 		eager: true
 	});
+} catch {
+	// In Node.js test environments (tsx), import.meta.glob is not defined;
+	// getRawFile() will fall back to reading from disk via node:fs below.
 }
 
 const contentCache = new Map<string, RenderedContent>();
