@@ -12,7 +12,8 @@
 		{
 			"binding": "DB",
 			"database_name": "wedontneednukes-db",
-			"database_id": "71ee76e9-ac81-4c66-b18c-4aaca12345e4"
+			"database_id": "71ee76e9-ac81-4c66-b18c-4aaca12345e4",
+			"migrations_dir": "drizzle/migrations"
 		}
 	],
 	"send_email": [
