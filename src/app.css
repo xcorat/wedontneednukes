@@ -119,7 +119,53 @@
 		font-family: var(--font-body);
 		transition: background-color 0.15s ease, color 0.15s ease;
 	}
+
+	/* Wiki scope — own defaults, same variable names. Applied via
+	   <svelte:body data-scope="wiki"> in src/routes/wiki/+layout.svelte.
+	   Specificity (0,1,0) > :root (0,0,1) → wiki look kicks in on default.
+	   Specificity vs :root[data-theme="X"] (0,1,1) loses → user-chosen
+	   non-classic theme still wins everywhere. */
+	body[data-scope='wiki'] {
+		--background: #fafaf5;
+		--surface: #ffffff;
+		--foreground: #1a1a1a;
+		--primary: #2563eb;
+		--primary-foreground: #ffffff;
+		--primary-shadow: #1e40af;
+		--secondary: #f59e0b;
+		--secondary-foreground: #1a1a1a;
+		--secondary-shadow: #b45309;
+		--muted: #6b7280;
+		--muted-foreground: #4b5563;
+		--border: #1a1a1a;
+		--success: #15803d;
+		--success-foreground: #ffffff;
+
+		--radius: 4px;
+		--shadow-sm: 0 2px 0 var(--border);
+		--shadow-md: 0 4px 0 var(--border);
+		--shadow-lg: 0 6px 0 var(--border);
+		--shadow-primary: 0 4px 0 var(--primary-shadow);
+		--shadow-secondary: 0 4px 0 var(--secondary-shadow);
+	}
 }
+
+/* Wiki prose — styling for HTML produced by marked.
+   Uses the same theme variables, so it auto-inherits wiki-scope overrides. */
+.wiki-prose { @apply space-y-4 leading-relaxed text-foreground font-body; }
+.wiki-prose h2 { @apply text-2xl font-extrabold tracking-tight mt-8 mb-2 font-display text-foreground; }
+.wiki-prose h3 { @apply text-xl font-bold tracking-tight mt-6 mb-2 font-display text-foreground; }
+.wiki-prose p { @apply text-base sm:text-lg; }
+.wiki-prose ul { @apply list-disc pl-6 space-y-1; }
+.wiki-prose ol { @apply list-decimal pl-6 space-y-1; }
+.wiki-prose a { @apply underline underline-offset-4 font-bold hover:text-primary; }
+.wiki-prose strong { @apply font-extrabold; }
+.wiki-prose em { @apply italic; }
+.wiki-prose code { @apply bg-surface border border-border px-1.5 py-0.5 text-sm font-mono; }
+.wiki-prose pre { @apply bg-surface border-2 border-border p-4 overflow-x-auto text-sm font-mono; }
+.wiki-prose pre code { @apply bg-transparent border-0 p-0; }
+.wiki-prose blockquote { @apply border-l-4 border-primary pl-4 italic text-muted-foreground; }
+.wiki-prose hr { @apply border-border my-6; }
 
 @theme inline {
 	--color-background: var(--background);

@@ -56,10 +56,14 @@ export function getAuth(env: App.Platform['env'], origin?: string) {
 		socialProviders.facebook = {
 			clientId: facebookClientId,
 			clientSecret: facebookClientSecret,
-			mapProfileToUser: (profile: { email?: string }) => ({
-				email: profile.email || null,
-				emailVerified: Boolean(profile.email)
-			}),
+			mapProfileToUser: (profile: any) => {
+				const id = profile?.id || profile?.sub || 'user';
+				const email = profile?.email;
+				return {
+					email: email || `${id}@facebook.placeholder.invalid`,
+					emailVerified: Boolean(email)
+				};
+			},
 			...(env.FACEBOOK_BUSINESS_CONFIG_ID ? { configId: env.FACEBOOK_BUSINESS_CONFIG_ID } : {})
 		};
 	}
@@ -68,10 +72,14 @@ export function getAuth(env: App.Platform['env'], origin?: string) {
 		socialProviders.twitter = {
 			clientId: env.TWITTER_CLIENT_ID,
 			clientSecret: env.TWITTER_CLIENT_SECRET,
-			mapProfileToUser: (profile: { email?: string }) => ({
-				email: profile.email || null,
-				emailVerified: Boolean(profile.email)
-			})
+			mapProfileToUser: (profile: any) => {
+				const id = profile?.data?.id || profile?.id || profile?.username || 'user';
+				const email = profile?.data?.email || profile?.email;
+				return {
+					email: email || `${id}@twitter.placeholder.invalid`,
+					emailVerified: Boolean(email)
+				};
+			}
 		};
 	}
 

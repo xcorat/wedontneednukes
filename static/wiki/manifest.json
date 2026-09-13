@@ -1,0 +1,47 @@
+{
+	"generatedAt": "2026-09-13T10:14:03.142Z",
+	"entries": [
+		{
+			"slug": "passive-meaning",
+			"title": "What does \"not supporting expansion\" mean practically?",
+			"category": "Action",
+			"order": 1,
+			"summary": "A passive stance against nuclear expansion has concrete, everyday actions attached to it."
+		},
+		{
+			"slug": "change-pledge",
+			"title": "Can I change my pledge?",
+			"category": "Pledge",
+			"order": 1,
+			"summary": "Pledges are not contracts. You can update your stance and commitment level at any time."
+		},
+		{
+			"slug": "why",
+			"title": "Why \"We Don't Need Nukes\"?",
+			"category": "Premise",
+			"order": 1,
+			"summary": "One fundamental premise. The short version — three reasons we don't need nuclear weapons."
+		},
+		{
+			"slug": "why-pledge",
+			"title": "Why pledge against nuclear weapons?",
+			"category": "Premise",
+			"order": 2,
+			"summary": "A pledge is a public, named commitment. Here is why it carries weight that private opinion does not."
+		},
+		{
+			"slug": "why-now",
+			"title": "Why now? What makes today different from the past?",
+			"category": "Premise",
+			"order": 3,
+			"summary": "Five forces are converging: AI, brittle command, broken treaties, multiple flashpoints, and lower tech barriers."
+		},
+		{
+			"slug": "privacy",
+			"title": "How is my data used?",
+			"category": "Privacy",
+			"order": 1,
+			"summary": "We do not sell, share, or fingerprint you. Anonymous voting is allowed; account data is minimal."
+		}
+	]
+}

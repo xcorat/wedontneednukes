@@ -12,7 +12,7 @@ export type QuestionType = 'single_choice' | 'multi_choice' | 'scale' | 'text';
 export interface FaqItem {
 	id: string; // UUID v4
 	text: string; // Display label (e.g., "Why?")
-	link: string; // Target URL (e.g., "/why")
+	link: string; // Target URL (e.g., "/wiki/faq/why")
 	description?: string;
 }
 

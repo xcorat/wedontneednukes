@@ -2,6 +2,7 @@
 	import { page } from '$app/state';
 	import type { ActionData, PageData } from './$types.js';
 	import MenuButton from '$lib/components/MenuButton.svelte';
+	import { isPlaceholderEmail } from '$lib/utils/email.js';
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
 
@@ -11,8 +12,10 @@
 	let showEmailForm = $state(false);
 	let emailInput = $state('');
 
+	const hasRealEmail = $derived(Boolean(data.user.email && !isPlaceholderEmail(data.user.email)));
+
 	$effect(() => {
-		emailInput = data.user.email ?? '';
+		emailInput = hasRealEmail ? data.user.email! : '';
 	});
 
 	const urlParams = $derived(page.url.searchParams);
@@ -152,7 +155,7 @@
 						<p class="text-xs font-bold uppercase tracking-wider text-muted-foreground font-display">
 							Primary Email Identity
 						</p>
-						{#if data.user.email}
+						{#if hasRealEmail}
 							<p class="text-sm font-bold text-foreground truncate">{data.user.email}</p>
 							<p class="text-[11px] text-muted-foreground">
 								{data.user.emailVerified ? '✓ Verified email' : 'Registered email address'}
@@ -171,7 +174,7 @@
 							onclick={() => (showEmailForm = !showEmailForm)}
 							class="border-2 border-border bg-surface px-3 py-1.5 text-xs font-bold text-foreground rounded-theme shadow-theme-sm transition-all hover:bg-background cursor-pointer"
 						>
-							{showEmailForm ? 'Cancel' : data.user.email ? 'Change Email' : 'Add Email'}
+							{showEmailForm ? 'Cancel' : hasRealEmail ? 'Change Email' : 'Add Email'}
 						</button>
 					</div>
 				</div>

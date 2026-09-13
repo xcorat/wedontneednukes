@@ -14,6 +14,9 @@
 - [x] **Database**: Cloudflare D1 with Drizzle ORM schemas (`user`, `session`, `account`, `campaign`, `pledge`).
 - [x] **Modular Widgets**: Independent, composable widgets under `src/lib/components/widgets/` (`QuestionHeroWidget`, `JoinFormWidget`, `PledgeFormWidget`, `ResultsWidget`, `ClaimVoteBanner`, `StepHeaderWidget`).
 - [x] **Anonymous Support**: HTTP-only `anon_id` cookie tracking and atomic vote claiming into `user_id`.
+- [x] **Knowledge Base & Wiki**: SSR wiki/FAQ at `/wiki` + `/wiki/faq/<slug>` with scoped theming.
+- [x] **About & Legal Compliance**: `/about`, `/legal/terms`, and `/legal/privacy` with OAuth standard redirects and consent disclosure.
+- [x] **Social Sharing & Official Channels**: Embeddable `SocialShareWidget` with one-click intents (X, Bluesky, Threads, Facebook, WhatsApp, LinkedIn), copy-link clipboard button, official profile links (Facebook, X, Bluesky, TikTok), top-bar `ShareButton` popover, and Helper AI Bot indicator (`BotButton`).
 - [ ] **Gated Questions Schema**: Migrating from single pledge table to dynamic question tree (`question`, `question_option`, `question_gate`, `user_response`).
 - [ ] **Dedicated Onboarding Steps**: Standalone routes `/onboarding/wedontneednukes`, `/onboarding/join`, `/onboarding/pledge`.
 
@@ -21,10 +24,10 @@
 - **Content Upload**: Integrate R2 for user-generated content (memes, videos).
 - **Curation**: Voting and curation mechanisms for community content.
 - **Wiki**: Editable FAQ wiki system.
-- **Social**: Enhanced social sharing and analytics.
+- **Social**: Enhanced social sharing analytics, dynamic quote cards, and downloadable banners.
 - **AI Features**: AI meme generator.
 - **Expansion**: Add additional campaigns using the modular engine.
-- **Agent**: RAG-based campaign agent for community Q&A.
+- **Agent**: RAG-based campaign agent for community Q&A (teaser button live in header).
 
 ## Phase 3: Decentralization & Scale
 - **P2P Data Layer**: Explore IPFS/OrbitDB integration.

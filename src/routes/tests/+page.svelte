@@ -37,6 +37,20 @@
 					desc: 'Single outer card container eliminating nested shadow stacking, integrated header and accordion drawer.'
 				}
 			]
+		},
+		{
+			title: 'Social Sharing & Channel Showcase',
+			path: '/tests/social',
+			badge: 'New',
+			description:
+				'Embeddable SocialShareWidget variants (card, compact, row), clipboard copying, and official campaign links for X, Bluesky, Facebook, and TikTok.',
+			pages: [
+				{
+					name: 'Social Sharing & Profiles Lab',
+					path: '/tests/social',
+					desc: 'Interactive preview of SocialShareWidget, copy link mechanism, and SocialLinks across themes.'
+				}
+			]
 		}
 	];
 </script>

@@ -2,12 +2,16 @@
 	import type { Snippet } from 'svelte';
 	import MenuButton from '$lib/components/MenuButton.svelte';
 	import FundraiserButton from '$lib/components/FundraiserButton.svelte';
+	import ShareButton from '$lib/components/ShareButton.svelte';
+	import BotButton from '$lib/components/BotButton.svelte';
 
 	interface Props {
 		backHref?: string;
 		backLabel?: string;
 		answer?: 'no' | 'yes' | string | null;
 		showFundraiser?: boolean;
+		showShare?: boolean;
+		showBot?: boolean;
 		showMenu?: boolean;
 		class?: string;
 		children?: Snippet;
@@ -18,6 +22,8 @@
 		backLabel = '← Back',
 		answer = null,
 		showFundraiser = false,
+		showShare = true,
+		showBot = true,
 		showMenu = true,
 		class: className = '',
 		children
@@ -50,6 +56,14 @@
 
 		{#if showFundraiser}
 			<FundraiserButton variant="icon" />
+		{/if}
+
+		{#if showShare}
+			<ShareButton />
+		{/if}
+
+		{#if showBot}
+			<BotButton />
 		{/if}
 
 		{#if showMenu}

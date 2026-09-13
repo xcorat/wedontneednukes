@@ -3,8 +3,13 @@
 	import { menuState } from '$lib/menu.svelte.js';
 	import { VERSION_LABEL } from '$lib/version.js';
 	import ThemeSwitcher from '$lib/components/ThemeSwitcher.svelte';
+	import SocialLinks from '$lib/components/SocialLinks.svelte';
+	import { isPlaceholderEmail } from '$lib/utils/email.js';
 
 	const user = $derived(page.data.user);
+
+	let isExternalOpen = $state(false);
+	let isTestsOpen = $state(false);
 
 	function handleKeydown(event: KeyboardEvent) {
 		if (event.key === 'Escape' && menuState.isOpen) {
@@ -65,7 +70,9 @@
 							{/if}
 							<div class="min-w-0 flex-1">
 								<p class="truncate text-xs font-bold text-foreground">{user.name}</p>
-								<p class="truncate text-[11px] text-muted-foreground">{user.email}</p>
+								<p class="truncate text-[11px] text-muted-foreground">
+									{user.email && !isPlaceholderEmail(user.email) ? user.email : 'Social account'}
+								</p>
 							</div>
 						</div>
 
@@ -130,44 +137,151 @@
 					onclick={() => menuState.close()}
 					class="flex items-center justify-between border-2 border-border bg-background px-3.5 py-2 text-sm font-bold text-foreground rounded-theme shadow-theme-sm hover:bg-secondary hover:text-secondary-foreground transition-all"
 				>
-					<span>Home (Premise)</span>
+					<span>Home</span>
 					<span>→</span>
 				</a>
 				<a
-					href="/why"
+					href="/about"
 					onclick={() => menuState.close()}
 					class="flex items-center justify-between border-2 border-border bg-background px-3.5 py-2 text-sm font-bold text-foreground rounded-theme shadow-theme-sm hover:bg-secondary hover:text-secondary-foreground transition-all"
 				>
-					<span>Why We Don't Need Nukes</span>
-					<span>→</span>
+					<span>About</span>
+					<span>ℹ️</span>
 				</a>
+
+				<!-- External Resources Dropdown -->
+				<div class="flex flex-col gap-1">
+					<button
+						type="button"
+						aria-expanded={isExternalOpen}
+						onclick={() => (isExternalOpen = !isExternalOpen)}
+						class="flex items-center justify-between border-2 border-border bg-background px-3.5 py-2 text-sm font-bold text-foreground rounded-theme shadow-theme-sm hover:bg-secondary hover:text-secondary-foreground transition-all cursor-pointer"
+					>
+						<span class="flex items-center gap-2">
+							<span>External Resources</span>
+						</span>
+						<svg
+							class="h-4 w-4 transition-transform duration-200 {isExternalOpen ? 'rotate-180' : ''}"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2.5"
+							viewBox="0 0 24 24"
+						>
+							<path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+						</svg>
+					</button>
+
+					{#if isExternalOpen}
+						<div class="flex flex-col gap-1.5 pl-3 pt-1 border-l-2 border-border/40 ml-2">
+							<a
+								href="/campaigns"
+								onclick={() => menuState.close()}
+								class="flex items-center justify-between border-2 border-border/60 bg-surface/80 px-3 py-1.5 text-xs font-bold text-foreground rounded-theme hover:bg-secondary hover:text-secondary-foreground transition-all"
+							>
+								<span>Campaigns</span>
+								<span>📣</span>
+							</a>
+							<a
+								href="/organizations"
+								onclick={() => menuState.close()}
+								class="flex items-center justify-between border-2 border-border/60 bg-surface/80 px-3 py-1.5 text-xs font-bold text-foreground rounded-theme hover:bg-secondary hover:text-secondary-foreground transition-all"
+							>
+								<span>Organizations</span>
+								<span>🌐</span>
+							</a>
+						</div>
+					{/if}
+				</div>
+
 				<a
-					href="/fundraiser"
+					href="/wiki"
 					onclick={() => menuState.close()}
 					class="flex items-center justify-between border-2 border-border bg-background px-3.5 py-2 text-sm font-bold text-foreground rounded-theme shadow-theme-sm hover:bg-secondary hover:text-secondary-foreground transition-all"
 				>
-					<span>Campaign Fundraiser</span>
-					<span>💛</span>
+					<span>Wiki &amp; FAQ</span>
+					<span>📖</span>
 				</a>
-				<a
-					href="/tests"
-					onclick={() => menuState.close()}
-					class="flex items-center justify-between border-2 border-border bg-background px-3.5 py-2 text-sm font-bold text-foreground rounded-theme shadow-theme-sm hover:bg-secondary hover:text-secondary-foreground transition-all"
-				>
-					<span>Test Lab &amp; Prototypes</span>
-					<span>🧪</span>
-				</a>
+
+				<!-- Tests Dropdown -->
+				<div class="flex flex-col gap-1">
+					<button
+						type="button"
+						aria-expanded={isTestsOpen}
+						onclick={() => (isTestsOpen = !isTestsOpen)}
+						class="flex items-center justify-between border-2 border-border bg-background px-3.5 py-2 text-sm font-bold text-foreground rounded-theme shadow-theme-sm hover:bg-secondary hover:text-secondary-foreground transition-all cursor-pointer"
+					>
+						<span class="flex items-center gap-2">
+							<span>Tests</span>
+						</span>
+						<svg
+							class="h-4 w-4 transition-transform duration-200 {isTestsOpen ? 'rotate-180' : ''}"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2.5"
+							viewBox="0 0 24 24"
+						>
+							<path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+						</svg>
+					</button>
+
+					{#if isTestsOpen}
+						<div class="flex flex-col gap-2.5 pl-3 pt-1.5 pb-1 border-l-2 border-border/40 ml-2">
+							<!-- Visual Themes -->
+							<div class="rounded-theme border-2 border-border/40 bg-surface/60 p-2.5">
+								<ThemeSwitcher compact={true} />
+							</div>
+
+							<!-- Test Links -->
+							<div class="flex flex-col gap-1">
+								<a
+									href="/tests"
+									onclick={() => menuState.close()}
+									class="flex items-center justify-between border-2 border-border/60 bg-surface/80 px-3 py-1.5 text-xs font-bold text-foreground rounded-theme hover:bg-secondary hover:text-secondary-foreground transition-all"
+								>
+									<span>Lab Directory</span>
+									<span>🧪</span>
+								</a>
+								<a
+									href="/tests/ui-forms"
+									onclick={() => menuState.close()}
+									class="flex items-center justify-between border-2 border-border/60 bg-surface/80 px-3 py-1.5 text-xs font-bold text-foreground rounded-theme hover:bg-secondary hover:text-secondary-foreground transition-all"
+								>
+									<span>UI Form Variants</span>
+									<span>📋</span>
+								</a>
+								<a
+									href="/tests/social"
+									onclick={() => menuState.close()}
+									class="flex items-center justify-between border-2 border-border/60 bg-surface/80 px-3 py-1.5 text-xs font-bold text-foreground rounded-theme hover:bg-secondary hover:text-secondary-foreground transition-all"
+								>
+									<span>Social Sharing Lab</span>
+									<span>🔗</span>
+								</a>
+							</div>
+						</div>
+					{/if}
+				</div>
 			</nav>
 
-			<!-- Theme Switcher section -->
+			<!-- Official Social Channels -->
 			<div class="border-t-2 border-border/20 pt-4">
-				<ThemeSwitcher />
+				<p class="text-xs font-black uppercase tracking-wider text-muted-foreground font-display mb-2.5">
+					Follow the Campaign
+				</p>
+				<SocialLinks variant="icons" />
 			</div>
 		</div>
 
-		<!-- Status bar: aligned bottom showing version and git commit id -->
-		<footer class="mt-auto border-t-2 border-border bg-background px-5 py-3 select-text">
-			<p class="text-xs font-mono font-medium tracking-wide text-muted-foreground">
+		<!-- Status bar: aligned bottom showing version and legal links -->
+		<footer class="mt-auto border-t-2 border-border bg-background px-5 py-3 flex flex-col gap-2">
+			<div class="flex items-center justify-between text-xs font-bold text-muted-foreground">
+				<a href="/legal/terms" onclick={() => menuState.close()} class="hover:text-foreground underline underline-offset-2">Terms</a>
+				<span>·</span>
+				<a href="/legal/privacy" onclick={() => menuState.close()} class="hover:text-foreground underline underline-offset-2">Privacy</a>
+				<span>·</span>
+				<a href="/about" onclick={() => menuState.close()} class="hover:text-foreground underline underline-offset-2">About</a>
+			</div>
+			<p class="text-[11px] font-mono font-medium tracking-wide text-muted-foreground select-text">
 				{VERSION_LABEL}
 			</p>
 		</footer>

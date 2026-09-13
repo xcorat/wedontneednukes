@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types.js';
-	import { StepHeaderWidget, ResultsWidget, ClaimVoteBanner } from '$lib/components/widgets/index.js';
+	import { StepHeaderWidget, ResultsWidget, ClaimVoteBanner, SocialShareWidget } from '$lib/components/widgets/index.js';
+	import { RESULTS_SHARE_TEXT } from '$lib/constants/social.js';
 
 	let { data }: { data: PageData } = $props();
 </script>
@@ -25,6 +26,15 @@
 		{#if data.isAnon}
 			<ClaimVoteBanner answer={data.answer} />
 		{/if}
+
+		<!-- Social Share Widget -->
+		<div class="mt-6">
+			<SocialShareWidget
+				text={RESULTS_SHARE_TEXT}
+				title="Share these results"
+				variant="card"
+			/>
+		</div>
 
 		<!-- Footnote -->
 		<p class="mt-6 text-center text-xs text-muted-foreground font-medium">
