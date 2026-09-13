@@ -10,6 +10,9 @@ export interface RenderedContent {
 	order?: number;
 	related?: string[];
 	updatedAt?: string;
+	website?: string;
+	headquarters?: string;
+	founded?: string;
 	html: string;
 }
 
@@ -75,6 +78,12 @@ export function parseAndRender(filePath: string): RenderedContent | null {
 			? (frontmatter.related as unknown[]).filter((v): v is string => typeof v === 'string')
 			: undefined,
 		updatedAt: typeof frontmatter.updatedAt === 'string' ? frontmatter.updatedAt : undefined,
+		website: typeof frontmatter.website === 'string' ? frontmatter.website : undefined,
+		headquarters: typeof frontmatter.headquarters === 'string' ? frontmatter.headquarters : undefined,
+		founded:
+			typeof frontmatter.founded === 'string' || typeof frontmatter.founded === 'number'
+				? String(frontmatter.founded)
+				: undefined,
 		html
 	};
 
@@ -122,6 +131,30 @@ export function getOrganizationsContent(): RenderedContent {
 	const content = parseAndRender('/static/organizations/index.md');
 	if (!content) {
 		throw error(404, 'Organizations content not found');
+	}
+	return content;
+}
+
+const SLUG_RE = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
+
+export function getCampaignArticle(slug: string): RenderedContent {
+	if (!SLUG_RE.test(slug)) {
+		throw error(404, 'Campaign not found');
+	}
+	const content = parseAndRender(`/static/campaigns/${slug}.md`);
+	if (!content) {
+		throw error(404, 'Campaign not found');
+	}
+	return content;
+}
+
+export function getOrganizationArticle(slug: string): RenderedContent {
+	if (!SLUG_RE.test(slug)) {
+		throw error(404, 'Organization not found');
+	}
+	const content = parseAndRender(`/static/organizations/${slug}.md`);
+	if (!content) {
+		throw error(404, 'Organization not found');
 	}
 	return content;
 }
