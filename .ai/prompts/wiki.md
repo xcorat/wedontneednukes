@@ -1,7 +1,29 @@
 # [DRAFT] Wiki / FAQ Feature Plan
 
 Audience: a coding agent picking this up later, or a human reviewer deciding scope.
-Status: **proposed** — nothing has been implemented yet.
+
+## Implementation Status
+
+**Implemented** as of 2026-09-13. The full feature is wired and shipping behind SSR (no prerender — see "Prerendering" note below). Read this file end-to-end for the design rationale, but the source of truth for what shipped is the actual code under:
+
+- `static/wiki/faq/*.md` — article bodies
+- `src/routes/wiki/` — `/wiki` index + `/wiki/faq/[slug]` detail
+- `src/lib/wiki/manifest.ts` — manifest reader (browser-safe; not in `$lib/server/`)
+- `src/lib/server/wiki/loader.ts` — single-article fetcher
+- `src/lib/utils/wiki-{frontmatter,render,scope-action}.ts` — parsing, markdown, `<svelte:body>` action
+- `scripts/generate-wiki-manifest.ts` — `pnpm manifest` to refresh the index
+
+## Prerendering: deferred, currently OFF
+
+The plan called for `export const prerender = true` on both `/wiki` and `/wiki/faq/[slug]`, but the implementation dropped prerender after it surfaced a Cloudflare-adapter issue: at dev/preview time, prerenderable routes still go through the request hook, and the hook tries to access `platform.env.DB` via `getAuth`, which the adapter throws on for prerenderable routes. With prerender off, the wiki is fully SSR'd. Trade-offs in this state:
+
+- ✅ First paint works correctly. Theme applied via `<svelte:body use:wikiScope>` runs during hydration.
+- ✅ `pnpm dev` / `pnpm build` both succeed.
+- ❌ No edge-statically-cached HTML for wiki pages. They run on every request.
+- ❌ Each visit costs a DB-free SSR pass.
+
+A future PR can re-enable prerender by teaching `hooks.server.ts` to skip the auth block for `/wiki` paths (or whitelisting wiki in the adapter's prerender-mode detection). The current implementation leaves that hook unchanged.
+
 
 ## Goal
 

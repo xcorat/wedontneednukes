@@ -29,7 +29,7 @@ export async function createHeroQuestion(): Promise<SingleChoiceQuestion> {
 			{
 				id: 'a7c39054-e77a-4ec6-89fa-b27e8529e0ef', // Stable UUID, not hashed
 				text: 'Why?',
-				link: '/why',
+				link: '/wiki/faq/why',
 				description: 'Read the core premises and scientific background.'
 			}
 		],

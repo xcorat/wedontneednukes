@@ -19,7 +19,7 @@
 		variant = model?.ui.layout === 'card' ? 'card' : 'hero',
 		headlineTop = model?.ui.headlineSplit?.prefix ?? "We don't need",
 		headlineAccent = model?.ui.headlineSplit?.highlight ?? 'Nukes !',
-		whyHref = model?.question.faq?.[0]?.link ?? '/why',
+		whyHref = model?.question.faq?.[0]?.link ?? '/wiki/faq/why',
 		selectedChoice = null,
 		onChoice,
 		class: className = ''

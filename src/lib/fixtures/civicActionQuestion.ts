@@ -29,7 +29,7 @@ export async function createCivicActionQuestion(): Promise<SingleChoiceQuestion>
 			{
 				id: 'c2e95873-d122-4a2b-c721-e2395932b002',
 				text: 'Action Areas',
-				link: '/why',
+				link: '/wiki/faq/why',
 				description: 'Explore the three strategic pillars of our campaign.'
 			}
 		],

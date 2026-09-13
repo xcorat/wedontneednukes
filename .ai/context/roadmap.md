@@ -22,6 +22,7 @@ Status snapshot distilled from `docs/roadmap/phases.md` and `docs/roadmap/milest
 - D1 + Drizzle ORM schemas for Better Auth (`user`, `session`, `account`) and core entities (`campaign`, `pledge`).
 - Independent composable widgets under `src/lib/components/widgets/`.
 - Anonymous `anon_id` cookie flow and atomic vote claiming into `user_id`.
+- Public wiki/FAQ at `/wiki` + `/wiki/faq/<slug>` (SSR). Content in `static/wiki/faq/*.md`, regenerated into `manifest.json` via `pnpm manifest`. Wiki has its own scoped theme variables applied through `<svelte:body use:wikiScope>`. Replaces the old `/why` page.
 
 **Open (⬜) — These are the active work items:**
 

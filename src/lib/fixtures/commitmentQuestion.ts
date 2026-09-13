@@ -28,7 +28,7 @@ export async function createCommitmentQuestion(): Promise<MultiChoiceQuestion> {
 			{
 				id: 'b1e84762-c011-4f1a-b610-d1294821a001',
 				text: 'Pledge Guide',
-				link: '/why',
+				link: '/wiki/faq/why',
 				description: 'Learn about our commitment levels and expectations.'
 			}
 		],

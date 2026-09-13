@@ -137,12 +137,12 @@
 					<span>→</span>
 				</a>
 				<a
-					href="/why"
+					href="/wiki"
 					onclick={() => menuState.close()}
 					class="flex items-center justify-between border-2 border-border bg-background px-3.5 py-2 text-sm font-bold text-foreground rounded-theme shadow-theme-sm hover:bg-secondary hover:text-secondary-foreground transition-all"
 				>
-					<span>Why We Don't Need Nukes</span>
-					<span>→</span>
+					<span>Wiki &amp; FAQ</span>
+					<span>📖</span>
 				</a>
 				<a
 					href="/fundraiser"
