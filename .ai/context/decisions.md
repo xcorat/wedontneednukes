@@ -89,6 +89,26 @@
 **Decision**: Configure Better Auth with optional user email schema, social providers mapping placeholder emails where needed, and native Two-Factor Authentication plugin (`/auth/two-factor`).
 **Consequences**: Eliminates friction for users without public emails on OAuth, provides high-security 2FA for sensitive accounts, and safe account unlinking rules.
 
+## ADR-14: Content-Addressed Q&A Identity
+**Status**: Proposed
+**Date**: 2026-09-12
+**Context**: As the project moves from the v0 single-`pledge` table to the dynamic gated-questions schema, we need stable, content-derived identifiers for questions and answer choices that survive copy edits and let us detect duplicate and exact-reuse without string compares.
+**Decision**:
+1. Question identity = SHA-256 of an explicit, length-prefixed, domain-separated byte string built from `type` + canonicalized text + canonicalized answer labels.
+2. Three hashes, not one concatenated blob: `textHash`, `answerSetHash`, and a composite `id` derived from both plus `type`. Choice identity is `(questionId, labelHash)`.
+3. Public domain prefix `wdnn-qa-v1` (not a secret); rotate only on canonicalization-version bumps.
+4. Canonicalization v1 (small on purpose): Unicode NFC → trim → collapse whitespace → lowercase. Punctuation stripping, stemming, markdown peeling are explicitly out of scope for v1.
+5. Length-prefixed tagged fields (`<tag>:<len>:<value>`) prevent concatenation collisions. Concat-with-delimiter is forbidden.
+6. Truncate to 24 hex (96 bits) for human-facing ids (`qt_`, `as_`, `q_`, `al_`, `opt_`); store full 64-hex content digest on the row for collision insurance.
+7. Choice `value` is an internal alias binding key for UI and stats and MUST NOT participate in identity. Choice `label` is public and identity-bearing.
+8. Persistence: `question.id` PK + unique `content_sha256` + unique `(campaign_id, slug)` + unique `(question_id, label_hash)` on choices. Slug is the mutable product handle; id/content_sha256 is content identity. The same `question` row can be reused across campaigns via a `campaign_question` join table keyed by `(campaign_id, question_id, order_index)`. Responses store both `question_id` and `content_sha256` so editing copy creates a new question row and preserves old answers against the old id.
+**Consequences**:
+- Edit copy on a question → new `id`, old responses unchanged. Slug retains the human topic handle.
+- Duplicate detection is an index lookup on `content_sha256` / `(text_hash, answer_set_hash)`, not a string compare.
+- Similarity search stays a separate problem on raw text; these hashes only answer "same object".
+- Hashes are NOT tamper evidence — anyone can recompute them. Integrity of *who answered* still relies on auth + anon cookies + server write path.
+- Supersedes the v0 FNV/`id === hash`/bool-blob sketches that mixed identity with display.
+
 ## ADR-13: Dual Anonymous Identity & Server-Side Vote Claiming
 **Status**: Accepted
 **Date**: 2026-09-12
