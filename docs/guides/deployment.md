@@ -84,13 +84,13 @@ The D1 database is managed using Drizzle ORM:
 
 ```bash
 # Generate migration files from schema
-npm run db:generate
+pnpm db:generate
 
 # Apply migrations locally (for testing against local SQLite/Miniflare)
-npx wrangler d1 migrations apply wedontneednukes-db --local
+pnpm exec wrangler d1 migrations apply wedontneednukes-db --local
 
 # Apply migrations to remote production D1
-npx wrangler d1 migrations apply wedontneednukes-db --remote
+pnpm exec wrangler d1 migrations apply wedontneednukes-db --remote
 ```
 
 ---
@@ -101,8 +101,8 @@ To build and deploy the Worker directly using Wrangler:
 
 ```bash
 # 1. Build SvelteKit bundle for Cloudflare
-npm run build
+pnpm build
 
 # 2. Deploy Worker and static assets
-npx wrangler deploy
+pnpm exec wrangler deploy
 ```

@@ -17,6 +17,8 @@ declare global {
 				FACEBOOK_APP_ID?: string;
 				FACEBOOK_APP_SECRET?: string;
 				FACEBOOK_BUSINESS_CONFIG_ID?: string;
+				TWITTER_CLIENT_ID?: string;
+				TWITTER_CLIENT_SECRET?: string;
 				TURNSTILE_SITE_KEY: string;
 				TURNSTILE_SECRET_KEY: string;
 				BETTER_AUTH_SECRET: string;

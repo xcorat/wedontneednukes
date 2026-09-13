@@ -5,11 +5,19 @@ This document outlines the technical stack chosen for the WeDoNotNeedNukes proje
 ## SvelteKit & Svelte
 - **Svelte 5.57.x**: Utilizing the new Runes paradigm (`$state`, `$derived`, `$props`, `$effect`, `{#snippet}`) for reactive state management.
 - **SvelteKit 2.70.x**: Current stable release (with SvelteKit 3 in RC).
-- **CLI**: `npx sv create` replaces the older `npm create svelte@latest`.
+- **Package Manager**: **`pnpm`** exclusively.
+- **CLI**: `pnpm dlx sv create` replaces the older `npm create svelte@latest` / `npx sv create`.
 - **Example Initialization**:
   ```bash
-  npx sv create my-app --template minimal --types ts --add tailwindcss
+  pnpm dlx sv create my-app --template minimal --types ts --add tailwindcss
   ```
+
+## Package Manager: Why `pnpm` over `bun`
+- **Workerd Alignment**: Cloudflare Workers executes on the `workerd` V8 engine, not the Bun runtime.
+- **Miniflare / Local Dev**: Local emulation of D1, KV, and bindings relies on Wrangler + Miniflare. Miniflare uses Node.js standard APIs and native packages that encounter known runtime bugs when run directly inside Bun.
+- **Cloudflare Build System**: Cloudflare Pages / Workers build pipelines natively recognize `pnpm-lock.yaml` and install via pnpm with zero custom setup.
+- **Overrides**: `package.json` uses `"pnpm": { "overrides": { "kysely": "0.28.17" } }` to ensure D1 and Better-Auth share a single compatible Kysely driver.
+
 
 ## Cloudflare Deployment
 - **Platform Strategy**: Pages + Workers converged in 2025. Workers with Static Assets is the recommended deployment strategy.
@@ -49,8 +57,8 @@ This document outlines the technical stack chosen for the WeDoNotNeedNukes proje
 - **Version**: 1.6.x (runes-native), built on top of Bits UI v1.
 - **Setup**:
   ```bash
-  npx shadcn-svelte@latest init
-  npx shadcn-svelte@latest add button card
+  pnpm dlx shadcn-svelte@latest init
+  pnpm dlx shadcn-svelte@latest add button card
   ```
 - **Usage**: Employs `{#snippet}` blocks instead of `<slot />`.
 - **Configuration**: Generates `components.json` and configures necessary path aliases in `svelte.config.js` and `tsconfig.json`.

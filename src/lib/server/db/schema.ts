@@ -5,8 +5,9 @@ import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 export const user = sqliteTable('user', {
 	id: text('id').primaryKey(),
 	name: text('name').notNull(),
-	email: text('email').notNull().unique(),
+	email: text('email').unique(),
 	emailVerified: integer('email_verified', { mode: 'boolean' }).notNull().default(false),
+	twoFactorEnabled: integer('two_factor_enabled', { mode: 'boolean' }).notNull().default(false),
 	image: text('image'),
 	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
@@ -78,4 +79,39 @@ export const pledge = sqliteTable('pledge', {
 	createdAt: integer('created_at', { mode: 'timestamp' }).notNull()
 });
 
-export const schema = { user, session, account, verification, campaign, pledge };
+export const userProfile = sqliteTable('user_profile', {
+	userId: text('user_id')
+		.primaryKey()
+		.references(() => user.id, { onDelete: 'cascade' }),
+	displayName: text('display_name'),
+	isDisplayNamePublic: integer('is_display_name_public', { mode: 'boolean' }).notNull().default(false),
+	bio: text('bio'),
+	isBioPublic: integer('is_bio_public', { mode: 'boolean' }).notNull().default(false),
+	location: text('location'),
+	isLocationPublic: integer('is_location_public', { mode: 'boolean' }).notNull().default(false),
+	website: text('website'),
+	isWebsitePublic: integer('is_website_public', { mode: 'boolean' }).notNull().default(false),
+	isPledgePublic: integer('is_pledge_public', { mode: 'boolean' }).notNull().default(false),
+	createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+	updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull()
+});
+
+export type UserProfile = typeof userProfile.$inferSelect;
+export type NewUserProfile = typeof userProfile.$inferInsert;
+
+export const twoFactor = sqliteTable('two_factor', {
+	id: text('id').primaryKey(),
+	secret: text('secret').notNull(),
+	backupCodes: text('backup_codes').notNull(),
+	userId: text('user_id')
+		.notNull()
+		.references(() => user.id, { onDelete: 'cascade' }),
+	verified: integer('verified', { mode: 'boolean' }).notNull().default(true),
+	failedVerificationCount: integer('failed_verification_count').notNull().default(0),
+	lockedUntil: integer('locked_until', { mode: 'timestamp' })
+});
+
+export type TwoFactor = typeof twoFactor.$inferSelect;
+export type NewTwoFactor = typeof twoFactor.$inferInsert;
+
+export const schema = { user, session, account, verification, twoFactor, campaign, pledge, userProfile };

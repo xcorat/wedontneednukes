@@ -34,12 +34,24 @@ See `docs/research/folder-structure.md` for full tree.
 - `src/lib/server/` — server-only code (DB, auth, services)
 - `src/routes/` — thin composition layer
 
+## Package Manager & Tooling
+- **Package Manager**: **`pnpm` ONLY**. Never use `npm` or `npx`.
+  - Install dependencies: `pnpm install` or `pnpm add <pkg>`
+  - Run scripts: `pnpm dev`, `pnpm build`, `pnpm check`, `pnpm test`
+  - Execute binaries: `pnpm exec <cmd>` or `pnpm dlx <cmd>`
+  - Database tasks: `pnpm db:generate`, `pnpm db:migrate`
+  - Cloudflare / Wrangler: `pnpm exec wrangler <cmd>`
+- **Why NOT Bun**:
+  - Cloudflare Workers executes on the **workerd** V8 runtime, not Bun.
+  - SvelteKit's `@sveltejs/adapter-cloudflare` and Miniflare's local D1/KV emulation rely on Node.js-compatible APIs and native bindings.
+  - `pnpm` has first-class native detection and support in Cloudflare's build platform and strictly honors `"pnpm": { "overrides": { "kysely": ... } }` in `package.json`.
+
 ## Key Patterns
 - Pledge flows are JSON directed graphs, traversed by a state machine engine
 - DB adapter swapped via env var (`DB_ADAPTER=d1|turso|memory`)
 - Auth uses Better Auth with factory: `getAuth(platform.env)`
 - `wrangler.jsonc` for CF config (not `.toml`)
-- `npx sv create` for project init (not `npm create svelte`)
+- `pnpm dlx sv create` for project init (not `npm create svelte` or `npx sv create`)
 
 ## Context Files
 - [`architecture.md`](context/architecture.md) - System layers and architectural patterns

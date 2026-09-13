@@ -8,13 +8,13 @@
 
 <aside
 	aria-label="Under Construction"
-	class="sticky top-0 z-50 flex h-8 w-full items-center justify-center border-b-2 border-[#212121] px-4 select-none font-['Poppins',sans-serif]"
-	style="background: repeating-linear-gradient(-45deg, #FFD600, #FFD600 12px, #FFFDE7 12px, #FFFDE7 24px);"
+	class="sticky top-0 z-50 flex h-8 w-full items-center justify-center border-b-2 border-border px-4 select-none font-display"
+	style="background: repeating-linear-gradient(-45deg, var(--secondary), var(--secondary) 12px, var(--background) 12px, var(--background) 24px);"
 >
-	<div class="flex items-center justify-center gap-1.5 text-xs sm:text-sm font-black tracking-wider uppercase text-[#212121]">
+	<div class="flex items-center justify-center gap-1.5 text-xs sm:text-sm font-black tracking-wider uppercase text-foreground">
 		<span>Under Construction</span>
 		<svg
-			class="h-4 w-4 shrink-0 text-[#212121]"
+			class="h-4 w-4 shrink-0 text-foreground"
 			viewBox="0 0 24 24"
 			fill="none"
 			stroke="currentColor"

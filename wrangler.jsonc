@@ -12,7 +12,8 @@
 		{
 			"binding": "DB",
 			"database_name": "wedontneednukes-db",
-			"database_id": "71ee76e9-ac81-4c66-b18c-4aaca12345e4"
+			"database_id": "71ee76e9-ac81-4c66-b18c-4aaca12345e4",
+			"migrations_dir": "drizzle/migrations"
 		}
 	],
 	"send_email": [
@@ -25,6 +26,11 @@
     "BETTER_AUTH_URL": "https://wedontneednukes.org",
     "FACEBOOK_APP_ID": "1059794736968380"
   }
+	// Edge Security & Rate Limiting:
+	// - Apply Cloudflare WAF rate limiting rules on the zone:
+	//   * Route: /api/auth/* -> Threshold: 15 requests per minute per IP action: Block or Managed Challenge.
+	//   * Bot Management: Cloudflare Turnstile token verified on /api/auth/sign-in/* and form submissions.
+	//   * DDOS: Cloudflare HTTP DDoS Attack Protection enabled by default.
 }
 
 // {

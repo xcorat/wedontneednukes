@@ -1,6 +1,6 @@
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
-import { magicLink } from 'better-auth/plugins';
+import { magicLink, twoFactor } from 'better-auth/plugins';
 import { getDb } from '$lib/server/db/client.js';
 import { schema } from '$lib/server/db/schema.js';
 import { sendMagicLinkEmail } from '$lib/server/email.js';
@@ -56,8 +56,22 @@ export function getAuth(env: App.Platform['env'], origin?: string) {
 		socialProviders.facebook = {
 			clientId: facebookClientId,
 			clientSecret: facebookClientSecret,
-			mapProfileToUser: () => ({ emailVerified: true }),
+			mapProfileToUser: (profile: { email?: string }) => ({
+				email: profile.email || null,
+				emailVerified: Boolean(profile.email)
+			}),
 			...(env.FACEBOOK_BUSINESS_CONFIG_ID ? { configId: env.FACEBOOK_BUSINESS_CONFIG_ID } : {})
+		};
+	}
+
+	if (env.TWITTER_CLIENT_ID && env.TWITTER_CLIENT_SECRET) {
+		socialProviders.twitter = {
+			clientId: env.TWITTER_CLIENT_ID,
+			clientSecret: env.TWITTER_CLIENT_SECRET,
+			mapProfileToUser: (profile: { email?: string }) => ({
+				email: profile.email || null,
+				emailVerified: Boolean(profile.email)
+			})
 		};
 	}
 
@@ -72,7 +86,7 @@ export function getAuth(env: App.Platform['env'], origin?: string) {
 		account: {
 			accountLinking: {
 				enabled: true,
-				trustedProviders: ['google', 'github', 'facebook']
+				trustedProviders: ['google', 'github', 'facebook', 'twitter']
 			}
 		},
 		socialProviders,
@@ -81,6 +95,10 @@ export function getAuth(env: App.Platform['env'], origin?: string) {
 				sendMagicLink: async ({ email, url }) => {
 					await sendMagicLinkEmail({ to: email, url, env });
 				}
+			}),
+			twoFactor({
+				issuer: "We Don't Need Nukes",
+				allowPasswordless: true
 			})
 		]
 	});
