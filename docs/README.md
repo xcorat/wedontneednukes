@@ -28,9 +28,10 @@ Welcome to the WeDoNotNeedNukes documentation.
 - [FAQ Content](campaigns/nukes/faq-content.md)
 - [UI Copy & Messaging](campaigns/nukes/copy.md)
 
-## Design `[DRAFT]`
-- [Design System](design/design-system.md)
-- [User Flows](design/user-flows.md)
+## Design `[ACTIVE]`
+- [Design System](design/design-system.md): Neo-Brutalist design tokens, themes, and font systems.
+- [User Flows](design/user-flows.md): Core user interaction workflows.
+- [User Flows, Form Modularization & Gated Questions Architecture](design/user-flows-and-data-architecture.md): Full component modularization, anonymous state strategy, and question tree specifications.
 
 ## Research `[RESEARCH / EXPLORATION]`
 - [Tech Stack](research/tech-stack.md)

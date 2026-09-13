@@ -68,3 +68,33 @@
 - **Dependency Overrides**: Preserves required `"pnpm": { "overrides": { "kysely": ... } }` in `package.json` for Better-Auth D1 integration.
 - **Speed & Determinism**: Fast, content-addressable store without phantom dependencies.
 
+## ADR-10: Component Decomposition into Independent Widgets
+**Status**: Accepted
+**Date**: 2026-09-12
+**Context**: Route components (`/`, `/auth`, `/pledge`, `/results`) were monolithic and difficult to reuse across onboarding experiments, embeds, and test suites.
+**Decision**: Extract page sections into self-contained widgets under `src/lib/components/widgets/` (`QuestionHeroWidget`, `JoinFormWidget`, `PledgeFormWidget`, `ResultsWidget`, `ClaimVoteBanner`, `StepHeaderWidget`) exported through a central `index.ts`.
+**Consequences**: Routes become thin composition shells. Widgets can be independently tested, themed, and embedded in multiple contexts (e.g., onboarding steps or inline drawers).
+
+## ADR-11: Neo-Brutalist Design System with Dynamic Multi-Theme Runtime
+**Status**: Accepted
+**Date**: 2026-09-12
+**Context**: Need a distinctive, energetic visual identity that appeals to grassroots movements while supporting multiple stylistic tastes (cartoonish 2D game, ultra-compact, flat minimal, dark).
+**Decision**: Implement a Neo-Brutalist foundation using Tailwind CSS v4 variables in `src/app.css` paired with a runes-based dynamic theme switcher (`theme.svelte.ts`) manipulating `data-theme` on `:root`.
+**Consequences**: Zero CSS bloat, instant zero-runtime stylesheet updates, user theme preference persisted in `localStorage`.
+
+## ADR-12: Multi-Provider Social Login with Optional Email & Two-Factor Authentication
+**Status**: Accepted
+**Date**: 2026-09-12
+**Context**: Modern auth requires frictionless social logins (Google, GitHub, Facebook, Twitter/X), passwordless magic links, and optional high-security protections without forcing mandatory email entry on OAuth.
+**Decision**: Configure Better Auth with optional user email schema, social providers mapping placeholder emails where needed, and native Two-Factor Authentication plugin (`/auth/two-factor`).
+**Consequences**: Eliminates friction for users without public emails on OAuth, provides high-security 2FA for sensitive accounts, and safe account unlinking rules.
+
+## ADR-13: Dual Anonymous Identity & Server-Side Vote Claiming
+**Status**: Accepted
+**Date**: 2026-09-12
+**Context**: Grassroots engagement requires low-friction anonymous voting while allowing visitors to later create an account without losing their pledge history or experiencing layout flicker.
+**Decision**:
+1. Issue persistent HTTP-only cookie (`anon_id`) on anonymous interactions for instant SSR detection in `+page.server.ts`.
+2. When the user logs in or registers, execute an atomic DB migration linking existing `anon_id` records to `user_id`.
+**Consequences**: Zero visual flicker (FOUC) on return visits, seamless conversion from anonymous supporter to permanent community member.
+
