@@ -137,6 +137,14 @@
 					<span>→</span>
 				</a>
 				<a
+					href="/about"
+					onclick={() => menuState.close()}
+					class="flex items-center justify-between border-2 border-border bg-background px-3.5 py-2 text-sm font-bold text-foreground rounded-theme shadow-theme-sm hover:bg-secondary hover:text-secondary-foreground transition-all"
+				>
+					<span>About Project</span>
+					<span>ℹ️</span>
+				</a>
+				<a
 					href="/wiki"
 					onclick={() => menuState.close()}
 					class="flex items-center justify-between border-2 border-border bg-background px-3.5 py-2 text-sm font-bold text-foreground rounded-theme shadow-theme-sm hover:bg-secondary hover:text-secondary-foreground transition-all"
@@ -168,9 +176,16 @@
 			</div>
 		</div>
 
-		<!-- Status bar: aligned bottom showing version and git commit id -->
-		<footer class="mt-auto border-t-2 border-border bg-background px-5 py-3 select-text">
-			<p class="text-xs font-mono font-medium tracking-wide text-muted-foreground">
+		<!-- Status bar: aligned bottom showing version and legal links -->
+		<footer class="mt-auto border-t-2 border-border bg-background px-5 py-3 flex flex-col gap-2">
+			<div class="flex items-center justify-between text-xs font-bold text-muted-foreground">
+				<a href="/legal/terms" onclick={() => menuState.close()} class="hover:text-foreground underline underline-offset-2">Terms</a>
+				<span>·</span>
+				<a href="/legal/privacy" onclick={() => menuState.close()} class="hover:text-foreground underline underline-offset-2">Privacy</a>
+				<span>·</span>
+				<a href="/about" onclick={() => menuState.close()} class="hover:text-foreground underline underline-offset-2">About</a>
+			</div>
+			<p class="text-[11px] font-mono font-medium tracking-wide text-muted-foreground select-text">
 				{VERSION_LABEL}
 			</p>
 		</footer>

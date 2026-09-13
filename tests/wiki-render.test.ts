@@ -18,7 +18,14 @@ describe('Wiki markdown renderer', () => {
 
 	it('renders links', () => {
 		const html = renderMarkdown('[Home](/)');
-		assert.match(html, /<a href="\/\/">Home<\/a>/);
+		assert.match(html, /<a href="\/">Home<\/a>/);
+	});
+
+	it('sanitizes dangerous link protocols', () => {
+		const html = renderMarkdown('[click](javascript:alert(1)) and [bad](vbscript:run)');
+		assert.doesNotMatch(html, /href="javascript:/);
+		assert.doesNotMatch(html, /href="vbscript:/);
+		assert.match(html, /click and bad/);
 	});
 
 	it('drops raw HTML in author content', () => {

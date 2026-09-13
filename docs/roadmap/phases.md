@@ -14,6 +14,8 @@
 - [x] **Database**: Cloudflare D1 with Drizzle ORM schemas (`user`, `session`, `account`, `campaign`, `pledge`).
 - [x] **Modular Widgets**: Independent, composable widgets under `src/lib/components/widgets/` (`QuestionHeroWidget`, `JoinFormWidget`, `PledgeFormWidget`, `ResultsWidget`, `ClaimVoteBanner`, `StepHeaderWidget`).
 - [x] **Anonymous Support**: HTTP-only `anon_id` cookie tracking and atomic vote claiming into `user_id`.
+- [x] **Knowledge Base & Wiki**: SSR wiki/FAQ at `/wiki` + `/wiki/faq/<slug>` with scoped theming.
+- [x] **About & Legal Compliance**: `/about`, `/legal/terms`, and `/legal/privacy` with OAuth standard redirects and consent disclosure.
 - [ ] **Gated Questions Schema**: Migrating from single pledge table to dynamic question tree (`question`, `question_option`, `question_gate`, `user_response`).
 - [ ] **Dedicated Onboarding Steps**: Standalone routes `/onboarding/wedontneednukes`, `/onboarding/join`, `/onboarding/pledge`.
 

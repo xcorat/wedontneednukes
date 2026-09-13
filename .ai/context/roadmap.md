@@ -23,6 +23,7 @@ Status snapshot distilled from `docs/roadmap/phases.md` and `docs/roadmap/milest
 - Independent composable widgets under `src/lib/components/widgets/`.
 - Anonymous `anon_id` cookie flow and atomic vote claiming into `user_id`.
 - Public wiki/FAQ at `/wiki` + `/wiki/faq/<slug>` (SSR). Content in `static/wiki/faq/*.md`, regenerated into `manifest.json` via `pnpm manifest`. Wiki has its own scoped theme variables applied through `<svelte:body use:wikiScope>`. Replaces the old `/why` page.
+- About & Legal pages (`/about`, `/legal/terms`, `/legal/privacy`, OAuth redirects `/terms` & `/privacy`) sourced from Markdown in `/static`, with safe URI protocol sanitization and OAuth consent notice.
 
 **Open (⬜) — These are the active work items:**
 

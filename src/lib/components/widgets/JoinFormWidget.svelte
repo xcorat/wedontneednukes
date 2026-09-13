@@ -343,5 +343,13 @@
 				Continue anonymously →
 			</button>
 		{/if}
+
+		<!-- OAuth & Legal compliance disclosure -->
+		<p class="mt-4 text-center text-[11px] leading-relaxed text-muted-foreground">
+			By continuing, you agree to our
+			<a href="/legal/terms" class="font-bold underline underline-offset-2 hover:text-foreground">Terms</a>
+			and
+			<a href="/legal/privacy" class="font-bold underline underline-offset-2 hover:text-foreground">Privacy Policy</a>.
+		</p>
 	{/if}
 </div>

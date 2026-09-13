@@ -36,7 +36,7 @@ describe('Hero Question Fixture & UI View Model', () => {
 		// Verify FAQ
 		assert.ok(Array.isArray(hero.faq));
 		assert.equal(hero.faq?.length, 1);
-		assert.equal(hero.faq?.[0].link, '/why');
+		assert.equal(hero.faq?.[0].link, '/wiki/faq/why');
 	});
 
 	it('maps heroViewModel with UI styling keyed by value', async () => {
