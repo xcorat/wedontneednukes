@@ -136,16 +136,6 @@
 							<span>Security Settings</span>
 							<span>🛡️</span>
 						</a>
-
-						<button
-							type="button"
-							onclick={handleSignOut}
-							disabled={isLoggingOut}
-							class="flex items-center justify-between border-2 border-border bg-background px-3.5 py-2 text-sm font-bold text-foreground rounded-theme shadow-theme-sm hover:bg-destructive hover:text-destructive-foreground hover:translate-y-[1px] transition-all cursor-pointer disabled:opacity-50"
-						>
-							<span>{isLoggingOut ? 'Logging out...' : 'Log Out'}</span>
-							<span>🚪</span>
-						</button>
 					</div>
 				{:else}
 					<a
@@ -301,8 +291,20 @@
 			</div>
 		</div>
 
-		<!-- Status bar: aligned bottom showing version and legal links -->
-		<footer class="mt-auto border-t-2 border-border bg-background px-5 py-3 flex flex-col gap-2">
+		<!-- Status bar: aligned bottom showing logout, version and legal links -->
+		<footer class="mt-auto border-t-2 border-border bg-background px-5 py-3.5 flex flex-col gap-3">
+			{#if user}
+				<button
+					type="button"
+					onclick={handleSignOut}
+					disabled={isLoggingOut}
+					class="w-full flex items-center justify-between border-2 border-border bg-primary px-3.5 py-2.5 text-sm font-black text-primary-foreground rounded-theme shadow-theme-primary hover:translate-y-[1px] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all cursor-pointer disabled:opacity-50 font-display"
+				>
+					<span>{isLoggingOut ? 'Logging out...' : 'Log Out'}</span>
+					<span>🚪</span>
+				</button>
+			{/if}
+
 			<div class="flex items-center justify-between text-xs font-bold text-muted-foreground">
 				<a href="/legal/terms" onclick={() => menuState.close()} class="hover:text-foreground underline underline-offset-2">Terms</a>
 				<span>·</span>
