@@ -14,8 +14,19 @@ export const POST: RequestHandler = async (event) => {
 		}
 	}
 
-	event.cookies.delete('better-auth.session_token', { path: '/' });
-	event.cookies.delete('__Secure-better-auth.session_token', { path: '/' });
+	// Clear all Better Auth session cookies
+	const sessionCookies = [
+		'better-auth.session_token',
+		'__Secure-better-auth.session_token',
+		'better-auth.session_data',
+		'__Secure-better-auth.session_data',
+		'better-auth.dont_remember',
+		'__Secure-better-auth.dont_remember'
+	];
+
+	for (const name of sessionCookies) {
+		event.cookies.delete(name, { path: '/' });
+	}
 
 	redirect(303, '/');
 };

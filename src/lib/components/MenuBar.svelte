@@ -18,22 +18,10 @@
 		}
 	}
 
-	async function handleSignOut() {
+	function handleSignOut() {
 		if (isLoggingOut) return;
 		isLoggingOut = true;
-		try {
-			await fetch('/api/auth/sign-out', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			});
-		} catch (err) {
-			console.error('Logout error:', err);
-		} finally {
-			menuState.close();
-			window.location.href = '/';
-		}
+		menuState.close();
 	}
 </script>
 
@@ -294,15 +282,15 @@
 		<!-- Status bar: aligned bottom showing logout, version and legal links -->
 		<footer class="mt-auto border-t-2 border-border bg-background px-5 py-3.5 flex flex-col gap-3">
 			{#if user}
-				<button
-					type="button"
-					onclick={handleSignOut}
-					disabled={isLoggingOut}
-					class="w-full flex items-center justify-between border-2 border-border bg-primary px-3.5 py-2.5 text-sm font-black text-primary-foreground rounded-theme shadow-theme-primary hover:translate-y-[1px] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all cursor-pointer disabled:opacity-50 font-display"
-				>
-					<span>{isLoggingOut ? 'Logging out...' : 'Log Out'}</span>
-					<span>🚪</span>
-				</button>
+				<form method="POST" action="/auth/logout" onsubmit={handleSignOut} class="w-full">
+					<button
+						type="submit"
+						class="w-full flex items-center justify-between border-2 border-border bg-primary px-3.5 py-2.5 text-sm font-black text-primary-foreground rounded-theme shadow-theme-primary hover:translate-y-[1px] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all cursor-pointer font-display"
+					>
+						<span>{isLoggingOut ? 'Logging out...' : 'Log Out'}</span>
+						<span>🚪</span>
+					</button>
+				</form>
 			{/if}
 
 			<div class="flex items-center justify-between text-xs font-bold text-muted-foreground">

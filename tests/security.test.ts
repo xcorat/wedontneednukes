@@ -92,3 +92,62 @@ describe('Better Auth Two-Factor Configuration', () => {
 		assert.ok(pluginIds.includes('magic-link'));
 	});
 });
+
+describe('User Auth Logout Route (/auth/logout)', async () => {
+	const { POST, GET } = await import('../src/routes/auth/logout/+server.js');
+
+	it('clears all session cookies and redirects to / with 303 on POST', async () => {
+		const deletedCookies: string[] = [];
+		const mockEvent = {
+			platform: undefined,
+			url: new URL('https://wedontneednukes.org/auth/logout'),
+			request: new Request('https://wedontneednukes.org/auth/logout', { method: 'POST' }),
+			cookies: {
+				delete: (name: string) => {
+					deletedCookies.push(name);
+				}
+			}
+		};
+
+		try {
+			await POST(mockEvent as any);
+			assert.fail('Should have redirected');
+		} catch (redirectErr: any) {
+			assert.equal(redirectErr.status, 303);
+			assert.equal(redirectErr.location, '/');
+		}
+
+		assert.ok(deletedCookies.includes('better-auth.session_token'));
+		assert.ok(deletedCookies.includes('__Secure-better-auth.session_token'));
+		assert.ok(deletedCookies.includes('better-auth.session_data'));
+		assert.ok(deletedCookies.includes('__Secure-better-auth.session_data'));
+		assert.ok(deletedCookies.includes('better-auth.dont_remember'));
+		assert.ok(deletedCookies.includes('__Secure-better-auth.dont_remember'));
+	});
+
+	it('clears all session cookies and redirects to / with 303 on GET', async () => {
+		const deletedCookies: string[] = [];
+		const mockEvent = {
+			platform: undefined,
+			url: new URL('https://wedontneednukes.org/auth/logout'),
+			request: new Request('https://wedontneednukes.org/auth/logout', { method: 'GET' }),
+			cookies: {
+				delete: (name: string) => {
+					deletedCookies.push(name);
+				}
+			}
+		};
+
+		try {
+			await GET(mockEvent as any);
+			assert.fail('Should have redirected');
+		} catch (redirectErr: any) {
+			assert.equal(redirectErr.status, 303);
+			assert.equal(redirectErr.location, '/');
+		}
+
+		assert.ok(deletedCookies.includes('better-auth.session_token'));
+		assert.ok(deletedCookies.includes('__Secure-better-auth.session_token'));
+	});
+});
+
