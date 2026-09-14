@@ -8,6 +8,8 @@
 		allowAnonymous?: boolean;
 		variant?: 'card' | 'compact' | 'inline';
 		stepLabel?: string;
+		title?: string;
+		subtitle?: string;
 		onAnonymous?: () => void;
 		onSuccess?: () => void;
 		class?: string;
@@ -20,6 +22,8 @@
 		allowAnonymous = true,
 		variant = 'card',
 		stepLabel = 'Step 3 of 4 · Record',
+		title,
+		subtitle,
 		onAnonymous,
 		onSuccess,
 		class: className = ''
@@ -28,15 +32,14 @@
 	const answeredNo = $derived(answer === 'no');
 
 	const headline = $derived(
-		answeredNo
-			? 'Record your contribution'
-			: 'Hope you change your mind, but your voice matters.'
+		title ?? (answer ? 'Record your voice!' : 'Welcome back')
 	);
 
 	const sub = $derived(
-		answeredNo
-			? 'Sign in to save your pledge and join the community, or continue anonymously.'
-			: 'Sign in to record your perspective, or continue anonymously.'
+		subtitle ??
+			(answer
+				? 'Sign in and validate that you are real. You can also continue anonymously.'
+				: 'Sign in to access your account and preferences.')
 	);
 
 	const resolvedCallbackUrl = $derived(
@@ -352,11 +355,12 @@
 		{/if}
 
 		<!-- OAuth & Legal compliance disclosure -->
-		<p class="mt-4 text-center text-[11px] leading-relaxed text-muted-foreground">
+		<p class="mt-4 text-center text-xs leading-relaxed text-muted-foreground">
 			By continuing, you agree to our
 			<a href="/legal/terms" class="font-bold underline underline-offset-2 hover:text-foreground">Terms</a>
 			and
-			<a href="/legal/privacy" class="font-bold underline underline-offset-2 hover:text-foreground">Privacy Policy</a>.
+			<a href="/legal/privacy" class="font-bold underline underline-offset-2 hover:text-foreground">Privacy Policy</a>,
+			which is basically &ndash; <em>we don't sell your data, and we value your privacy &lt;3</em>.
 		</p>
 	{/if}
 </div>

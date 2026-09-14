@@ -8,7 +8,7 @@
 </script>
 
 <svelte:head>
-	<title>{answeredNo ? 'Record your contribution' : 'Record your perspective'} · Step 3</title>
+	<title>Record your voice! · Step 3</title>
 </svelte:head>
 
 <main class="flex min-h-[calc(100dvh-2rem)] flex-col items-center justify-center bg-background px-4 py-12 text-foreground font-body">
@@ -26,11 +26,13 @@
 			turnstileSiteKey={data.turnstileSiteKey}
 			callbackUrl={`/results?answer=${data.answer}`}
 			stepLabel="Step 3 of 4 · Record"
+			title="Record your voice!"
+			subtitle="Sign in and validate that you are real. You can also continue anonymously."
 		/>
 
 		<!-- Privacy note -->
 		<p class="mt-6 text-center text-xs leading-relaxed text-muted-foreground font-medium">
-			Your login is used <em>only</em> for this campaign. We never share your data or send unsolicited messages.
+			Your login is used <em>only</em> for this campaign. We will never sell your data or send unsolicited messages.
 		</p>
 	</div>
 </main>
