@@ -8,8 +8,11 @@
 	let { data }: { data: PageData } = $props();
 
 	function handleChoice(_choiceId: string, choiceValue: string) {
-		const queryAnswer = choiceValue === 'agree' ? 'no' : 'yes';
-		goto(`/onboarding/join?answer=${queryAnswer}`);
+		if (choiceValue === 'agree') {
+			goto('/onboarding/pledge?answer=no');
+		} else {
+			goto('/onboarding/join?answer=yes');
+		}
 	}
 </script>
 

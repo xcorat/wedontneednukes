@@ -6,14 +6,15 @@
 </script>
 
 <svelte:head>
-	<title>Step 3 · Choose Your Pledge Level</title>
+	<title>Step 2 · Welcome to the Community</title>
 </svelte:head>
 
 <main class="flex min-h-[calc(100dvh-2rem)] flex-col items-center justify-center bg-background px-4 py-8 sm:py-12 text-foreground font-body">
 	<div class="w-full max-w-lg">
-		<!-- Top Bar -->
+		<!-- Top Bar: back points to Step 1 -->
 		<StepHeaderWidget
-			backHref={`/onboarding/join?answer=${data.answer}`}
+			backHref="/onboarding/wedontneednukes"
+			backLabel="← We Don't Need Nukes"
 			answer={data.answer}
 		/>
 
@@ -21,9 +22,14 @@
 		<PledgeFormWidget
 			answer={data.answer}
 			initialLevels={data.commitmentLevels}
-			initialName={data.name}
-			initialFeedback={data.feedback}
 			isAnon={data.isAnon}
+			title="Welcome to the community!"
+			subtitle="what level of  commitment are you comfortable with?"
+			stepLabel="Step 2: Level of contribution"
+			submitLabel="Join and Record Vote"
+			submitLoadingLabel="Recording vote..."
+			showSkipButton={false}
+			showFundraiserCallout={false}
 		/>
 
 		<!-- Footnote -->

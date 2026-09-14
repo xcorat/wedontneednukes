@@ -19,12 +19,13 @@ export const load: PageServerLoad = async ({ locals, url, cookies, platform }) =
 	const answer = (url.searchParams.get('answer') === 'yes' ? 'yes' : 'no') as 'no' | 'yes';
 	const isAnonParam = url.searchParams.get('anon') === '1';
 
+	// If user disagreed, they bypass contribution level and go directly to Step 3 (login/record)
+	if (answer === 'yes') {
+		redirect(302, '/onboarding/join?answer=yes');
+	}
+
 	let anonId = cookies.get('anon_id');
 	const userId = locals.user?.id;
-
-	if (!userId && !anonId && !isAnonParam) {
-		redirect(302, `/onboarding/join?answer=${answer}`);
-	}
 
 	if (!userId && !anonId) {
 		anonId = getOrCreateAnonId(cookies);
@@ -133,10 +134,13 @@ export const actions: Actions = {
 			}
 		}
 
+		const isAnonParam = url.searchParams.get('anon') === '1';
 		if (userId) {
-			redirect(303, '/dashboard');
-		} else {
+			redirect(303, `/results?answer=${answer}`);
+		} else if (isAnonParam) {
 			redirect(303, `/results?answer=${answer}&anon=1`);
+		} else {
+			redirect(303, `/onboarding/join?answer=${answer}&levels=${finalCommitmentLevels.join(',')}`);
 		}
 	}
 };

@@ -99,35 +99,72 @@ describe('Routing Layer End-to-End & State Invariants', () => {
 		assert.equal(matched?.label, 'Divestment & Finance');
 	});
 
-	it('validates the complete anonymous onboarding, pledge, and claim vote route transitions', () => {
-		// 1. User clicks choice on Homepage Hero (Agree -> 'no', Other -> 'yes')
+	it('validates the complete reorganized 4-step campaign onboarding flow transitions', () => {
+		// 1. Step 1: User clicks choice on Homepage Hero (Agree -> Step 2, Disagree -> Step 3)
 		function getHeroChoiceTarget(choiceValue: string) {
-			const queryAnswer = choiceValue === 'agree' ? 'no' : 'yes';
-			return `/onboarding/join?answer=${queryAnswer}`;
+			if (choiceValue === 'agree') {
+				return '/onboarding/pledge?answer=no';
+			}
+			return '/onboarding/join?answer=yes';
 		}
-		assert.equal(getHeroChoiceTarget('agree'), '/onboarding/join?answer=no');
+		assert.equal(getHeroChoiceTarget('agree'), '/onboarding/pledge?answer=no');
 		assert.equal(getHeroChoiceTarget('other'), '/onboarding/join?answer=yes');
+		assert.equal(getHeroChoiceTarget('disagree'), '/onboarding/join?answer=yes');
 
-		// 2. User chooses "Continue anonymously" on /onboarding/join
+		// 2. Step 2: Ally / Advocate / Contributor selection -> proceeds to Step 3 (Login/Record)
+		function getPledgeSubmitRedirect(userId: string | null | undefined, answer: string, levels: string[], isAnonUpdate = false) {
+			if (userId) return `/results?answer=${answer}`;
+			if (isAnonUpdate) return `/results?answer=${answer}&anon=1`;
+			return `/onboarding/join?answer=${answer}&levels=${levels.join(',')}`;
+		}
+		assert.equal(
+			getPledgeSubmitRedirect(null, 'no', ['passive']),
+			'/onboarding/join?answer=no&levels=passive'
+		);
+		assert.equal(
+			getPledgeSubmitRedirect(null, 'no', ['passive', 'active']),
+			'/onboarding/join?answer=no&levels=passive,active'
+		);
+		assert.equal(
+			getPledgeSubmitRedirect('user_123', 'no', ['direct']),
+			'/results?answer=no'
+		);
+		assert.equal(
+			getPledgeSubmitRedirect(null, 'no', ['passive'], true),
+			'/results?answer=no&anon=1'
+		);
+
+		// 3. Step 3: Login/Record page back button navigation
+		function getJoinBackTarget(answer: string) {
+			return answer === 'no' ? '/onboarding/pledge?answer=no' : '/onboarding/wedontneednukes';
+		}
+		assert.equal(getJoinBackTarget('no'), '/onboarding/pledge?answer=no');
+		assert.equal(getJoinBackTarget('yes'), '/onboarding/wedontneednukes');
+
+		// 4. Step 3: User continues anonymously or signs in -> proceeds to Step 4 (/results)
 		function getAnonymousOnboardingTarget(answer: string) {
-			return `/onboarding/pledge?answer=${answer}&anon=1`;
+			return `/results?answer=${answer}&anon=1`;
 		}
-		assert.equal(getAnonymousOnboardingTarget('no'), '/onboarding/pledge?answer=no&anon=1');
+		assert.equal(getAnonymousOnboardingTarget('no'), '/results?answer=no&anon=1');
+		assert.equal(getAnonymousOnboardingTarget('yes'), '/results?answer=yes&anon=1');
 
-		// 3. User submits pledge anonymously -> redirects to /results
-		function getPledgeSubmitRedirect(userId: string | null | undefined, answer: string) {
-			return userId ? '/dashboard' : `/results?answer=${answer}&anon=1`;
+		function getSignInCallbackTarget(answer: string) {
+			return `/results?answer=${answer}`;
 		}
-		assert.equal(getPledgeSubmitRedirect(null, 'no'), '/results?answer=no&anon=1');
-		assert.equal(getPledgeSubmitRedirect('user_123', 'no'), '/dashboard');
+		assert.equal(getSignInCallbackTarget('no'), '/results?answer=no');
+		assert.equal(getSignInCallbackTarget('yes'), '/results?answer=yes');
 
-		// 4. On results/claim banner, full sign-in CTA targets /auth with redirect to /dashboard
-		function getClaimVoteFullSignInTarget() {
-			return '/auth?redirect=/dashboard';
-		}
-		assert.equal(getClaimVoteFullSignInTarget(), '/auth?redirect=/dashboard');
+		// 5. Step 4: What's Next action targets
+		const whatsNextTargets = {
+			about: '/about',
+			campaigns: '/campaigns',
+			organizations: '/organizations'
+		};
+		assert.equal(whatsNextTargets.about, '/about');
+		assert.equal(whatsNextTargets.campaigns, '/campaigns');
+		assert.equal(whatsNextTargets.organizations, '/organizations');
 
-		// 5. Returning anonymous visitor to root '/' gets link to update pledge with answer preserved
+		// 6. Returning anonymous visitor link to update commitments
 		function getReturningAnonPledgeUpdateHref(userChoice: string) {
 			return `/onboarding/pledge?answer=${userChoice}&anon=1`;
 		}

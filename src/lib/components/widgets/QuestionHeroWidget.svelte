@@ -44,8 +44,11 @@
 		if (onChoice) {
 			onChoice(choice.id, choice.value);
 		} else {
-			const queryAnswer = choice.value === 'agree' ? 'no' : 'yes';
-			goto(`/onboarding/join?answer=${queryAnswer}`);
+			if (choice.value === 'agree') {
+				goto('/onboarding/pledge?answer=no');
+			} else {
+				goto('/onboarding/join?answer=yes');
+			}
 		}
 	}
 </script>

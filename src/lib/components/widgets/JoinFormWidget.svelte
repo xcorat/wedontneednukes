@@ -7,6 +7,7 @@
 		callbackUrl?: string;
 		allowAnonymous?: boolean;
 		variant?: 'card' | 'compact' | 'inline';
+		stepLabel?: string;
 		onAnonymous?: () => void;
 		onSuccess?: () => void;
 		class?: string;
@@ -18,6 +19,7 @@
 		callbackUrl,
 		allowAnonymous = true,
 		variant = 'card',
+		stepLabel = 'Step 3 of 4 · Record',
 		onAnonymous,
 		onSuccess,
 		class: className = ''
@@ -27,18 +29,18 @@
 
 	const headline = $derived(
 		answeredNo
-			? 'Welcome to the community.'
+			? 'Record your contribution'
 			: 'Hope you change your mind, but your voice matters.'
 	);
 
 	const sub = $derived(
 		answeredNo
-			? 'Sign in and record your vote.'
-			: 'Sign in and record your perspective.'
+			? 'Sign in to save your pledge and join the community, or continue anonymously.'
+			: 'Sign in to record your perspective, or continue anonymously.'
 	);
 
 	const resolvedCallbackUrl = $derived(
-		callbackUrl ?? (answer ? `/onboarding/pledge?answer=${answer}` : '/dashboard')
+		callbackUrl ?? (answer ? `/results?answer=${answer}` : '/dashboard')
 	);
 
 	let email = $state('');
@@ -133,7 +135,7 @@
 		if (onAnonymous) {
 			onAnonymous();
 		} else {
-			window.location.href = `/onboarding/pledge?answer=${answer}&anon=1`;
+			window.location.href = `/results?answer=${answer}&anon=1`;
 		}
 	}
 
@@ -149,6 +151,11 @@
 </script>
 
 <div class={containerClasses}>
+	{#if stepLabel}
+		<div class="mb-2.5 inline-block border border-border bg-secondary px-2.5 py-0.5 text-xs font-black uppercase tracking-wider text-secondary-foreground rounded-theme">
+			{stepLabel}
+		</div>
+	{/if}
 	<!-- Headline -->
 	<h2 class="mb-2 text-2xl sm:text-3xl font-black text-foreground leading-tight font-display">
 		{headline}

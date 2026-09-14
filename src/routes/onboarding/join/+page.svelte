@@ -8,14 +8,15 @@
 </script>
 
 <svelte:head>
-	<title>{answeredNo ? 'Join the pledge' : 'Share your view'} · Step 2</title>
+	<title>{answeredNo ? 'Record your contribution' : 'Record your perspective'} · Step 3</title>
 </svelte:head>
 
 <main class="flex min-h-[calc(100dvh-2rem)] flex-col items-center justify-center bg-background px-4 py-12 text-foreground font-body">
 	<div class="w-full max-w-md">
-		<!-- Navigation Bar -->
+		<!-- Navigation Bar: Back points to Step 2 if agreed, or Step 1 if disagreed -->
 		<StepHeaderWidget
-			backHref="/onboarding/wedontneednukes"
+			backHref={answeredNo ? '/onboarding/pledge?answer=no' : '/onboarding/wedontneednukes'}
+			backLabel={answeredNo ? '← Contribution' : "← We Don't Need Nukes"}
 			answer={data.answer}
 		/>
 
@@ -23,7 +24,8 @@
 		<JoinFormWidget
 			answer={data.answer}
 			turnstileSiteKey={data.turnstileSiteKey}
-			callbackUrl={`/onboarding/pledge?answer=${data.answer}`}
+			callbackUrl={`/results?answer=${data.answer}`}
+			stepLabel="Step 3 of 4 · Record"
 		/>
 
 		<!-- Privacy note -->

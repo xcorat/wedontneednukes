@@ -50,7 +50,7 @@
 				class="inline-flex items-center gap-1.5 border-2 border-border bg-surface px-3 py-1.5 text-xs font-bold text-foreground rounded-theme shadow-theme-sm font-display"
 			>
 				<span>{answeredNo ? '🕊️' : '🤔'}</span>
-				<span>{answeredNo ? "No, we don't" : 'Yes, we do'}</span>
+				<span>{answeredNo ? 'Agree!' : 'Yes, we do'}</span>
 			</div>
 		{/if}
 

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import InfoTooltip, { type HelpDisplayMode } from '$lib/components/InfoTooltip.svelte';
-	import FundraiserButton from '$lib/components/FundraiserButton.svelte';
 	import { enhance } from '$app/forms';
 	import { untrack } from 'svelte';
 
@@ -14,6 +13,11 @@
 		isAnon?: boolean;
 		actionUrl?: string;
 		resultsUrl?: string;
+		title?: string;
+		subtitle?: string;
+		stepLabel?: string;
+		submitLabel?: string;
+		submitLoadingLabel?: string;
 		showSkipButton?: boolean;
 		showFundraiserCallout?: boolean;
 		class?: string;
@@ -22,46 +26,35 @@
 	let {
 		answer,
 		initialLevels = ['passive'],
-		initialName = '',
-		initialFeedback = '',
 		isAnon = false,
 		actionUrl = '',
 		resultsUrl,
-		showSkipButton = true,
-		showFundraiserCallout = true,
+		title = 'Welcome to the community!',
+		subtitle = 'what level of  commitment are you comfortable with?',
+		stepLabel = 'Step 2: Level of contribution',
+		submitLabel = 'Join and Record Vote',
+		submitLoadingLabel = 'Recording vote...',
+		showSkipButton = false,
+		showFundraiserCallout = false,
 		class: className = ''
 	}: Props = $props();
 
 	const helpMode: HelpDisplayMode = 'responsive';
 
-	let selectedLevels = $state<CommitmentLevel[]>(
-		untrack(() => (initialLevels.length > 0 ? initialLevels : ['passive']))
+	let selectedLevel = $state<CommitmentLevel>(
+		untrack(() => (initialLevels.length > 0 ? initialLevels[0] : 'passive'))
 	);
-	let name = $state(untrack(() => initialName));
-	let feedback = $state(untrack(() => initialFeedback));
 	let isSubmitting = $state(false);
-	let showDetails = $state(false);
+	let showInfoModal = $state(false);
 
 	$effect(() => {
 		if (initialLevels && initialLevels.length > 0) {
-			selectedLevels = initialLevels;
+			selectedLevel = initialLevels[0];
 		}
 	});
 
-	$effect(() => {
-		if (initialName) name = initialName;
-	});
-
-	$effect(() => {
-		if (initialFeedback) feedback = initialFeedback;
-	});
-
-	function toggleLevel(id: CommitmentLevel) {
-		if (selectedLevels.includes(id)) {
-			selectedLevels = selectedLevels.filter((lvl) => lvl !== id);
-		} else {
-			selectedLevels = [...selectedLevels, id];
-		}
+	function selectLevel(id: CommitmentLevel) {
+		selectedLevel = id;
 	}
 
 	const resolvedResultsUrl = $derived(
@@ -72,26 +65,29 @@
 		{
 			id: 'passive' as const,
 			emoji: '🛡️',
-			title: "I won't support expansion of nuclear weapons",
+			title: 'Ally',
+			tagline: "I won't support expansion of nuclear weapons",
 			description:
-				'I refuse to endorse, vote for, or finance policies and systems that expand or modernize nuclear arsenals.',
-			badge: 'Default · Baseline'
+				'I refuse to endorse, vote for, or finance policies and systems that expand or modernize nuclear arsenals. Stay informed and share updates.',
+			badge: 'Baseline · Ally'
 		},
 		{
 			id: 'active' as const,
 			emoji: '🗣️',
-			title: 'I will support politically and ideologically',
+			title: 'Advocate',
+			tagline: 'I will support politically and ideologically',
 			description:
 				'Active social engagement, voting and political decisions, public discourse, and challenging pro-nuclear narratives.',
-			badge: 'Civic Engagement'
+			badge: 'Civic · Advocate'
 		},
 		{
 			id: 'direct' as const,
 			emoji: '🤝',
-			title: 'I will support with time and resources',
+			title: 'Contributor',
+			tagline: 'I will support with time and resources',
 			description:
-				'Volunteering time, community organizing, sharing campaign materials, and providing active resources.',
-			badge: 'Direct Action'
+				'Volunteering time, community organizing, sharing campaign materials, and contributing active resources.',
+			badge: 'Action · Contributor'
 		}
 	];
 </script>
@@ -100,13 +96,13 @@
 	<!-- Header -->
 	<div class="mb-5">
 		<div class="mb-2 inline-block border border-border bg-secondary px-2.5 py-0.5 text-xs font-black uppercase tracking-wider text-secondary-foreground rounded-theme">
-			Step 2 of 2 · Multiselect
+			{stepLabel}
 		</div>
 		<h2 class="text-2xl sm:text-3xl font-black text-foreground leading-tight font-display">
-			Choose Your Pledge Level
+			{title}
 		</h2>
 		<p class="mt-1.5 text-xs sm:text-sm text-muted-foreground font-medium leading-relaxed">
-			Select all commitments that apply to you. You can select multiple levels of support.
+			{subtitle}
 		</p>
 	</div>
 
@@ -123,24 +119,22 @@
 		}}
 		class="flex flex-col gap-4"
 	>
-		<!-- Hidden commitment levels fields (one per selected item) -->
-		{#each selectedLevels as level}
-			<input type="hidden" name="commitmentLevels" value={level} />
-		{/each}
+		<!-- Hidden single commitment level field -->
+		<input type="hidden" name="commitmentLevels" value={selectedLevel} />
 
-		<!-- 3 Multiselect Checkbox Cards -->
-		<div class="space-y-3" role="group" aria-label="Commitment Levels">
+		<!-- 3 Single-select Radio Cards -->
+		<div class="space-y-3" role="radiogroup" aria-label="Level of contribution">
 			{#each pledgeOptions as opt}
-				{@const isSelected = selectedLevels.includes(opt.id)}
+				{@const isSelected = selectedLevel === opt.id}
 				<div
-					role="checkbox"
+					role="radio"
 					tabindex="0"
 					aria-checked={isSelected}
-					onclick={() => toggleLevel(opt.id)}
+					onclick={() => selectLevel(opt.id)}
 					onkeydown={(e) => {
 						if (e.key === 'Enter' || e.key === ' ') {
 							e.preventDefault();
-							toggleLevel(opt.id);
+							selectLevel(opt.id);
 						}
 					}}
 					class="w-full text-left border-2 border-border p-3.5 sm:p-4 transition-all cursor-pointer relative rounded-theme select-none focus:outline-none focus:ring-2 focus:ring-primary {isSelected
@@ -148,15 +142,15 @@
 						: 'bg-surface shadow-theme-sm opacity-90 hover:opacity-100 hover:bg-background/50'}"
 				>
 					<div class="flex items-start gap-3">
-						<!-- Multiselect Checkbox Indicator -->
+						<!-- Single Select Radio Indicator -->
 						<div
-							class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center border-2 border-border transition-colors rounded-theme {isSelected
+							class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 border-border transition-colors {isSelected
 								? 'bg-primary text-primary-foreground shadow-theme-sm'
-								: 'bg-surface text-transparent'}"
+								: 'bg-surface'}"
 						>
-							<svg class="h-3.5 w-3.5 fill-current" viewBox="0 0 20 20">
-								<path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
-							</svg>
+							{#if isSelected}
+								<div class="h-2 w-2 rounded-full bg-primary-foreground"></div>
+							{/if}
 						</div>
 
 						<!-- Content -->
@@ -181,80 +175,23 @@
 									ariaLabel={`Learn more about ${opt.title}`}
 								/>
 							</div>
+							{#if opt.tagline}
+								<p class="mt-1 text-xs text-muted-foreground font-medium leading-normal">
+									{opt.tagline}
+								</p>
+							{/if}
 						</div>
 					</div>
 				</div>
 			{/each}
 		</div>
 
-		<!-- Selected Count Helper -->
-		<div class="flex items-center justify-between text-xs text-muted-foreground font-medium px-1">
-			<span>
-				<strong>{selectedLevels.length}</strong> {selectedLevels.length === 1 ? 'level' : 'levels'} selected
-			</span>
-			{#if selectedLevels.length === 0}
-				<span class="text-primary font-bold">Please select at least one level to pledge</span>
-			{/if}
-		</div>
-
-		<!-- Optional Name & Feedback Toggle -->
-		<div class="border-t-2 border-border/20 pt-3">
-			<button
-				type="button"
-				onclick={() => (showDetails = !showDetails)}
-				class="flex w-full items-center justify-between text-xs font-bold text-foreground hover:text-primary cursor-pointer py-1"
-			>
-				<span>{showDetails ? '− Hide' : '+ Add'} optional name &amp; comment</span>
-				<span class="text-xs">{showDetails ? '▲' : '▼'}</span>
-			</button>
-
-			{#if showDetails}
-				<div class="mt-3 space-y-3 border-2 border-border bg-background p-3.5 rounded-theme shadow-theme-sm">
-					<div>
-						<label
-							for="pledge-name"
-							class="mb-1 block text-xs font-bold uppercase tracking-wider text-foreground font-display"
-						>
-							Your Name / Handle (optional)
-						</label>
-						<input
-							id="pledge-name"
-							name="name"
-							type="text"
-							bind:value={name}
-							placeholder="e.g. Alex"
-							disabled={isSubmitting}
-							class="w-full border-2 border-border bg-surface px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground rounded-theme shadow-theme-sm focus:outline-none"
-						/>
-					</div>
-
-					<div>
-						<label
-							for="pledge-feedback"
-							class="mb-1 block text-xs font-bold uppercase tracking-wider text-foreground font-display"
-						>
-							Thoughts / Feedback (optional)
-						</label>
-						<textarea
-							id="pledge-feedback"
-							name="feedback"
-							rows="2"
-							bind:value={feedback}
-							placeholder="Any message or perspective you'd like to share..."
-							disabled={isSubmitting}
-							class="w-full border-2 border-border bg-surface px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground rounded-theme shadow-theme-sm focus:outline-none resize-y"
-						></textarea>
-					</div>
-				</div>
-			{/if}
-		</div>
-
-		<!-- Action Buttons: Confirm Pledge & Skip to Results -->
-		<div class="mt-1 flex flex-col sm:flex-row gap-3">
-			<!-- Primary Confirm Button -->
+		<!-- Action Buttons: [Join and Record Vote] [?] -->
+		<div class="mt-2 flex items-center gap-2.5">
+			<!-- Primary Join and Record Vote Button -->
 			<button
 				type="submit"
-				disabled={isSubmitting || selectedLevels.length === 0}
+				disabled={isSubmitting}
 				class="flex flex-1 items-center justify-center gap-2 border-2 border-border bg-primary px-5 py-3 text-sm font-black text-primary-foreground rounded-theme shadow-theme-primary font-display transition-all hover:translate-y-[1px] active:translate-x-[1px] active:translate-y-[2px] active:shadow-none disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
 			>
 				{#if isSubmitting}
@@ -262,35 +199,65 @@
 						<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
 						<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
 					</svg>
-					<span>Saving pledge...</span>
+					<span>{submitLoadingLabel}</span>
 				{:else}
-					<span>Confirm Pledge →</span>
+					<span>{submitLabel}</span>
 				{/if}
 			</button>
 
-			<!-- Skip to Results Button -->
+			<!-- [?] Info Dialog Trigger Button -->
+			<button
+				type="button"
+				onclick={() => (showInfoModal = true)}
+				aria-label="What is this community?"
+				class="flex h-11 w-11 shrink-0 items-center justify-center border-2 border-border bg-secondary text-base font-black text-secondary-foreground rounded-theme shadow-theme-secondary font-display transition-all hover:translate-y-[1px] active:translate-x-[1px] active:translate-y-[2px] active:shadow-none cursor-pointer"
+			>
+				?
+			</button>
+
+			<!-- Optional Skip to Results Button -->
 			{#if showSkipButton}
 				<a
 					href={resolvedResultsUrl}
-					class="flex items-center justify-center gap-2 border-2 border-border bg-secondary px-5 py-3 text-sm font-black text-secondary-foreground rounded-theme shadow-theme-secondary font-display transition-all hover:translate-y-[1px] active:translate-x-[1px] active:translate-y-[2px] active:shadow-none text-center cursor-pointer"
+					class="flex items-center justify-center gap-2 border-2 border-border bg-secondary px-4 py-3 text-sm font-black text-secondary-foreground rounded-theme shadow-theme-secondary font-display transition-all hover:translate-y-[1px] active:translate-x-[1px] active:translate-y-[2px] active:shadow-none text-center cursor-pointer"
 				>
 					<span>Results →</span>
 				</a>
 			{/if}
 		</div>
 	</form>
-
-	<!-- Bottom Fundraiser Section -->
-	{#if showFundraiserCallout}
-		<div class="mt-6 border-2 border-border bg-background p-4 text-center rounded-theme shadow-theme-sm">
-			<p class="mb-2 text-xs font-bold text-muted-foreground uppercase tracking-wider font-display">
-				Grassroots movement · 100% community funded
-			</p>
-			<FundraiserButton
-				variant="cartoon"
-				text="Support this page"
-				class="w-full justify-center py-2.5 text-sm sm:text-base font-black"
-			/>
-		</div>
-	{/if}
 </div>
+
+<!-- [?] Community Dialog Modal -->
+{#if showInfoModal}
+	<div
+		class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4"
+		role="dialog"
+		aria-modal="true"
+		aria-labelledby="info-dialog-title"
+	>
+		<div class="relative w-full max-w-md border-2 sm:border-[3px] border-border bg-surface p-6 rounded-theme shadow-theme-lg">
+			<h3 id="info-dialog-title" class="text-xl font-black text-foreground font-display mb-3">
+				About Our Community
+			</h3>
+			<p class="text-sm leading-relaxed text-foreground font-medium mb-6">
+				We are creating community with the simple premise: we don't need need nukes, and we dont want a society that has to live under constant threat of anhilation.
+			</p>
+			<div class="flex items-center justify-end gap-3">
+				<button
+					type="button"
+					onclick={() => (showInfoModal = false)}
+					class="border-2 border-border bg-secondary px-4 py-2 text-sm font-bold text-secondary-foreground rounded-theme shadow-theme-sm transition-all hover:translate-y-[1px] active:translate-x-[1px] active:translate-y-[2px] active:shadow-none cursor-pointer"
+				>
+					Close
+				</button>
+				<a
+					href="/about"
+					class="border-2 border-border bg-primary px-4 py-2 text-sm font-black text-primary-foreground rounded-theme shadow-theme-sm transition-all hover:translate-y-[1px] active:translate-x-[1px] active:translate-y-[2px] active:shadow-none cursor-pointer"
+				>
+					More...
+				</a>
+			</div>
+		</div>
+	</div>
+{/if}
