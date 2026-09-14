@@ -41,20 +41,26 @@
 
 	const helpMode: HelpDisplayMode = 'responsive';
 
-	let selectedLevel = $state<CommitmentLevel>(
-		untrack(() => (initialLevels.length > 0 ? initialLevels[0] : 'passive'))
+	let selectedLevels = $state<CommitmentLevel[]>(
+		untrack(() => (initialLevels && initialLevels.length > 0 ? [...initialLevels] : ['passive']))
 	);
 	let isSubmitting = $state(false);
 	let showInfoModal = $state(false);
 
 	$effect(() => {
 		if (initialLevels && initialLevels.length > 0) {
-			selectedLevel = initialLevels[0];
+			selectedLevels = [...initialLevels];
 		}
 	});
 
-	function selectLevel(id: CommitmentLevel) {
-		selectedLevel = id;
+	function toggleLevel(id: CommitmentLevel) {
+		if (selectedLevels.includes(id)) {
+			if (selectedLevels.length > 1) {
+				selectedLevels = selectedLevels.filter((lvl) => lvl !== id);
+			}
+		} else {
+			selectedLevels = [...selectedLevels, id];
+		}
 	}
 
 	const resolvedResultsUrl = $derived(
@@ -119,22 +125,24 @@
 		}}
 		class="flex flex-col gap-4"
 	>
-		<!-- Hidden single commitment level field -->
-		<input type="hidden" name="commitmentLevels" value={selectedLevel} />
+		<!-- Hidden commitment level fields -->
+		{#each selectedLevels as lvl}
+			<input type="hidden" name="commitmentLevels" value={lvl} />
+		{/each}
 
-		<!-- 3 Single-select Radio Cards -->
-		<div class="space-y-3" role="radiogroup" aria-label="Level of contribution">
+		<!-- 3 Multi-select Checkbox Cards -->
+		<div class="space-y-3" role="group" aria-label="Level of contribution">
 			{#each pledgeOptions as opt}
-				{@const isSelected = selectedLevel === opt.id}
+				{@const isSelected = selectedLevels.includes(opt.id)}
 				<div
-					role="radio"
+					role="checkbox"
 					tabindex="0"
 					aria-checked={isSelected}
-					onclick={() => selectLevel(opt.id)}
+					onclick={() => toggleLevel(opt.id)}
 					onkeydown={(e) => {
 						if (e.key === 'Enter' || e.key === ' ') {
 							e.preventDefault();
-							selectLevel(opt.id);
+							toggleLevel(opt.id);
 						}
 					}}
 					class="w-full text-left border-2 border-border p-3.5 sm:p-4 transition-all cursor-pointer relative rounded-theme select-none focus:outline-none focus:ring-2 focus:ring-primary {isSelected
@@ -142,14 +150,16 @@
 						: 'bg-surface shadow-theme-sm opacity-90 hover:opacity-100 hover:bg-background/50'}"
 				>
 					<div class="flex items-start gap-3">
-						<!-- Single Select Radio Indicator -->
+						<!-- Multi-Select Checkbox Indicator -->
 						<div
-							class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 border-border transition-colors {isSelected
+							class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-theme border-2 border-border transition-colors {isSelected
 								? 'bg-primary text-primary-foreground shadow-theme-sm'
 								: 'bg-surface'}"
 						>
 							{#if isSelected}
-								<div class="h-2 w-2 rounded-full bg-primary-foreground"></div>
+								<svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+									<polyline points="20 6 9 17 4 12"></polyline>
+								</svg>
 							{/if}
 						</div>
 
@@ -191,7 +201,7 @@
 			<!-- Primary Join and Record Vote Button -->
 			<button
 				type="submit"
-				disabled={isSubmitting}
+				disabled={isSubmitting || selectedLevels.length === 0}
 				class="flex flex-1 items-center justify-center gap-2 border-2 border-border bg-primary px-5 py-3 text-sm font-black text-primary-foreground rounded-theme shadow-theme-primary font-display transition-all hover:translate-y-[1px] active:translate-x-[1px] active:translate-y-[2px] active:shadow-none disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
 			>
 				{#if isSubmitting}
