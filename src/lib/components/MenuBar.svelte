@@ -10,10 +10,29 @@
 
 	let isExternalOpen = $state(false);
 	let isTestsOpen = $state(false);
+	let isLoggingOut = $state(false);
 
 	function handleKeydown(event: KeyboardEvent) {
 		if (event.key === 'Escape' && menuState.isOpen) {
 			menuState.close();
+		}
+	}
+
+	async function handleSignOut() {
+		if (isLoggingOut) return;
+		isLoggingOut = true;
+		try {
+			await fetch('/api/auth/sign-out', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			});
+		} catch (err) {
+			console.error('Logout error:', err);
+		} finally {
+			menuState.close();
+			window.location.href = '/';
 		}
 	}
 </script>
@@ -117,6 +136,16 @@
 							<span>Security Settings</span>
 							<span>🛡️</span>
 						</a>
+
+						<button
+							type="button"
+							onclick={handleSignOut}
+							disabled={isLoggingOut}
+							class="flex items-center justify-between border-2 border-border bg-background px-3.5 py-2 text-sm font-bold text-foreground rounded-theme shadow-theme-sm hover:bg-destructive hover:text-destructive-foreground hover:translate-y-[1px] transition-all cursor-pointer disabled:opacity-50"
+						>
+							<span>{isLoggingOut ? 'Logging out...' : 'Log Out'}</span>
+							<span>🚪</span>
+						</button>
 					</div>
 				{:else}
 					<a
