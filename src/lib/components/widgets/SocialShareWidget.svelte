@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
 	import {
 		DEFAULT_SHARE_HASHTAGS,
 		DEFAULT_SHARE_TEXT,
@@ -15,6 +16,7 @@
 		platforms?: SharePlatform[];
 		showCopy?: boolean;
 		class?: string;
+		children?: Snippet;
 	}
 
 	let {
@@ -25,7 +27,8 @@
 		variant = 'card',
 		platforms = ['x', 'bluesky', 'threads', 'facebook', 'whatsapp', 'linkedin'],
 		showCopy = true,
-		class: className = ''
+		class: className = '',
+		children
 	}: Props = $props();
 
 	let copied = $state(false);
@@ -152,6 +155,12 @@
 				</button>
 			{/if}
 		</div>
+
+		{#if children}
+			<div class="mt-4 pt-3 border-t-2 border-border/20">
+				{@render children()}
+			</div>
+		{/if}
 	</section>
 {:else if variant === 'compact'}
 	<div class="flex items-center gap-1.5 {className}">

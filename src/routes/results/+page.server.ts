@@ -23,7 +23,14 @@ export const load: PageServerLoad = async ({ url, locals, platform, cookies }) =
 		agreeCount: 0,
 		agreePercentage: 0,
 		otherCount: 0,
-		otherPercentage: 0
+		otherPercentage: 0,
+		validated: {
+			totalVotes: 0,
+			agreeCount: 0,
+			agreePercentage: 0,
+			otherCount: 0,
+			otherPercentage: 0
+		}
 	};
 
 	let userChoice: 'no' | 'yes' | null = null;
@@ -66,21 +73,36 @@ export const load: PageServerLoad = async ({ url, locals, platform, cookies }) =
 			}
 		}
 
-		// Compute live community consensus numbers
-		const statsResult = await getQuestionStats(db, hero.id);
-		const agreeCount = statsResult.countsByChoiceId[agreeChoiceId] ?? 0;
-		const otherCount = statsResult.countsByChoiceId[otherChoiceId] ?? 0;
-		const totalVotes = statsResult.totalResponses;
+		// Compute live community consensus numbers (all votes & validated only)
+		const allStatsResult = await getQuestionStats(db, hero.id);
+		const agreeCount = allStatsResult.countsByChoiceId[agreeChoiceId] ?? 0;
+		const otherCount = allStatsResult.countsByChoiceId[otherChoiceId] ?? 0;
+		const totalVotes = allStatsResult.totalResponses;
 
 		const agreePercentage = totalVotes > 0 ? Math.round((agreeCount / totalVotes) * 100) : 0;
 		const otherPercentage = totalVotes > 0 ? 100 - agreePercentage : 0;
+
+		const valStatsResult = await getQuestionStats(db, hero.id, { validatedOnly: true });
+		const valAgreeCount = valStatsResult.countsByChoiceId[agreeChoiceId] ?? 0;
+		const valOtherCount = valStatsResult.countsByChoiceId[otherChoiceId] ?? 0;
+		const valTotalVotes = valStatsResult.totalResponses;
+
+		const valAgreePercentage = valTotalVotes > 0 ? Math.round((valAgreeCount / valTotalVotes) * 100) : 0;
+		const valOtherPercentage = valTotalVotes > 0 ? 100 - valAgreePercentage : 0;
 
 		stats = {
 			totalVotes,
 			agreeCount,
 			agreePercentage,
 			otherCount,
-			otherPercentage
+			otherPercentage,
+			validated: {
+				totalVotes: valTotalVotes,
+				agreeCount: valAgreeCount,
+				agreePercentage: valAgreePercentage,
+				otherCount: valOtherCount,
+				otherPercentage: valOtherPercentage
+			}
 		};
 	}
 

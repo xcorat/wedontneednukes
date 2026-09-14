@@ -113,7 +113,28 @@
 				text={RESULTS_SHARE_TEXT}
 				title="Share this campaign"
 				variant="card"
-			/>
+			>
+				<div class="flex items-center justify-between gap-2.5 pt-1">
+					<a
+						href="/profile"
+						class="flex-1 text-center border-2 border-border bg-background py-2.5 px-3 text-xs font-black uppercase text-foreground rounded-theme shadow-theme-sm transition-all hover:bg-secondary hover:text-secondary-foreground hover:translate-y-[-1px] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none font-display"
+					>
+						Profile
+					</a>
+					<a
+						href="/wiki"
+						class="flex-1 text-center border-2 border-border bg-background py-2.5 px-3 text-xs font-black uppercase text-foreground rounded-theme shadow-theme-sm transition-all hover:bg-secondary hover:text-secondary-foreground hover:translate-y-[-1px] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none font-display"
+					>
+						Wiki
+					</a>
+					<a
+						href="/about"
+						class="flex-1 text-center border-2 border-border bg-background py-2.5 px-3 text-xs font-black uppercase text-foreground rounded-theme shadow-theme-sm transition-all hover:bg-secondary hover:text-secondary-foreground hover:translate-y-[-1px] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none font-display"
+					>
+						About
+					</a>
+				</div>
+			</SocialShareWidget>
 		</div>
 
 		<!-- Footnote -->

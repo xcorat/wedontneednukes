@@ -386,17 +386,22 @@ export async function getUserResponse(
  */
 export async function getQuestionStats(
 	db: DrizzleD1Database<any>,
-	questionId: string
+	questionId: string,
+	options?: { validatedOnly?: boolean }
 ): Promise<{
 	totalResponses: number;
 	countsByChoiceId: Record<string, number>;
 	percentagesByChoiceId: Record<string, number>;
 }> {
-	const responses = await db
+	let responses = await db
 		.select()
 		.from(userResponseTable)
 		.where(eq(userResponseTable.questionId, questionId))
 		.all();
+
+	if (options?.validatedOnly) {
+		responses = responses.filter((r) => r.userId !== null && r.userId !== undefined);
+	}
 
 	const totalResponses = responses.length;
 	const countsByChoiceId: Record<string, number> = {};
