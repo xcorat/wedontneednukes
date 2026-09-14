@@ -1,6 +1,7 @@
 import { parseFrontmatter } from '$lib/utils/wiki-frontmatter.js';
 import { renderMarkdown } from '$lib/utils/wiki-render.js';
 import { error } from '@sveltejs/kit';
+import { getMarkdown, listMarkdown } from './catalog.js';
 
 export interface RenderedContent {
 	slug: string;
@@ -16,60 +17,25 @@ export interface RenderedContent {
 	html: string;
 }
 
-// In Vite builds and dev server, import.meta.glob eagerly inlines all .md files as strings.
-// In raw Node.js test environments (tsx), import.meta.glob is not defined, so we provide a safe fallback.
-let rawFiles: Record<string, string> = {};
-
-try {
-	rawFiles = import.meta.glob<string>('/static/**/*.md', {
-		query: '?raw',
-		import: 'default',
-		eager: true
-	});
-} catch {
-	// In Node.js test environments (tsx), import.meta.glob is not defined;
-	// getRawFile() will fall back to reading from disk via node:fs below.
-}
-
 const contentCache = new Map<string, RenderedContent>();
 
-export function getRawFile(filePath: string): string | null {
-	const normalized = filePath.startsWith('/') ? filePath : `/${filePath}`;
-	if (rawFiles[normalized]) {
-		return rawFiles[normalized];
+export function parseAndRender(key: string): RenderedContent | null {
+	const normalizedKey = key
+		.replace(/^\//, '')
+		.replace(/^static\//, '')
+		.replace(/^src\/lib\/server\/content\/markdown\//, '')
+		.replace(/\.md$/, '');
+
+	if (contentCache.has(normalizedKey)) {
+		return contentCache.get(normalizedKey)!;
 	}
 
-	// Node.js test environment fallback: read from filesystem if not found in glob
-	try {
-		const fs = globalThis.process ? (globalThis as any).process.getBuiltinModule?.('node:fs') : null;
-		const path = globalThis.process ? (globalThis as any).process.getBuiltinModule?.('node:path') : null;
-		if (fs && path) {
-			const fullPath = path.join(process.cwd(), normalized.replace(/^\//, ''));
-			if (fs.existsSync(fullPath)) {
-				const content = fs.readFileSync(fullPath, 'utf-8');
-				rawFiles[normalized] = content;
-				return content;
-			}
-		}
-	} catch {
-		// Fallback fails silently in non-node runtimes
-	}
-
-	return null;
-}
-
-export function parseAndRender(filePath: string): RenderedContent | null {
-	const normalized = filePath.startsWith('/') ? filePath : `/${filePath}`;
-	if (contentCache.has(normalized)) {
-		return contentCache.get(normalized)!;
-	}
-
-	const raw = getRawFile(normalized);
+	const raw = getMarkdown(normalizedKey);
 	if (!raw) return null;
 
 	const { frontmatter, body } = parseFrontmatter(raw);
 	const html = renderMarkdown(body);
-	const slug = normalized.split('/').pop()?.replace(/\.md$/, '') ?? '';
+	const slug = normalizedKey.split('/').pop() ?? '';
 
 	const item: RenderedContent = {
 		slug,
@@ -90,12 +56,12 @@ export function parseAndRender(filePath: string): RenderedContent | null {
 		html
 	};
 
-	contentCache.set(normalized, item);
+	contentCache.set(normalizedKey, item);
 	return item;
 }
 
 export function getAboutContent(): RenderedContent {
-	const content = parseAndRender('/static/about.md');
+	const content = parseAndRender('about');
 	if (!content) {
 		throw error(404, 'About content not found');
 	}
@@ -107,7 +73,7 @@ export function getLegalDocument(slug: string): RenderedContent {
 		throw error(404, 'Legal document not found');
 	}
 
-	const content = parseAndRender(`/static/legal/${slug}.md`);
+	const content = parseAndRender(`legal/${slug}`);
 	if (!content) {
 		throw error(404, 'Legal document not found');
 	}
@@ -115,7 +81,7 @@ export function getLegalDocument(slug: string): RenderedContent {
 }
 
 export function getWikiArticleContent(slug: string): RenderedContent {
-	const content = parseAndRender(`/static/wiki/faq/${slug}.md`);
+	const content = parseAndRender(`wiki/faq/${slug}`);
 	if (!content) {
 		throw error(404, 'Article not found');
 	}
@@ -123,7 +89,7 @@ export function getWikiArticleContent(slug: string): RenderedContent {
 }
 
 export function getCampaignsContent(): RenderedContent {
-	const content = parseAndRender('/static/campaigns/index.md');
+	const content = parseAndRender('campaigns/index');
 	if (!content) {
 		throw error(404, 'Campaigns content not found');
 	}
@@ -131,7 +97,7 @@ export function getCampaignsContent(): RenderedContent {
 }
 
 export function getOrganizationsContent(): RenderedContent {
-	const content = parseAndRender('/static/organizations/index.md');
+	const content = parseAndRender('organizations/index');
 	if (!content) {
 		throw error(404, 'Organizations content not found');
 	}
@@ -144,7 +110,7 @@ export function getCampaignArticle(slug: string): RenderedContent {
 	if (!SLUG_RE.test(slug)) {
 		throw error(404, 'Campaign not found');
 	}
-	const content = parseAndRender(`/static/campaigns/${slug}.md`);
+	const content = parseAndRender(`campaigns/${slug}`);
 	if (!content) {
 		throw error(404, 'Campaign not found');
 	}
@@ -155,9 +121,11 @@ export function getOrganizationArticle(slug: string): RenderedContent {
 	if (!SLUG_RE.test(slug)) {
 		throw error(404, 'Organization not found');
 	}
-	const content = parseAndRender(`/static/organizations/${slug}.md`);
+	const content = parseAndRender(`organizations/${slug}`);
 	if (!content) {
 		throw error(404, 'Organization not found');
 	}
 	return content;
 }
+
+export { listMarkdown };

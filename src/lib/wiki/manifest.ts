@@ -8,7 +8,7 @@
 
 import { error } from '@sveltejs/kit';
 import type { WikiManifest } from '$lib/types/wiki.js';
-import staticManifest from '../../../static/wiki/manifest.json' with { type: 'json' };
+import staticManifest from '../server/content/markdown/wiki/manifest.json' with { type: 'json' };
 
 export async function loadWikiManifest(fetch?: typeof globalThis.fetch): Promise<WikiManifest> {
 	if (staticManifest && Array.isArray((staticManifest as WikiManifest).entries)) {

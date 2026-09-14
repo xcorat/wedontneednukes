@@ -10,8 +10,9 @@ import { parseFrontmatter } from '../src/lib/utils/wiki-frontmatter.js';
 import type { WikiManifest, WikiManifestEntry } from '../src/lib/types/wiki.js';
 
 const ROOT = process.cwd();
-const ARTICLES_DIR = join(ROOT, 'static', 'wiki', 'faq');
-const MANIFEST_PATH = join(ROOT, 'static', 'wiki', 'manifest.json');
+const ARTICLES_DIR = join(ROOT, 'src', 'lib', 'server', 'content', 'markdown', 'wiki', 'faq');
+const MANIFEST_PATH = join(ROOT, 'src', 'lib', 'server', 'content', 'markdown', 'wiki', 'manifest.json');
+const STATIC_MANIFEST_PATH = join(ROOT, 'static', 'wiki', 'manifest.json');
 
 function main() {
 	let entries: WikiManifestEntry[] = [];
@@ -72,7 +73,13 @@ function main() {
 		entries
 	};
 
-	writeFileSync(MANIFEST_PATH, JSON.stringify(manifest, null, '\t') + '\n', 'utf-8');
+	const manifestJson = JSON.stringify(manifest, null, '\t') + '\n';
+	writeFileSync(MANIFEST_PATH, manifestJson, 'utf-8');
+	try {
+		writeFileSync(STATIC_MANIFEST_PATH, manifestJson, 'utf-8');
+	} catch {
+		// optional if static dir isn't ready
+	}
 
 	// Quick sanity check: every slug referenced in any `related` list should
 	// itself have an entry — catches dangling cross-links early.

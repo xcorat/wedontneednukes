@@ -14,8 +14,8 @@ import {
 const ROOT = process.cwd();
 
 describe('Campaigns page content & loader', () => {
-	it('loads static/campaigns/index.md and parses frontmatter with clean html', () => {
-		const raw = readFileSync(join(ROOT, 'static', 'campaigns', 'index.md'), 'utf-8');
+	it('loads campaigns index.md and parses frontmatter with clean html', () => {
+		const raw = readFileSync(join(ROOT, 'src', 'lib', 'server', 'content', 'markdown', 'campaigns', 'index.md'), 'utf-8');
 		const { frontmatter, body } = parseFrontmatter(raw);
 
 		assert.equal(typeof frontmatter.title, 'string');
@@ -72,7 +72,7 @@ describe('Campaigns page content & loader', () => {
 
 describe('Organizations page content & loader', () => {
 	it('loads static/organizations/index.md and parses frontmatter with clean html', () => {
-		const raw = readFileSync(join(ROOT, 'static', 'organizations', 'index.md'), 'utf-8');
+		const raw = readFileSync(join(ROOT, 'src', 'lib', 'server', 'content', 'markdown', 'organizations', 'index.md'), 'utf-8');
 		const { frontmatter, body } = parseFrontmatter(raw);
 
 		assert.equal(typeof frontmatter.title, 'string');

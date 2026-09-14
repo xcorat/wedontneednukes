@@ -11,8 +11,8 @@ import { getAboutContent, getLegalDocument, getWikiArticleContent } from '../src
 const ROOT = process.cwd();
 
 describe('About page content & loader', () => {
-	it('loads static/about.md and parses frontmatter with clean html', () => {
-		const raw = readFileSync(join(ROOT, 'static', 'about.md'), 'utf-8');
+	it('loads about.md and parses frontmatter with clean html', () => {
+		const raw = readFileSync(join(ROOT, 'src', 'lib', 'server', 'content', 'markdown', 'about.md'), 'utf-8');
 		const { frontmatter, body } = parseFrontmatter(raw);
 
 		assert.equal(typeof frontmatter.title, 'string');
@@ -35,13 +35,16 @@ describe('About page content & loader', () => {
 });
 
 describe('Legal documents loader', () => {
-	// Mock fetch that resolves files from static/
+	// Mock fetch that resolves files from server markdown directory
 	const mockFetch = (async (input: RequestInfo | URL) => {
 		const url = String(input);
 		if (url.startsWith('/legal/')) {
 			const filename = url.replace('/legal/', '');
 			try {
-				const content = readFileSync(join(ROOT, 'static', 'legal', filename), 'utf-8');
+				const content = readFileSync(
+					join(ROOT, 'src', 'lib', 'server', 'content', 'markdown', 'legal', filename),
+					'utf-8'
+				);
 				return new Response(content, { status: 200 });
 			} catch {
 				return new Response('Not Found', { status: 404 });
