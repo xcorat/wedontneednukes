@@ -7,4 +7,3 @@ export { default as ClaimVoteBanner } from './ClaimVoteBanner.svelte';
 export { default as WikiIndexWidget, type WikiIndexGroup } from './WikiIndexWidget.svelte';
 export { default as WikiArticleWidget } from './WikiArticleWidget.svelte';
 export { default as SocialShareWidget } from './SocialShareWidget.svelte';
-export { default as ProgressWidget } from './ProgressWidget.svelte';

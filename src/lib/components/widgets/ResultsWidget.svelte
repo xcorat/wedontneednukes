@@ -1,6 +1,4 @@
 <script lang="ts">
-	import ProgressWidget from './ProgressWidget.svelte';
-
 	export interface VoteStats {
 		totalVotes: number;
 		agreeCount: number;
@@ -27,8 +25,6 @@
 		answer = null,
 		stats,
 		goal = 100,
-		showUserBadge = true,
-		showVoteChoiceBanner = false,
 		variant = 'card',
 		class: className = ''
 	}: Props = $props();
@@ -42,8 +38,9 @@
 		return stats;
 	});
 
-	const hasAnswer = $derived(answer !== null && answer !== undefined);
-	const answeredNo = $derived(answer === 'no');
+	const percentage = $derived(
+		goal > 0 ? Math.min(100, Math.round((activeStats.totalVotes / goal) * 100)) : 0
+	);
 
 	const containerClasses = $derived.by(() => {
 		if (variant === 'card') {
@@ -58,7 +55,7 @@
 
 <div class={containerClasses}>
 	<!-- Tab Switcher: Validated Only | All votes -->
-	<div class="mb-5 flex items-center justify-between gap-2 border-b-2 border-border/20 pb-4">
+	<div class="mb-4 flex items-center justify-between gap-2 border-b-2 border-border/20 pb-3">
 		<span class="text-xs font-black uppercase tracking-wider text-muted-foreground font-display">
 			View Votes:
 		</span>
@@ -80,103 +77,34 @@
 		</div>
 	</div>
 
-	<!-- Progress Widget (takes current val, goal) -->
-	<ProgressWidget
-		currentVal={activeStats.totalVotes}
-		{goal}
-		label={activeTab === 'validated' ? 'Validated Campaign Goal' : 'Total Campaign Goal'}
-		unit="votes"
-	/>
+	<!-- Progress top: keep only x/100 -->
+	<div class="mb-1.5 flex justify-end text-xs sm:text-sm font-bold font-mono text-foreground">
+		{activeStats.totalVotes}/{goal}
+	</div>
 
-	<!-- Breakdown below progress bar -->
-	<div class="mt-5 space-y-3">
-		<!-- Total votes card -->
-		<div class="flex items-center justify-between border-2 border-border bg-background px-4 py-3 rounded-theme shadow-theme-sm">
-			<div>
-				<div class="text-xs font-black uppercase tracking-wider text-foreground font-display">
-					Total {activeTab === 'validated' ? 'Validated' : 'Campaign'} Votes
-				</div>
-				<p class="text-[11px] text-muted-foreground font-medium">
-					{activeTab === 'validated' ? 'Verified real human votes' : 'All recorded submissions'}
-				</p>
-			</div>
-			<div class="text-xl sm:text-2xl font-black text-foreground font-mono">
-				{activeStats.totalVotes.toLocaleString()}
-			</div>
-		</div>
+	<!-- Progress Track & Bar -->
+	<div
+		class="h-5 w-full border-2 border-border bg-surface overflow-hidden p-0.5 rounded-theme shadow-inner"
+		role="progressbar"
+		aria-valuenow={activeStats.totalVotes}
+		aria-valuemin={0}
+		aria-valuemax={goal}
+	>
+		<div
+			class="h-full bg-primary transition-all duration-700 rounded-theme"
+			style="width: {percentage}%"
+		></div>
+	</div>
 
-		<!-- Yes / No cards -->
-		<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-			<!-- Agreed: We don't need nukes (No) -->
-			<div class="border-2 border-border bg-background p-3.5 rounded-theme shadow-theme-sm">
-				<div class="flex items-center justify-between mb-1.5">
-					<span class="flex items-center gap-1.5 text-xs sm:text-sm font-black text-foreground font-display">
-						<span>🕊️</span>
-						<span>Agreed</span>
-						{#if showUserBadge && hasAnswer && answeredNo}
-							<span class="border border-border bg-primary px-1.5 py-0.2 text-[9px] font-black uppercase text-primary-foreground rounded-theme">
-								You
-							</span>
-						{/if}
-					</span>
-					<span class="text-base font-black text-primary font-display">
-						{activeStats.agreePercentage}%
-					</span>
-				</div>
-				<div class="text-xs font-bold text-foreground font-mono">
-					{activeStats.agreeCount.toLocaleString()} votes
-				</div>
-				<p class="text-[11px] text-muted-foreground mt-0.5">
-					"We don't need nukes"
-				</p>
-			</div>
-
-			<!-- Not Agreed: We do / Not sure (Yes) -->
-			<div class="border-2 border-border bg-background p-3.5 rounded-theme shadow-theme-sm">
-				<div class="flex items-center justify-between mb-1.5">
-					<span class="flex items-center gap-1.5 text-xs sm:text-sm font-black text-foreground font-display">
-						<span>🤔</span>
-						<span>Not agreed</span>
-						{#if showUserBadge && hasAnswer && !answeredNo}
-							<span class="border border-border bg-secondary px-1.5 py-0.2 text-[9px] font-black uppercase text-secondary-foreground rounded-theme">
-								You
-							</span>
-						{/if}
-					</span>
-					<span class="text-base font-black text-secondary font-display">
-						{activeStats.otherPercentage}%
-					</span>
-				</div>
-				<div class="text-xs font-bold text-foreground font-mono">
-					{activeStats.otherCount.toLocaleString()} votes
-				</div>
-				<p class="text-[11px] text-muted-foreground mt-0.5">
-					"We do | Not sure"
-				</p>
-			</div>
-		</div>
-
-		<!-- Percentage of agreed to not comparison bar -->
-		<div class="border-2 border-border bg-background p-3.5 rounded-theme shadow-theme-sm">
-			<div class="flex items-center justify-between text-xs font-bold mb-2">
-				<span class="text-foreground font-display uppercase tracking-wider text-[11px]">Consensus Ratio</span>
-				<div class="text-xs font-mono font-bold">
-					<span class="text-primary font-black">{activeStats.agreePercentage}% agreed</span>
-					<span class="text-muted-foreground"> to </span>
-					<span class="text-secondary font-black">{activeStats.otherPercentage}% not</span>
-				</div>
-			</div>
-			<!-- Dual color ratio bar -->
-			<div class="h-3.5 w-full border-2 border-border bg-surface overflow-hidden p-0.5 rounded-theme flex">
-				<div
-					class="h-full bg-primary transition-all duration-700 rounded-l-theme"
-					style="width: {activeStats.agreePercentage}%"
-				></div>
-				<div
-					class="h-full bg-secondary transition-all duration-700 rounded-r-theme"
-					style="width: {activeStats.otherPercentage}%"
-				></div>
-			</div>
-		</div>
+	<!-- Below progress bar: just text, left align (agreed x/total (percentage%)) -->
+	<div class="mt-3 text-left text-xs sm:text-sm font-medium text-foreground">
+		<p>
+			agreed {activeStats.agreeCount}/{activeStats.totalVotes} ({activeStats.agreePercentage}%)
+		</p>
+		{#if activeStats.otherCount > 0}
+			<p class="text-muted-foreground mt-0.5">
+				not agreed {activeStats.otherCount}/{activeStats.totalVotes} ({activeStats.otherPercentage}%)
+			</p>
+		{/if}
 	</div>
 </div>
