@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { dev } from '$app/environment';
 	import { menuState } from '$lib/menu.svelte.js';
 	import { VERSION_LABEL } from '$lib/version.js';
 	import ThemeSwitcher from '$lib/components/ThemeSwitcher.svelte';
@@ -10,6 +11,7 @@
 
 	let isExternalOpen = $state(false);
 	let isTestsOpen = $state(false);
+	let isSettingsOpen = $state(false);
 	let isLoggingOut = $state(false);
 
 	function handleKeydown(event: KeyboardEvent) {
@@ -83,47 +85,73 @@
 							</div>
 						</div>
 
-						<a
-							href="/dashboard"
-							onclick={() => menuState.close()}
-							class="flex items-center justify-between border-2 border-border bg-primary px-3.5 py-2 text-sm font-black text-primary-foreground rounded-theme shadow-theme-primary hover:translate-y-[1px] transition-all"
-						>
-							<span>My Dashboard</span>
-							<span>📊</span>
-						</a>
+						<!-- Settings Dropdown -->
+						<div class="flex flex-col gap-1">
+							<button
+								type="button"
+								aria-expanded={isSettingsOpen}
+								onclick={() => (isSettingsOpen = !isSettingsOpen)}
+								class="flex items-center justify-between border-2 border-border bg-background px-3.5 py-2 text-sm font-bold text-foreground rounded-theme shadow-theme-sm hover:bg-secondary hover:text-secondary-foreground transition-all cursor-pointer"
+							>
+								<span class="flex items-center gap-2">
+									<span>Settings</span>
+								</span>
+								<svg
+									class="h-4 w-4 transition-transform duration-200 {isSettingsOpen ? 'rotate-180' : ''}"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2.5"
+									viewBox="0 0 24 24"
+								>
+									<path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+								</svg>
+							</button>
 
-						<a
-							href="/profile"
-							onclick={() => menuState.close()}
-							class="flex items-center justify-between border-2 border-border bg-background px-3.5 py-2 text-sm font-bold text-foreground rounded-theme shadow-theme-sm hover:bg-secondary hover:text-secondary-foreground transition-all"
-						>
-							<span>My Profile</span>
-							<span>👤</span>
-						</a>
-						<a
-							href="/settings/profile"
-							onclick={() => menuState.close()}
-							class="flex items-center justify-between border-2 border-border bg-background px-3.5 py-2 text-sm font-bold text-foreground rounded-theme shadow-theme-sm hover:bg-secondary hover:text-secondary-foreground transition-all"
-						>
-							<span>Profile Settings</span>
-							<span>⚙️</span>
-						</a>
-						<a
-							href="/settings/account"
-							onclick={() => menuState.close()}
-							class="flex items-center justify-between border-2 border-border bg-background px-3.5 py-2 text-sm font-bold text-foreground rounded-theme shadow-theme-sm hover:bg-secondary hover:text-secondary-foreground transition-all"
-						>
-							<span>Connected Accounts</span>
-							<span>🔗</span>
-						</a>
-						<a
-							href="/settings/security"
-							onclick={() => menuState.close()}
-							class="flex items-center justify-between border-2 border-border bg-background px-3.5 py-2 text-sm font-bold text-foreground rounded-theme shadow-theme-sm hover:bg-secondary hover:text-secondary-foreground transition-all"
-						>
-							<span>Security Settings</span>
-							<span>🛡️</span>
-						</a>
+							{#if isSettingsOpen}
+								<div class="flex flex-col gap-1.5 pl-3 pt-1 border-l-2 border-border/40 ml-2">
+									<a
+										href="/dashboard"
+										onclick={() => menuState.close()}
+										class="flex items-center justify-between border-2 border-border/60 bg-surface/80 px-3 py-1.5 text-xs font-bold text-foreground rounded-theme hover:bg-secondary hover:text-secondary-foreground transition-all"
+									>
+										<span>My Dashboard</span>
+										<span>📊</span>
+									</a>
+									<a
+										href="/profile"
+										onclick={() => menuState.close()}
+										class="flex items-center justify-between border-2 border-border/60 bg-surface/80 px-3 py-1.5 text-xs font-bold text-foreground rounded-theme hover:bg-secondary hover:text-secondary-foreground transition-all"
+									>
+										<span>My Profile</span>
+										<span>👤</span>
+									</a>
+									<a
+										href="/settings/profile"
+										onclick={() => menuState.close()}
+										class="flex items-center justify-between border-2 border-border/60 bg-surface/80 px-3 py-1.5 text-xs font-bold text-foreground rounded-theme hover:bg-secondary hover:text-secondary-foreground transition-all"
+									>
+										<span>Profile Settings</span>
+										<span>⚙️</span>
+									</a>
+									<a
+										href="/settings/account"
+										onclick={() => menuState.close()}
+										class="flex items-center justify-between border-2 border-border/60 bg-surface/80 px-3 py-1.5 text-xs font-bold text-foreground rounded-theme hover:bg-secondary hover:text-secondary-foreground transition-all"
+									>
+										<span>Connected Accounts</span>
+										<span>🔗</span>
+									</a>
+									<a
+										href="/settings/security"
+										onclick={() => menuState.close()}
+										class="flex items-center justify-between border-2 border-border/60 bg-surface/80 px-3 py-1.5 text-xs font-bold text-foreground rounded-theme hover:bg-secondary hover:text-secondary-foreground transition-all"
+									>
+										<span>Security Settings</span>
+										<span>🛡️</span>
+									</a>
+								</div>
+							{/if}
+						</div>
 					</div>
 				{:else}
 					<a
@@ -225,7 +253,7 @@
 					<span>📖</span>
 				</a>
 
-				<!-- Tests Dropdown -->
+				<!-- Styling / Tests Dropdown -->
 				<div class="flex flex-col gap-1">
 					<button
 						type="button"
@@ -234,7 +262,7 @@
 						class="flex items-center justify-between border-2 border-border bg-background px-3.5 py-2 text-sm font-bold text-foreground rounded-theme shadow-theme-sm hover:bg-secondary hover:text-secondary-foreground transition-all cursor-pointer"
 					>
 						<span class="flex items-center gap-2">
-							<span>Tests</span>
+							<span>{dev ? 'Tests' : 'Styling'}</span>
 						</span>
 						<svg
 							class="h-4 w-4 transition-transform duration-200 {isTestsOpen ? 'rotate-180' : ''}"
@@ -254,33 +282,35 @@
 								<ThemeSwitcher compact={true} />
 							</div>
 
-							<!-- Test Links -->
-							<div class="flex flex-col gap-1">
-								<a
-									href="/tests"
-									onclick={() => menuState.close()}
-									class="flex items-center justify-between border-2 border-border/60 bg-surface/80 px-3 py-1.5 text-xs font-bold text-foreground rounded-theme hover:bg-secondary hover:text-secondary-foreground transition-all"
-								>
-									<span>Lab Directory</span>
-									<span>🧪</span>
-								</a>
-								<a
-									href="/tests/ui-forms"
-									onclick={() => menuState.close()}
-									class="flex items-center justify-between border-2 border-border/60 bg-surface/80 px-3 py-1.5 text-xs font-bold text-foreground rounded-theme hover:bg-secondary hover:text-secondary-foreground transition-all"
-								>
-									<span>UI Form Variants</span>
-									<span>📋</span>
-								</a>
-								<a
-									href="/tests/social"
-									onclick={() => menuState.close()}
-									class="flex items-center justify-between border-2 border-border/60 bg-surface/80 px-3 py-1.5 text-xs font-bold text-foreground rounded-theme hover:bg-secondary hover:text-secondary-foreground transition-all"
-								>
-									<span>Social Sharing Lab</span>
-									<span>🔗</span>
-								</a>
-							</div>
+							<!-- Test Links (shown only on dev) -->
+							{#if dev}
+								<div class="flex flex-col gap-1">
+									<a
+										href="/tests"
+										onclick={() => menuState.close()}
+										class="flex items-center justify-between border-2 border-border/60 bg-surface/80 px-3 py-1.5 text-xs font-bold text-foreground rounded-theme hover:bg-secondary hover:text-secondary-foreground transition-all"
+									>
+										<span>Lab Directory</span>
+										<span>🧪</span>
+									</a>
+									<a
+										href="/tests/ui-forms"
+										onclick={() => menuState.close()}
+										class="flex items-center justify-between border-2 border-border/60 bg-surface/80 px-3 py-1.5 text-xs font-bold text-foreground rounded-theme hover:bg-secondary hover:text-secondary-foreground transition-all"
+									>
+										<span>UI Form Variants</span>
+										<span>📋</span>
+									</a>
+									<a
+										href="/tests/social"
+										onclick={() => menuState.close()}
+										class="flex items-center justify-between border-2 border-border/60 bg-surface/80 px-3 py-1.5 text-xs font-bold text-foreground rounded-theme hover:bg-secondary hover:text-secondary-foreground transition-all"
+									>
+										<span>Social Sharing Lab</span>
+										<span>🔗</span>
+									</a>
+								</div>
+							{/if}
 						</div>
 					{/if}
 				</div>
