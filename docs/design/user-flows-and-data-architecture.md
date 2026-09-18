@@ -20,22 +20,23 @@ stateDiagram-v2
     DetectUserState --> FirstTimeVisitor : New / Unrecognized
 
     state FirstTimeVisitor {
-        [*] --> Step1_Hero : /onboarding/wedontneednukes (or /)
-        Step1_Hero --> Step2_Join : Selects Agree or Other
-        Step2_Join --> Step3_Pledge : Signs In or Continues as Guest
-        Step3_Pledge --> Step4_Completed : Selects Commitment Tiers
+        [*] --> Step1_Hero : / (or /onboarding/wedontneednukes)
+        Step1_Hero --> Step2_Pledge : Agree ("No") routes to Pledge
+        Step1_Hero --> Step3_Join : Other ("Yes") routes to Join
+        Step2_Pledge --> Step3_Join : Selects Commitment Tiers
+        Step3_Join --> Step4_Results : Signs In or Continues Anonymously
     }
 
     state ReturningAnon {
-        [*] --> AnonLandingView : Visits / or /results
-        note right of AnonLandingView: 1. Results Widget (highlights their vote)<br/>2. Claim Vote Banner (Join/Login CTA)<br/>3. Prompt to unlock next questions
+        [*] --> AnonLandingView : Visits / or /onboarding/results
+        note right of AnonLandingView: 1. Results Widget (highlights their vote)<br/>2. Claim Vote Banner (Join/Login CTA)<br/>3. What's Next & Share Hub
         AnonLandingView --> ClaimFlow : Clicks Join / Sign In
         ClaimFlow --> LoggedInUser : Migrates anon_id responses to user_id
     }
 
     state LoggedInUser {
         [*] --> DashboardView : Visits / or /dashboard
-        note right of DashboardView: 1. Live Campaign Results<br/>2. User's Stance & Commitment Badges<br/>3. Next Unlocked Gated Questions<br/>4. Action / Share Tools
+        note right of DashboardView: 1. Live Campaign Results<br/>2. User's Stance & Commitment Badges<br/>3. Next Unlocked Gated Questions<br/>4. Action / Share Tools / AI Assistant
     }
 ```
 
@@ -43,23 +44,29 @@ stateDiagram-v2
 
 | Visitor State | Entry Point | Primary View | CTAs / Capabilities |
 | :--- | :--- | :--- | :--- |
-| **New Visitor** | `/` or `/onboarding/wedontneednukes` | **Hero Question**: *"We don't need Nukes !"*, "Why?", Agree / Other | Answers question → moves to `/onboarding/join` |
-| | `/onboarding/join` | **Join Form**: Social OAuth, Magic link, or "Continue as guest" | Signs in or skips → moves to `/onboarding/pledge` |
-| | `/onboarding/pledge` | **Pledge Form**: Multi-select tiers (Passive, Active, Direct) | Submits → moves to `/results` or `/dashboard` |
-| **Returning Anon** | `/` or `/results` | **Results + Claim Card**: Live stats with "You" badge + inline Join card | "Claim your vote & unlock follow-up questions" |
-| **Returning Logged-in** | `/` or `/dashboard` | **Dashboard**: Live stats, active commitments, next unlocked question | Answer follow-up question, edit pledge, share campaign |
+| **New Visitor** | `/` or `/onboarding/wedontneednukes` | **Step 1 · Hero Question**: *"We don't need Nukes !"*, "Why?", Agree / Other | Agree → moves to `/onboarding/pledge?answer=no`<br/>Other → moves to `/onboarding/join?answer=yes` |
+| | `/onboarding/pledge` | **Step 2 · Pledge Form**: Multi-select commitment tiers (Ally, Advocate, Contributor) | Selects tiers → moves to `/onboarding/join` |
+| | `/onboarding/join` | **Step 3 · Join / Record**: Magic link, OAuth (4 providers), or "Continue as guest" | Signs in or skips → moves to `/onboarding/results` |
+| | `/onboarding/results` | **Step 4 · Results Hub**: Community results, vote claim banner, social share, What's Next hub | Claim vote, share campaign, open AI Assistant |
+| **Returning Anon** | `/` or `/onboarding/results` | **Results + Claim Card**: Live stats with "You" badge + inline Join card | "Claim your vote", explore campaigns |
+| **Public Visitor** | `/results` & `/results/votes` | **Public Transparency Stream**: Aggregated distribution + paginated verified votes | View public voting stream, filter by stance |
+| **Returning Member** | `/` or `/dashboard` | **Dashboard**: Live stats, active commitments, next unlocked question | Answer follow-up questions, access AI Assistant, edit profile |
 
 ---
 
 ## 2. Component Modularization
 
-Form logic is decoupled from top-level routes into reusable widgets located in `src/lib/components/widgets/`:
+Form and engagement logic is decoupled into independent widgets under `src/lib/components/widgets/`:
 
 - **`<QuestionHeroWidget />`**: Primary premise ("We don't need Nukes !"), "Why?" link, and big choice buttons.
-- **`<JoinFormWidget />`**: Magic link + OAuth + Turnstile + guest/skip option. Configurable between full-page and compact banner modes.
-- **`<PledgeFormWidget />`**: Multi-select commitment tiers (`passive`, `active`, `direct`) with descriptions and optional comment.
-- **`<ResultsWidget />`**: Live animated progress bars showing Agree vs Other distributions with the personalized "You" marker.
-- **`<ClaimVoteBanner />`**: Callout prompting anonymous visitors to claim their vote and save their record permanently.
+- **`<PledgeFormWidget />`**: Multi-select commitment tiers (`passive`, `active`, `direct`) with descriptions, progressive enhancement submit (`use:enhance`), and feedback notes.
+- **`<JoinFormWidget />`**: Magic link + OAuth (Google, GitHub, Facebook, Twitter) + Turnstile + anonymous skip option.
+- **`<ResultsWidget />`**: Animated Agree vs Other distribution bars, total counts, percentages, and personalized "You" stance marker.
+- **`<ClaimVoteBanner />`**: Prompts anonymous voters to claim and link their pledge with quick sign-in.
+- **`<SocialShareWidget />`**: One-click sharing for X, Bluesky, Threads, Facebook, WhatsApp, LinkedIn, and copy link.
+- **`<ResearchChatWidget />`**: Grounded AI chat widget with streaming text, document citations drawer, and starter inquiries.
+- **`<ChatDrawer />`**: Floating wiki trigger (`🤖 Ask Questions`) and slide-over panel with unauthenticated login guidance.
+- **`<StepHeaderWidget />`**: Standardized onboarding navigation bar with back button and stance badge.
 - **`<GatedQuestionWidget />`**: Dynamic renderer for whichever follow-up question is currently unlocked for the user.
 
 ---

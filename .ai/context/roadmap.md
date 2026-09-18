@@ -24,19 +24,22 @@ Status snapshot distilled from `docs/roadmap/phases.md` and `docs/roadmap/milest
 - Anonymous `anon_id` cookie flow and atomic vote claiming into `user_id`.
 - Public wiki/FAQ at `/wiki` + `/wiki/faq/<slug>` (SSR). Content in `static/wiki/faq/*.md`, regenerated into `manifest.json` via `pnpm manifest`. Wiki has its own scoped theme variables applied through `<svelte:body use:wikiScope>`. Replaces the old `/why` page.
 - About & Legal pages (`/about`, `/legal/terms`, `/legal/privacy`, OAuth redirects `/terms` & `/privacy`) sourced from Markdown in `/static`, with safe URI protocol sanitization and OAuth consent notice.
-- Multi-channel social sharing (`SocialShareWidget` supporting X, Bluesky, Threads, Facebook, WhatsApp, LinkedIn, and Copy Link), official profile badges (`SocialLinks` for Facebook, X, Bluesky, TikTok), top-bar `ShareButton` popover, and AI helper bot coming soon teaser (`BotButton`).
+- Multi-channel social sharing (`SocialShareWidget` supporting X, Bluesky, Threads, Facebook, WhatsApp, LinkedIn, and Copy Link), official profile badges (`SocialLinks` for Facebook, X, Bluesky, TikTok), top-bar `ShareButton` popover, and AI helper bot indicator (`BotButton`).
+- Dedicated 4-step onboarding progression (`/` hero, `/onboarding/pledge`, `/onboarding/join`, `/onboarding/results`).
+- Public results and verified voting feed (`/results`, `/results/votes`) with zero-leakage privacy guarantees.
+- AI Research Grounding Assistant (`/assistant`, `/api/chat`, `ResearchChatWidget`, `ChatDrawer`) using OpenAI Responses API (`gpt-5-nano` + `file_search`) over 12 ingested reference documents.
+- Centralized session revocation and logout route (`/auth/logout`).
 
-**Open (⬜) — These are the active work items:**
+**Open (⬜) — Active work items:**
 
 1. **Gated Questions Schema.** Migrate from the single `pledge` table to the dynamic `question` / `question_option` / `question_gate` / `user_response` model described in [`data-model.md`](data-model.md) and `docs/design/user-flows-and-data-architecture.md` §4.
-2. **Dedicated Onboarding Routes.** Standalone routes `/onboarding/wedontneednukes`, `/onboarding/join`, `/onboarding/pledge` (currently the recovery logic lives inline in `/`, `/auth`, `/pledge`).
 
 ### Phase 2 — Community & Growth: ⏳ PLANNED
 
 - R2 user-generated content (memes, videos) — `docs/architecture/community-media.md`.
 - Community voting + curation feeds + FAQ wiki editor.
 - Social sharing enhancements; AI meme generator.
-- RAG campaign agent for community Q&A.
+- Multi-campaign expansion using the modular engine.
 
 ### Phase 3 — Decentralization & Scale: ⏳ PLANNED
 

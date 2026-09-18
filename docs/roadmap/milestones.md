@@ -11,18 +11,18 @@ For the complete 6-month financial model, growth projections, and viral analysis
 
 ### Platform Unlock Tiers
 
-- **Milestone 1: $1,000 — Foundation & MVP**
+- **Milestone 1: $1,000 — Foundation & MVP** `[COMPLETED / LIVE]`
   - Production deployment on custom domain (`wedontneednukes.org`).
   - Core pledge flow engine live with social & anonymous auth.
   - Interactive initial FAQ wiki and Cloudflare Turnstile bot deterrence.
 
-- **Milestone 2: $5,000 — Dynamic Flow, Viral Cards & Seed Discovery**
-  - Multi-layer branching pledge paths (differentiating commitment levels and action types).
-  - Dynamic community FAQ wiki.
-  - 1-click social share cards (WhatsApp, Signal, Telegram, X).
-  - Initial seed marketing budget ($1,500) to bootstrap early adoption.
+- **Milestone 2: $5,000 — Dynamic Flow, Viral Cards & Seed Discovery** `[COMPLETED / LIVE]`
+  - Multi-layer commitment selection (Ally, Advocate, Contributor tiers).
+  - 1-click social share cards (X, Bluesky, Threads, Facebook, WhatsApp, LinkedIn, Copy Link).
+  - AI Research Grounding Assistant (`/assistant`, `/api/chat`, `ResearchChatWidget`, `ChatDrawer`) deployed with 12 reference documents.
+  - Public transparency stream at `/results` and `/results/votes`.
 
-- **Milestone 3: $10,000 — Cryptographic / P2P Verifiable Identity**
+- **Milestone 3: $10,000 — Cryptographic / P2P Verifiable Identity** `[NEXT UP]`
   - Basic P2P / cryptographic identity layer (verifiable pledge proofs, sybil resistance).
   - Global real-time pledge density visualization.
   - Privacy-preserving auditability.
@@ -35,5 +35,4 @@ For the complete 6-month financial model, growth projections, and viral analysis
 - **Milestone 5: $30,000 (Target Budget) — Global Scale & Decentralization**
   - Censorship-resistant public pledge ledger replication.
   - Creator micro-grant program for high-performing viral community content.
-  - RAG-powered AI Campaign Agent for real-time deterrence/policy FAQ conversations.
   - Mobile PWA / native companion app.

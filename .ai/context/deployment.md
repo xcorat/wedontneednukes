@@ -23,9 +23,13 @@ Distilled from `docs/guides/deployment.md` and `docs/guides/local-dev.md`. Use t
 | `FACEBOOK_BUSINESS_CONFIG_ID` | Variable | optional | Meta Business Login config |
 | `GITHUB_CLIENT_ID` | Variable / Secret | for GitHub | GitHub OAuth app |
 | `GITHUB_CLIENT_SECRET` | Secret (encrypted) | for GitHub | GitHub OAuth app |
+| `TWITTER_CLIENT_ID` | Variable / Secret | for Twitter | X / Twitter Developer Portal client ID |
+| `TWITTER_CLIENT_SECRET` | Secret (encrypted) | for Twitter | X / Twitter Developer Portal client secret |
 | `TURNSTILE_SITE_KEY` | Variable | for Turnstile | public site key |
 | `TURNSTILE_SECRET_KEY` | Secret (encrypted) | for Turnstile | server verification key |
 | `OPENAI_API_KEY` | Secret (encrypted) | for AI Assistant | `sk-...` OpenAI API key |
+| `OPENAI_VECTOR_STORE_ID` | Variable | for AI Assistant | `vs_...` Vector Store ID generated via `pnpm run ingest:docs` |
+| `OPENAI_MODEL` | Variable | optional | Model ID (defaults to `gpt-5-nano`) |
 | `RESEND_API_KEY` | Secret (encrypted) | optional | if email delivery is external |
 | `EMAIL_FROM` | Variable | optional | e.g. `We Don't Need Nukes <noreply@wedontneednukes.org>` |
 
@@ -40,6 +44,7 @@ Set in the OAuth provider's dashboard; format: `{base}/api/auth/callback/{provid
 | Google | `https://wedontneednukes.org/api/auth/callback/google` | `http://localhost:5173/api/auth/callback/google` |
 | Facebook | `https://wedontneednukes.org/api/auth/callback/facebook` | `http://localhost:5173/api/auth/callback/facebook` |
 | GitHub | `https://wedontneednukes.org/api/auth/callback/github` | (provider has single callback URL; use prod) |
+| Twitter / X | `https://wedontneednukes.org/api/auth/callback/twitter` | `http://localhost:5173/api/auth/callback/twitter` |
 
 Google additionally requires Authorized JavaScript origins: `https://wedontneednukes.org`, `http://localhost:5173`.
 

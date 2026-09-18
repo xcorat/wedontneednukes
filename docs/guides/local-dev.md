@@ -62,14 +62,29 @@ The app will be available at `http://localhost:5173`. `platformProxy` simulates 
 
 ---
 
-## 5. Type-checking & Linting
+## 5. Automated Testing & Verification
 
-Before pushing or committing code:
+Before committing or pushing changes, run the automated verification suite:
 
 ```bash
-# Run Svelte & TypeScript check
+# Run all unit and integration tests (Node.js test runner)
+pnpm test
+
+# Run Svelte & TypeScript diagnostic check
 pnpm check
 
-# Build production bundle
+# Build production bundle (includes wiki manifest generation)
 pnpm build
+```
+
+---
+
+## 6. Content & AI Ingestion Scripts
+
+```bash
+# Rebuild the static wiki manifest from static/wiki/faq/*.md
+pnpm manifest
+
+# Ingest/update reference PDFs in downloads/ to the OpenAI Vector Store
+pnpm run ingest:docs
 ```
