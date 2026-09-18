@@ -1,18 +1,17 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { chatState } from '$lib/chat.svelte.js';
 
 	interface Props {
 		class?: string;
+		href?: string;
 		text?: string;
-		title?: string;
 		position?: 'bottom' | 'top';
 	}
 
 	let {
 		class: className = '',
-		text = 'The AI Assistant is available for signed-in members. Log in to explore disarmament research and ask questions.',
-		title = 'Campaign Assistant',
+		href = '/assistant',
+		text = 'The AI Assistant is available for signed-in members. Log in to explore disarmament research and ask us questions.',
 		position = 'bottom'
 	}: Props = $props();
 
@@ -24,13 +23,11 @@
 	let containerEl = $state<HTMLDivElement | null>(null);
 
 	const isVisible = $derived(!user && (isOpen || isHovered || isFocused));
-	const tooltipId = 'bot-helper-tooltip';
+	const tooltipId = 'ask-us-tooltip';
 
 	function handleTriggerClick(e: MouseEvent) {
 		e.stopPropagation();
-		if (user) {
-			chatState.toggle();
-		} else {
+		if (!user) {
 			isOpen = !isOpen;
 		}
 	}
@@ -57,45 +54,34 @@
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
 	bind:this={containerEl}
-	class="relative inline-flex items-center"
+	class="relative inline-flex items-center {className}"
 	onmouseenter={() => (isHovered = true)}
 	onmouseleave={() => (isHovered = false)}
 >
-	<button
-		type="button"
-		aria-label={user ? 'Open AI Assistant' : title}
-		aria-describedby={isVisible ? tooltipId : undefined}
-		aria-expanded={user ? chatState.isOpen : isVisible}
-		onclick={handleTriggerClick}
-		onfocus={() => (isFocused = true)}
-		onblur={() => (isFocused = false)}
-		class="inline-flex h-10 w-10 shrink-0 items-center justify-center border-2 border-border bg-surface text-foreground shadow-theme-sm rounded-theme transition-all hover:translate-y-[1px] hover:bg-secondary hover:text-secondary-foreground active:translate-x-[1px] active:translate-y-[1px] active:shadow-none cursor-pointer {className}"
-	>
-		<svg
-			class="h-5 w-5 shrink-0"
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			stroke-width="2"
-			stroke-linecap="round"
-			stroke-linejoin="round"
-			aria-hidden="true"
+	{#if user}
+		<a
+			{href}
+			aria-label="Ask Us - Open AI Assistant"
+			class="inline-flex items-center gap-2 border-2 border-border bg-surface px-3 py-1.5 sm:px-3.5 sm:py-2 text-xs sm:text-sm font-black uppercase tracking-wider text-foreground rounded-theme shadow-theme-sm transition-all hover:bg-secondary hover:text-secondary-foreground hover:translate-y-[1px] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none cursor-pointer font-display"
 		>
-			<!-- Robot Antenna -->
-			<circle cx="12" cy="4" r="1.5" fill="currentColor" />
-			<line x1="12" y1="5.5" x2="12" y2="8" stroke-width="2" />
-			<!-- Robot Head -->
-			<rect x="4" y="8" width="16" height="13" rx="2" />
-			<!-- Eyes -->
-			<circle cx="9" cy="13" r="1.25" fill="currentColor" />
-			<circle cx="15" cy="13" r="1.25" fill="currentColor" />
-			<!-- Mouth / Grille -->
-			<line x1="9" y1="17" x2="15" y2="17" stroke-width="1.5" />
-			<!-- Ear bolts -->
-			<line x1="2" y1="14.5" x2="4" y2="14.5" stroke-width="2" />
-			<line x1="20" y1="14.5" x2="22" y2="14.5" stroke-width="2" />
-		</svg>
-	</button>
+			<span class="text-base sm:text-lg">🤖</span>
+			<span>Ask Us</span>
+		</a>
+	{:else}
+		<button
+			type="button"
+			aria-label="Sign in to Ask Us"
+			aria-describedby={isVisible ? tooltipId : undefined}
+			aria-expanded={isVisible}
+			onclick={handleTriggerClick}
+			onfocus={() => (isFocused = true)}
+			onblur={() => (isFocused = false)}
+			class="inline-flex items-center gap-2 border-2 border-border bg-surface px-3 py-1.5 sm:px-3.5 sm:py-2 text-xs sm:text-sm font-black uppercase tracking-wider text-foreground rounded-theme shadow-theme-sm transition-all hover:bg-secondary hover:text-secondary-foreground hover:translate-y-[1px] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none cursor-pointer font-display"
+		>
+			<span class="text-base sm:text-lg">🤖</span>
+			<span>Ask Us</span>
+		</button>
+	{/if}
 
 	<!-- Tooltip Popover (only for non-logged-in users) -->
 	{#if isVisible}
@@ -118,10 +104,10 @@
 				{text}
 			</p>
 			<a
-				href={`/auth?redirect=${encodeURIComponent(page.url.pathname + page.url.search)}`}
-				class="inline-flex w-full items-center justify-center gap-1.5 border-2 border-border bg-primary px-3 py-1.5 text-xs font-black uppercase tracking-wider text-primary-foreground rounded-theme shadow-theme-primary hover:translate-y-[1px] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all"
+				href={`/auth?redirect=${encodeURIComponent(href)}`}
+				class="inline-flex w-full items-center justify-center gap-1.5 border-2 border-border bg-primary px-3 py-1.5 text-xs font-black uppercase tracking-wider text-primary-foreground rounded-theme shadow-theme-primary hover:translate-y-[1px] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all font-display"
 			>
-				<span>Sign In</span>
+				<span>Sign In to Chat</span>
 				<span aria-hidden="true">→</span>
 			</a>
 

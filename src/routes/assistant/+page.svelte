@@ -20,10 +20,10 @@
 </script>
 
 <svelte:head>
-	<title>AI Assistant | WeDon't Need Nukes</title>
+	<title>We dont need nukes! · AI Assistant | We Don't Need Nukes</title>
 	<meta
 		name="description"
-		content="Ask questions about nuclear disarmament, deterrence myths, treaties, and grassroots peace movement strategies."
+		content="Ask why, how and what we can do as part of the larger global community of nuclear disarmamant community."
 	/>
 </svelte:head>
 
@@ -41,10 +41,10 @@
 			</div>
 
 			<h1 class="text-3xl sm:text-5xl font-black tracking-tight text-foreground font-display">
-				AI Assistant
+				We dont need nukes!
 			</h1>
 			<p class="text-base sm:text-lg text-muted-foreground max-w-3xl leading-relaxed">
-				Explore questions about nuclear weapons, deterrence myths, international treaties, and how everyday people and grassroots movements can drive institutional change toward a nuclear-free world.
+				Ask why, how and what we can do as part of the larger global community of nuclear disarmamant community.
 			</p>
 		</header>
 
