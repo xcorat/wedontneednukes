@@ -20,6 +20,9 @@ importers:
       marked:
         specifier: ^18.0.13
         version: 18.0.13
+      openai:
+        specifier: ^7.18.0
+        version: 7.18.0(undici@5.29.0)(zod@4.6.1)
     devDependencies:
       '@cloudflare/workers-types':
         specifier: ^4.20250909.0
@@ -1712,6 +1715,30 @@ packages:
   ohash@2.0.12:
     resolution: {integrity: sha512-65S/5gk9YSsaRjcyf7Nfa6h/d3E8/1gslpXfI4W7Dxn/oap8IKRuNT5VXkLQ1YFKIEg4apRY4Pj6aiwFzrDdmw==}
 
+  openai@7.18.0:
+    resolution: {integrity: sha512-S+xxaUf9VzIHEPDUpUFnRgvR2Ho0K1yZEaSJ8gd7xQlCNm4sdOD7/QaKWLRTYK3MK6KhwpD3cOEC0F4OPG698A==}
+    engines: {node: '>=22.0.0'}
+    peerDependencies:
+      '@aws-sdk/credential-provider-node': '>=3.972.0 <4'
+      '@smithy/hash-node': '>=4.3.0 <5'
+      '@smithy/signature-v4': '>=5.4.0 <6'
+      undici: '>=5 <9'
+      ws: ^8.21.0
+      zod: ^3.25 || ^4.0
+    peerDependenciesMeta:
+      '@aws-sdk/credential-provider-node':
+        optional: true
+      '@smithy/hash-node':
+        optional: true
+      '@smithy/signature-v4':
+        optional: true
+      undici:
+        optional: true
+      ws:
+        optional: true
+      zod:
+        optional: true
+
   path-to-regexp@6.3.0:
     resolution: {integrity: sha512-Yhpw4T9C6hPpgPeA28us07OJeqZ5EzQTkbfwuhsUg0c237RomFoETJgmp2sa3F/41gfLE6G5cqcYwznmeEeOlQ==}
 
@@ -3053,6 +3080,11 @@ snapshots:
   obug@2.2.1: {}
 
   ohash@2.0.12: {}
+
+  openai@7.18.0(undici@5.29.0)(zod@4.6.1):
+    optionalDependencies:
+      undici: 5.29.0
+      zod: 4.6.1
 
   path-to-regexp@6.3.0: {}
 
