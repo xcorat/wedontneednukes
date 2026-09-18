@@ -26,7 +26,8 @@
     "BETTER_AUTH_URL": "https://wedontneednukes.org",
     "FACEBOOK_APP_ID": "1059794736968380",
     "TURNSTILE_SITE_KEY": "0x4AAAAAAEx_YB7mO4Q24vS9",
-    "TWITTER_CLIENT_ID": "ejN3VXFUTXlQYnRLQ3c1Q3lfZmg6MTpjaQ"
+    "TWITTER_CLIENT_ID": "ejN3VXFUTXlQYnRLQ3c1Q3lfZmg6MTpjaQ",
+    "OPENAI_VECTOR_STORE_ID":"vs_6aacac96299c8191b93d9c1afc0d11c3"
   }
 	// Edge Security & Rate Limiting:
 	// - Apply Cloudflare WAF rate limiting rules on the zone:

@@ -8,3 +8,5 @@ export { default as WikiIndexWidget, type WikiIndexGroup } from './WikiIndexWidg
 export { default as WikiArticleWidget } from './WikiArticleWidget.svelte';
 export { default as SocialShareWidget } from './SocialShareWidget.svelte';
 export { default as LatestVotesWidget } from './LatestVotesWidget.svelte';
+export { default as ResearchChatWidget } from './ResearchChatWidget.svelte';
+export { default as ChatDrawer } from './ChatDrawer.svelte';

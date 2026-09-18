@@ -2,6 +2,7 @@
 	import '../app.css';
 	import type { LayoutData } from './$types.js';
 	import MenuBar from '$lib/components/MenuBar.svelte';
+	import ChatDrawer from '$lib/components/widgets/ChatDrawer.svelte';
 
 	let { data, children }: { data: LayoutData; children: import('svelte').Snippet } = $props();
 </script>
@@ -34,3 +35,4 @@
 {@render children()}
 
 <MenuBar />
+<ChatDrawer />
