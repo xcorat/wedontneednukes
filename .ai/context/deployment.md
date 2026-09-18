@@ -25,6 +25,7 @@ Distilled from `docs/guides/deployment.md` and `docs/guides/local-dev.md`. Use t
 | `GITHUB_CLIENT_SECRET` | Secret (encrypted) | for GitHub | GitHub OAuth app |
 | `TURNSTILE_SITE_KEY` | Variable | for Turnstile | public site key |
 | `TURNSTILE_SECRET_KEY` | Secret (encrypted) | for Turnstile | server verification key |
+| `OPENAI_API_KEY` | Secret (encrypted) | for AI Assistant | `sk-...` OpenAI API key |
 | `RESEND_API_KEY` | Secret (encrypted) | optional | if email delivery is external |
 | `EMAIL_FROM` | Variable | optional | e.g. `We Don't Need Nukes <noreply@wedontneednukes.org>` |
 
