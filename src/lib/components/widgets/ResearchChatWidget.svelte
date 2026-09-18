@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { tick, untrack } from 'svelte';
+	import { page } from '$app/stores';
 	import { renderMarkdown } from '$lib/utils/wiki-render.js';
 	import {
 		type ChatMessage,
@@ -23,10 +24,13 @@
 		showFullViewLink = false
 	}: Props = $props();
 
+	const user = $derived($page.data.user);
+
 	let messages = $state<ChatMessage[]>([]);
 	let inputMessage = $state(untrack(() => initialPrompt));
 	let isGenerating = $state(false);
 	let chatContainer = $state<HTMLDivElement | null>(null);
+	let textareaEl = $state<HTMLTextAreaElement | null>(null);
 	let abortController = $state<AbortController | null>(null);
 	let activeCitation = $state<CitationItem | null>(null);
 	let copiedId = $state<string | null>(null);
@@ -82,7 +86,7 @@
 	}
 
 	async function sendPrompt(promptText: string) {
-		if (isGenerating || !promptText.trim()) return;
+		if (!user || isGenerating || !promptText.trim()) return;
 
 		const userQuery = promptText.trim();
 		inputMessage = '';
@@ -219,6 +223,10 @@
 	}
 
 	function handleSubmit() {
+		if (!inputMessage.trim()) {
+			textareaEl?.focus();
+			return;
+		}
 		sendPrompt(inputMessage);
 	}
 </script>
@@ -234,7 +242,7 @@
 		<div class="flex items-center gap-2">
 			<span class="text-base sm:text-lg">🤖</span>
 			<h3 class="font-display font-black text-sm sm:text-base uppercase tracking-wider text-foreground">
-				AI Assistant
+				We dont need nukes!
 			</h3>
 		</div>
 
@@ -301,10 +309,10 @@
 				</div>
 				<div class="max-w-md space-y-1 px-4">
 					<h4 class="font-display font-black text-lg text-foreground">
-						Nuclear Disarmament &amp; Peace Strategy
+						We dont need nukes!
 					</h4>
 					<p class="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-						Ask questions about nuclear weapons, deterrence myths, disarmament treaties, and pathways for grassroots movements to build a nuclear-free future.
+						Ask why, how and what we can do as part of the larger global community of nuclear disarmamant community.
 					</p>
 				</div>
 
@@ -316,7 +324,10 @@
 						{#each starterPrompts as prompt}
 							<button
 								type="button"
-								onclick={() => sendPrompt(prompt)}
+								onclick={() => {
+									inputMessage = prompt;
+									sendPrompt(prompt);
+								}}
 								class="w-full text-left border-2 border-border bg-surface hover:bg-secondary hover:text-secondary-foreground p-2.5 text-xs sm:text-sm font-bold text-foreground rounded-theme shadow-theme-sm transition-all hover:translate-y-[1px] cursor-pointer"
 							>
 								💡 {prompt}
@@ -481,40 +492,59 @@
 
 	<!-- Chat Input Bar -->
 	<footer class="shrink-0 border-t-2 border-border bg-background p-3">
-		<form
-			onsubmit={(e) => {
-				e.preventDefault();
-				handleSubmit();
-			}}
-			class="flex items-center gap-2"
-		>
-			<textarea
-				bind:value={inputMessage}
-				onkeydown={handleKeydown}
-				rows="1"
-				placeholder="Ask any question regarding nuclear weapons, treaties, or forces..."
-				disabled={isGenerating}
-				class="flex-1 resize-none border-2 border-border bg-surface px-3 py-2 text-xs sm:text-sm font-bold text-foreground placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-primary rounded-theme disabled:opacity-60"
-			></textarea>
+		{#if !user}
+			<div class="flex flex-col sm:flex-row items-center justify-between gap-3 bg-surface p-3 border-2 border-border rounded-theme shadow-theme-sm">
+				<div class="flex items-center gap-2">
+					<span class="text-base">🔒</span>
+					<p class="text-xs font-bold text-foreground">
+						Please sign in to ask questions and chat with the AI Assistant.
+					</p>
+				</div>
+				<a
+					href={`/auth?redirect=${encodeURIComponent($page.url.pathname + $page.url.search)}`}
+					class="inline-flex shrink-0 items-center gap-1.5 border-2 border-border bg-primary px-3.5 py-1.5 text-xs font-black uppercase tracking-wider text-primary-foreground rounded-theme shadow-theme-primary hover:translate-y-[1px] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all"
+				>
+					<span>Sign In</span>
+					<span aria-hidden="true">→</span>
+				</a>
+			</div>
+		{:else}
+			<form
+				onsubmit={(e) => {
+					e.preventDefault();
+					handleSubmit();
+				}}
+				class="flex items-center gap-2"
+			>
+				<textarea
+					bind:this={textareaEl}
+					bind:value={inputMessage}
+					onkeydown={handleKeydown}
+					rows="1"
+					placeholder="Ask away..."
+					disabled={isGenerating}
+					class="flex-1 resize-none border-2 border-border bg-surface px-3 py-2 text-xs sm:text-sm font-bold text-foreground placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-primary rounded-theme disabled:opacity-60"
+				></textarea>
 
-			{#if isGenerating}
-				<button
-					type="button"
-					onclick={stopGeneration}
-					class="inline-flex h-9 sm:h-10 items-center justify-center border-2 border-border bg-red-600 text-white px-3 text-xs font-black uppercase tracking-wider rounded-theme shadow-theme-sm hover:translate-y-[1px] active:translate-y-[1px] cursor-pointer"
-				>
-					Stop
-				</button>
-			{:else}
-				<button
-					type="submit"
-					disabled={!inputMessage.trim()}
-					class="inline-flex h-9 sm:h-10 items-center justify-center border-2 border-border bg-primary px-3 sm:px-4 text-xs sm:text-sm font-black uppercase tracking-wider text-primary-foreground rounded-theme shadow-theme-primary hover:translate-y-[1px] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-				>
-					<span>Send</span>
-					<span class="ml-1">↵</span>
-				</button>
-			{/if}
-		</form>
+				{#if isGenerating}
+					<button
+						type="button"
+						onclick={stopGeneration}
+						class="inline-flex h-9 sm:h-10 items-center justify-center border-2 border-border bg-red-600 text-white px-3 text-xs font-black uppercase tracking-wider rounded-theme shadow-theme-sm hover:translate-y-[1px] active:translate-y-[1px] cursor-pointer"
+					>
+						Stop
+					</button>
+				{:else}
+					<button
+						type="submit"
+						disabled={isGenerating}
+						class="inline-flex h-9 sm:h-10 items-center justify-center border-2 border-border bg-primary px-3 sm:px-4 text-xs sm:text-sm font-black uppercase tracking-wider text-primary-foreground rounded-theme shadow-theme-primary hover:translate-y-[1px] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+					>
+						<span>Send</span>
+						<span class="ml-1">↵</span>
+					</button>
+				{/if}
+			</form>
+		{/if}
 	</footer>
 </div>

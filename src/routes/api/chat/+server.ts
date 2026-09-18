@@ -2,7 +2,16 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 import { queryRAG, streamRAG, ENFORCED_MODEL } from '$lib/server/ai/openai.js';
 
-export const POST: RequestHandler = async ({ request, platform }) => {
+export const POST: RequestHandler = async ({ request, platform, locals }) => {
+	if (!locals.user) {
+		return json(
+			{
+				error: 'Unauthorized. You must be logged in to use the AI assistant.'
+			},
+			{ status: 401 }
+		);
+	}
+
 	const apiKey = platform?.env?.OPENAI_API_KEY || process.env.OPENAI_API_KEY;
 	const vectorStoreId = platform?.env?.OPENAI_VECTOR_STORE_ID || process.env.OPENAI_VECTOR_STORE_ID;
 

@@ -2,6 +2,7 @@
 	import type { PageData } from './$types.js';
 	import { StepHeaderWidget, ResultsWidget, ClaimVoteBanner, SocialShareWidget } from '$lib/components/widgets/index.js';
 	import { RESULTS_SHARE_TEXT } from '$lib/constants/social.js';
+	import AskUsButton from '$lib/components/AskUsButton.svelte';
 
 	let { data }: { data: PageData } = $props();
 </script>
@@ -48,12 +49,19 @@
 		<!-- What's Next? Action Hub -->
 		<section class="mt-6 border-2 sm:border-[3px] border-border bg-surface p-5 sm:p-6 rounded-theme shadow-theme-md">
 			<div class="mb-4">
-				<div class="mb-1.5 inline-block border border-border bg-secondary px-2.5 py-0.5 text-xs font-black uppercase tracking-wider text-secondary-foreground rounded-theme">
-					Next Steps
+				<div class="flex items-start justify-between gap-3">
+					<div>
+						<div class="mb-1.5 inline-block border border-border bg-secondary px-2.5 py-0.5 text-xs font-black uppercase tracking-wider text-secondary-foreground rounded-theme">
+							Next Steps
+						</div>
+						<h3 class="text-xl sm:text-2xl font-black text-foreground font-display">
+							What's Next?
+						</h3>
+					</div>
+					<div class="shrink-0 mt-0.5">
+						<AskUsButton />
+					</div>
 				</div>
-				<h3 class="text-xl sm:text-2xl font-black text-foreground font-display">
-					What's Next?
-				</h3>
 				<p class="text-xs sm:text-sm text-muted-foreground font-medium mt-1">
 					Take action, learn about the movement, and discover our coalition partners.
 				</p>
