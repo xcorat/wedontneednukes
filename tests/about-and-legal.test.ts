@@ -97,3 +97,32 @@ describe('Legal documents loader', () => {
 		assert.ok(article.html.length > 0);
 	});
 });
+
+describe('Ko-fi Support Block', () => {
+	it('defines KofiBlock component with support text and Ko-fi URL', () => {
+		const kofiBlockContent = readFileSync(
+			join(ROOT, 'src', 'lib', 'components', 'KofiBlock.svelte'),
+			'utf-8'
+		);
+		assert.ok(kofiBlockContent.includes('Support the developement on Ko-Fi <3'));
+		assert.ok(kofiBlockContent.includes('https://ko-fi.com/xcorat/goal?g=0'));
+	});
+
+	it('includes KofiBlock on the about page', () => {
+		const aboutPage = readFileSync(
+			join(ROOT, 'src', 'routes', 'about', '+page.svelte'),
+			'utf-8'
+		);
+		assert.ok(aboutPage.includes("import KofiBlock from '$lib/components/KofiBlock.svelte'"));
+		assert.ok(aboutPage.includes('<KofiBlock'));
+	});
+
+	it('includes KofiBlock at the bottom of the fundraiser page', () => {
+		const fundraiserPage = readFileSync(
+			join(ROOT, 'src', 'routes', 'fundraiser', '+page.svelte'),
+			'utf-8'
+		);
+		assert.ok(fundraiserPage.includes("import KofiBlock from '$lib/components/KofiBlock.svelte'"));
+		assert.ok(fundraiserPage.includes('<KofiBlock'));
+	});
+});

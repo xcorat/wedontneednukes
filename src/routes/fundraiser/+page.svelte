@@ -1,6 +1,7 @@
 <script lang="ts">
 	import MenuButton from '$lib/components/MenuButton.svelte';
 	import SocialLinks from '$lib/components/SocialLinks.svelte';
+	import KofiBlock from '$lib/components/KofiBlock.svelte';
 </script>
 
 <svelte:head>
@@ -60,6 +61,11 @@
 				</div>
 				<p class="text-sm text-muted-foreground">Creator grants, video memes, community gallery upvoting, and internationalization.</p>
 			</div>
+		</div>
+
+		<!-- Ko-fi Support Block -->
+		<div class="mt-6">
+			<KofiBlock />
 		</div>
 
 		<div class="mt-8 flex justify-center">
