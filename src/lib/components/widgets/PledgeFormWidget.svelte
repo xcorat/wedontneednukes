@@ -64,7 +64,7 @@
 	}
 
 	const resolvedResultsUrl = $derived(
-		resultsUrl ?? `/results?answer=${answer}${isAnon ? '&anon=1' : ''}`
+		resultsUrl ?? `/onboarding/results?answer=${answer}${isAnon ? '&anon=1' : ''}`
 	);
 
 	const pledgeOptions = [

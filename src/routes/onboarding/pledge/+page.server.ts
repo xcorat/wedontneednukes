@@ -136,9 +136,9 @@ export const actions: Actions = {
 
 		const isAnonParam = url.searchParams.get('anon') === '1';
 		if (userId) {
-			redirect(303, `/results?answer=${answer}`);
+			redirect(303, `/onboarding/results?answer=${answer}`);
 		} else if (isAnonParam) {
-			redirect(303, `/results?answer=${answer}&anon=1`);
+			redirect(303, `/onboarding/results?answer=${answer}&anon=1`);
 		} else {
 			redirect(303, `/onboarding/join?answer=${answer}&levels=${finalCommitmentLevels.join(',')}`);
 		}
