@@ -184,6 +184,14 @@
 					<span>📊</span>
 				</a>
 				<a
+					href="/assistant"
+					onclick={() => menuState.close()}
+					class="flex items-center justify-between border-2 border-border bg-background px-3.5 py-2 text-sm font-bold text-foreground rounded-theme shadow-theme-sm hover:bg-secondary hover:text-secondary-foreground transition-all"
+				>
+					<span>AI Assistant</span>
+					<span>🤖</span>
+				</a>
+				<a
 					href="/about"
 					onclick={() => menuState.close()}
 					class="flex items-center justify-between border-2 border-border bg-background px-3.5 py-2 text-sm font-bold text-foreground rounded-theme shadow-theme-sm hover:bg-secondary hover:text-secondary-foreground transition-all"

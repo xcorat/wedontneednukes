@@ -42,12 +42,18 @@ Configure the following variables in the Cloudflare Dashboard (**Workers & Pages
 | `GITHUB_CLIENT_SECRET` | Secret (Encrypted) | OAuth App Client Secret from GitHub | For GitHub Auth |
 | `TURNSTILE_SITE_KEY` | Variable | Cloudflare Turnstile public site key | For bot protection |
 | `TURNSTILE_SECRET_KEY` | Secret (Encrypted) | Cloudflare Turnstile secret key | For bot protection |
+| `OPENAI_API_KEY` | Secret (Encrypted) | OpenAI API key (`sk-...`) for AI Assistant | For AI Assistant |
 | `RESEND_API_KEY` | Secret (Encrypted) | Resend API key (if using external mail delivery) | Optional |
 | `EMAIL_FROM` | Variable | e.g. `We Don't Need Nukes <noreply@wedontneednukes.org>` | Optional |
 
 > [!IMPORTANT]
 > **Applying Secrets to Active Deployments:**
 > Whenever you add or update secrets in Cloudflare Dashboard, Cloudflare does **not** update already running Worker instances automatically. You must trigger a **Redeploy** (under the **Deployments** tab) or deploy a new build for changes to take effect.
+>
+> You can also set secrets directly via Wrangler CLI:
+> ```bash
+> pnpm exec wrangler secret put OPENAI_API_KEY
+> ```
 
 ---
 

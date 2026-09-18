@@ -25,6 +25,9 @@ declare global {
 				BETTER_AUTH_URL: string;
 				RESEND_API_KEY?: string;
 				EMAIL_FROM?: string;
+				OPENAI_API_KEY?: string;
+				OPENAI_VECTOR_STORE_ID?: string;
+				OPENAI_MODEL?: string;
 			};
 			context: {
 				waitUntil(promise: Promise<unknown>): void;

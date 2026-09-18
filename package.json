@@ -16,12 +16,14 @@
 		"db:migrate": "drizzle-kit migrate",
 		"db:studio": "drizzle-kit studio",
 		"manifest": "node --import tsx scripts/generate-wiki-manifest.ts",
+		"ingest:docs": "node --import tsx scripts/ingest-vector-store.ts",
 		"test": "tsx --test tests/*.test.ts"
 	},
 	"dependencies": {
 		"better-auth": "^1.6.30",
 		"drizzle-orm": "^0.44.1",
-		"marked": "^18.0.13"
+		"marked": "^18.0.13",
+		"openai": "^7.18.0"
 	},
 	"pnpm": {
 		"overrides": {
