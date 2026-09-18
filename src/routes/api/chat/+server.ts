@@ -1,6 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
-import { queryRAG, streamRAG, ENFORCED_MODEL } from '$lib/server/ai/openai.js';
+import { queryRAG, streamRAG } from '$lib/server/ai/openai.js';
+import { getAIConfig } from '$lib/server/config/ai.js';
 
 export const POST: RequestHandler = async ({ request, platform, locals }) => {
 	if (!locals.user) {
@@ -48,12 +49,16 @@ export const POST: RequestHandler = async ({ request, platform, locals }) => {
 	const wantsStream =
 		body.stream === true || request.headers.get('accept')?.includes('text/event-stream');
 
+	const aiConfig = getAIConfig(platform?.env);
+
 	try {
 		if (wantsStream) {
 			const runner = await streamRAG({
 				apiKey,
 				vectorStoreId,
-				message
+				message,
+				model: aiConfig.model,
+				instructions: aiConfig.systemPrompt
 			});
 
 			const stream = new ReadableStream({
@@ -86,7 +91,7 @@ export const POST: RequestHandler = async ({ request, platform, locals }) => {
 						const donePayload = JSON.stringify({
 							done: true,
 							citations,
-							model: finalResponse.model || ENFORCED_MODEL,
+							model: finalResponse.model || aiConfig.model,
 							usage: finalResponse.usage
 						});
 						controller.enqueue(encoder.encode(`data: ${donePayload}\n\n`));
@@ -112,7 +117,9 @@ export const POST: RequestHandler = async ({ request, platform, locals }) => {
 		const result = await queryRAG({
 			apiKey,
 			vectorStoreId,
-			message
+			message,
+			model: aiConfig.model,
+			instructions: aiConfig.systemPrompt
 		});
 
 		return json({

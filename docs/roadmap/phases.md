@@ -17,8 +17,10 @@
 - [x] **Knowledge Base & Wiki**: SSR wiki/FAQ at `/wiki` + `/wiki/faq/<slug>` with scoped theming.
 - [x] **About & Legal Compliance**: `/about`, `/legal/terms`, and `/legal/privacy` with OAuth standard redirects and consent disclosure.
 - [x] **Social Sharing & Official Channels**: Embeddable `SocialShareWidget` with one-click intents (X, Bluesky, Threads, Facebook, WhatsApp, LinkedIn), copy-link clipboard button, official profile links (Facebook, X, Bluesky, TikTok), top-bar `ShareButton` popover, and Helper AI Bot indicator (`BotButton`).
+- [x] **Dedicated 4-Step Onboarding Funnel**: Standalone progression routes (`/` hero, `/onboarding/pledge`, `/onboarding/join`, `/onboarding/results`).
+- [x] **Public Results & Transparency Stream**: Aggregated distribution stats at `/results` and paginated public voting feed at `/results/votes` with zero-leakage privacy for private and guest voters.
+- [x] **AI Research Grounding Assistant**: Full RAG pipeline using OpenAI Responses API (`gpt-5-nano` + `file_search` over 12 ingested reference documents), SSE streaming `/api/chat`, dedicated `/assistant` page, and `/wiki` slide-over drawer (`ChatDrawer`).
 - [ ] **Gated Questions Schema**: Migrating from single pledge table to dynamic question tree (`question`, `question_option`, `question_gate`, `user_response`).
-- [ ] **Dedicated Onboarding Steps**: Standalone routes `/onboarding/wedontneednukes`, `/onboarding/join`, `/onboarding/pledge`.
 
 ## Phase 2: Community & Growth
 - **Content Upload**: Integrate R2 for user-generated content (memes, videos).
@@ -27,7 +29,6 @@
 - **Social**: Enhanced social sharing analytics, dynamic quote cards, and downloadable banners.
 - **AI Features**: AI meme generator.
 - **Expansion**: Add additional campaigns using the modular engine.
-- **Agent**: RAG-based campaign agent for community Q&A (teaser button live in header).
 
 ## Phase 3: Decentralization & Scale
 - **P2P Data Layer**: Explore IPFS/OrbitDB integration.

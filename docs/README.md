@@ -22,8 +22,9 @@ Welcome to the WeDoNotNeedNukes documentation.
 - [Bugfix Prompt](../.ai/prompts/bugfix.md)
 - [Review Prompt](../.ai/prompts/review.md)
 
-## Architecture `[DRAFT]`
+## Architecture `[ESTABLISHED]`
 - [System Overview](architecture/overview.md)
+- [AI Assistant & Research Grounding Engine](architecture/ai-assistant.md)
 - [Pledge Flow Engine](architecture/pledge-engine.md)
 - [Community Media & Voting Engine](architecture/community-media.md)
 

@@ -1,22 +1,7 @@
 import OpenAI from 'openai';
+import { getAIConfig, SYSTEM_PROMPT } from '$lib/server/config/ai.js';
 
-/**
- * Enforced model: strictly gpt-5-nano per project mandate.
- */
-export const ENFORCED_MODEL = 'gpt-5-nano';
-
-export const SYSTEM_PROMPT = `You are an AI assistant and an expert in nuclear disarmament, non-proliferation, and grassroots peace movement strategy for the "WeDon't Need Nukes" campaign.
-
-Core Philosophy & Perspective:
-- You firmly believe that humanity does not need to live under the constant existential threat of nuclear weapons.
-- You recognize that living under the perpetual shadow of nuclear terror and mutual assured destruction is detrimental to the human spirit, democratic governance, and global progress, entirely apart from the catastrophic humanitarian consequences of actual detonation.
-- You understand and articulate how the conventional "deterrence" narrative is deeply misleading, precarious, and relies on perpetual luck to prevent catastrophe.
-- Your ultimate goal is to help people see clearly how we can achieve a world with zero nuclear weapons through community and grassroots mass movements. You show how to connect, integrate, and amplify diverse campaigns, civil society initiatives, and policy pathways globally, empowering everyday people as the decisive driving force that shifts institutions, political will, and international treaties.
-
-Guidelines:
-1. Grounded & Knowledgeable: You have access to a rich research library containing treaty texts (such as the TPNW and NPT), global nuclear arsenal analyses, emerging military technology studies, and civil society research. Draw upon these materials to provide authoritative, grounded, and factual answers.
-2. Direct Citations: When referencing specific data points, legal articles, or research findings from the documents, clearly mention the source.
-3. Constructive & Empowering: Communicate with clarity, conviction, and intellectual rigor. Be welcoming, educational, and inspiring to people at all levels of understanding, helping them see actionable pathways toward a nuclear-free future.`;
+export { SYSTEM_PROMPT };
 
 export function getOpenAIClient(apiKey: string): OpenAI {
 	return new OpenAI({ apiKey });
@@ -42,18 +27,22 @@ export interface RAGResponse {
 }
 
 /**
- * Performs non-streaming RAG query using gpt-5-nano and file_search tool.
+ * Performs non-streaming RAG query using the configured AI model and file_search tool.
  */
 export async function queryRAG(params: {
 	apiKey: string;
 	vectorStoreId: string;
 	message: string;
+	model?: string;
+	instructions?: string;
 }): Promise<RAGResponse> {
 	const openai = getOpenAIClient(params.apiKey);
+	const resolvedModel = params.model || getAIConfig().model;
+	const resolvedInstructions = params.instructions || getAIConfig().systemPrompt;
 
 	const response = await openai.responses.create({
-		model: ENFORCED_MODEL,
-		instructions: SYSTEM_PROMPT,
+		model: resolvedModel,
+		instructions: resolvedInstructions,
 		input: params.message,
 		tools: [
 			{
@@ -105,7 +94,7 @@ export async function queryRAG(params: {
 	return {
 		text: response.output_text,
 		citations,
-		model: response.model || ENFORCED_MODEL,
+		model: response.model || resolvedModel,
 		responseId: response.id,
 		usage: response.usage
 			? {
@@ -118,18 +107,22 @@ export async function queryRAG(params: {
 }
 
 /**
- * Returns a streaming response for gpt-5-nano RAG.
+ * Returns a streaming response for RAG using the configured AI model.
  */
 export async function streamRAG(params: {
 	apiKey: string;
 	vectorStoreId: string;
 	message: string;
+	model?: string;
+	instructions?: string;
 }) {
 	const openai = getOpenAIClient(params.apiKey);
+	const resolvedModel = params.model || getAIConfig().model;
+	const resolvedInstructions = params.instructions || getAIConfig().systemPrompt;
 
 	return openai.responses.stream({
-		model: ENFORCED_MODEL,
-		instructions: SYSTEM_PROMPT,
+		model: resolvedModel,
+		instructions: resolvedInstructions,
 		input: params.message,
 		tools: [
 			{
@@ -140,3 +133,4 @@ export async function streamRAG(params: {
 		include: ['file_search_call.results']
 	});
 }
+

@@ -5,6 +5,7 @@
 	import ShareButton from '$lib/components/ShareButton.svelte';
 	import BotButton from '$lib/components/BotButton.svelte';
 	import SocialLinks from '$lib/components/SocialLinks.svelte';
+	import KofiBlock from '$lib/components/KofiBlock.svelte';
 	import { SocialShareWidget } from '$lib/components/widgets/index.js';
 
 	let { data }: { data: PageData } = $props();
@@ -91,17 +92,9 @@
 				</a>
 			</div>
 
-			<!-- Ko-fi Support Link -->
-			<div class="border-t-2 border-border/20 pt-4 flex items-center justify-center">
-				<a
-					href="https://ko-fi.com/xcorat/goal?g=0"
-					target="_blank"
-					rel="noopener noreferrer"
-					class="inline-flex items-center gap-2 border-2 border-border bg-surface px-4 py-2 text-sm font-bold text-foreground rounded-theme shadow-theme-sm font-display transition-all hover:bg-secondary hover:text-secondary-foreground hover:translate-y-[1px] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none"
-				>
-					<span>Support on Ko-fi</span>
-					<span class="text-base select-none" role="img" aria-label="heart">❤️</span>
-				</a>
+			<!-- Ko-fi Support Block -->
+			<div class="border-t-2 border-border/20 pt-4">
+				<KofiBlock />
 			</div>
 		</article>
 	</div>

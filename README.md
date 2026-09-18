@@ -9,7 +9,8 @@ An edge-native, participatory campaign platform for nuclear disarmament. Built o
 - **Framework**: [SvelteKit 2](https://svelte.dev) with [Svelte 5 Runes](https://svelte.dev/docs/svelte/what-are-runes)
 - **Runtime & Hosting**: [Cloudflare Workers](https://workers.cloudflare.com) with Static Assets (`@sveltejs/adapter-cloudflare`)
 - **Database**: [Cloudflare D1](https://developers.cloudflare.com/d1/) (SQLite) with [Drizzle ORM](https://orm.drizzle.team)
-- **Auth**: [Better Auth](https://better-auth.com) (Magic link, Google, GitHub, and Anonymous pledges)
+- **Auth**: [Better Auth](https://better-auth.com) (Magic link, Google, GitHub, Facebook, Twitter, and Anonymous pledges)
+- **AI Grounding**: [OpenAI Responses API](https://platform.openai.com) (`gpt-5-nano` with vector store `file_search`)
 - **Styling**: [Tailwind CSS v4](https://tailwindcss.com)
 
 ## Developing
@@ -29,12 +30,19 @@ An edge-native, participatory campaign platform for nuclear disarmament. Built o
    pnpm dev
    ```
 
+4. Run tests and type checks:
+   ```sh
+   pnpm test
+   pnpm check
+   ```
+
 ## Documentation
 
 Full architectural documentation, guides, and roadmaps are in [`docs/`](docs/README.md):
 
+- [Architecture Overview](docs/architecture/overview.md)
+- [AI Assistant & Research Grounding Engine](docs/architecture/ai-assistant.md)
 - [Deployment Guide](docs/guides/deployment.md)
 - [Local Development Guide](docs/guides/local-dev.md)
-- [Architecture Overview](docs/architecture/overview.md)
 - [Campaign Strategy](docs/campaigns/nukes/strategy.md)
 

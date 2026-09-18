@@ -40,9 +40,13 @@ Configure the following variables in the Cloudflare Dashboard (**Workers & Pages
 | `FACEBOOK_BUSINESS_CONFIG_ID` | Variable | Optional Meta Business Login Configuration ID | Optional |
 | `GITHUB_CLIENT_ID` | Variable / Secret | OAuth App Client ID from GitHub | For GitHub Auth |
 | `GITHUB_CLIENT_SECRET` | Secret (Encrypted) | OAuth App Client Secret from GitHub | For GitHub Auth |
+| `TWITTER_CLIENT_ID` | Variable / Secret | OAuth 2.0 Client ID from X / Twitter Developer Portal | For Twitter Auth |
+| `TWITTER_CLIENT_SECRET` | Secret (Encrypted) | OAuth 2.0 Client Secret from X / Twitter Developer Portal | For Twitter Auth |
 | `TURNSTILE_SITE_KEY` | Variable | Cloudflare Turnstile public site key | For bot protection |
 | `TURNSTILE_SECRET_KEY` | Secret (Encrypted) | Cloudflare Turnstile secret key | For bot protection |
 | `OPENAI_API_KEY` | Secret (Encrypted) | OpenAI API key (`sk-...`) for AI Assistant | For AI Assistant |
+| `OPENAI_VECTOR_STORE_ID` | Variable | Vector store ID (e.g. `vs_...`) generated via `pnpm run ingest:docs` | For AI Assistant |
+| `OPENAI_MODEL` | Variable | Model identifier (defaults to `gpt-5-nano`) | Optional |
 | `RESEND_API_KEY` | Secret (Encrypted) | Resend API key (if using external mail delivery) | Optional |
 | `EMAIL_FROM` | Variable | e.g. `We Don't Need Nukes <noreply@wedontneednukes.org>` | Optional |
 
@@ -57,7 +61,19 @@ Configure the following variables in the Cloudflare Dashboard (**Workers & Pages
 
 ---
 
-## 4. OAuth Configuration for `wedontneednukes.org`
+## 4. AI Assistant Knowledge Base Ingestion
+
+The AI Assistant queries a pre-indexed vector store in OpenAI. Before running the assistant in production:
+
+1. Ingest the reference PDFs from `downloads/`:
+   ```bash
+   pnpm run ingest:docs
+   ```
+2. Copy the resulting `vs_...` vector store ID and configure it as `OPENAI_VECTOR_STORE_ID` in `wrangler.jsonc` (or via Cloudflare Dashboard).
+
+---
+
+## 5. OAuth Configuration for `wedontneednukes.org`
 
 ### Google OAuth
 In [Google Cloud Console](https://console.cloud.google.com/apis/credentials):
@@ -82,9 +98,15 @@ In [GitHub Developer Settings](https://github.com/settings/developers):
 * **Authorization callback URL**:
   * `https://wedontneednukes.org/api/auth/callback/github`
 
+### X / Twitter OAuth 2.0
+In [X / Twitter Developer Portal](https://developer.x.com/en/portal/dashboard):
+* **Callback / Redirect URL**:
+  * `https://wedontneednukes.org/api/auth/callback/twitter`
+  * `http://localhost:5173/api/auth/callback/twitter` *(local dev)*
+
 ---
 
-## 5. D1 Database & Migrations
+## 6. D1 Database & Migrations
 
 The D1 database is managed using Drizzle ORM:
 
@@ -101,7 +123,7 @@ pnpm exec wrangler d1 migrations apply wedontneednukes-db --remote
 
 ---
 
-## 6. Manual Deployments via CLI
+## 7. Manual Deployments via CLI
 
 To build and deploy the Worker directly using Wrangler:
 
@@ -112,3 +134,9 @@ pnpm build
 # 2. Deploy Worker and static assets
 pnpm exec wrangler deploy
 ```
+
+---
+
+## 8. Session Revocation & Logout Route
+
+The platform provides a centralized session termination endpoint at `/auth/logout` (supporting both `GET` and `POST` methods). It revokes all active session cookies and executes an HTTP `303 See Other` redirect back to the home route. In production, ensure no edge caching rules cache this endpoint.

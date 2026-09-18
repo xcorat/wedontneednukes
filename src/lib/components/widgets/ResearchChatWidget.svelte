@@ -7,6 +7,7 @@
 		getFriendlyDocumentInfo
 	} from '$lib/types/chat.js';
 	import type { CitationItem } from '$lib/server/ai/openai.js';
+	import { STARTER_PROMPTS } from '$lib/config/chat.js';
 
 	interface Props {
 		compact?: boolean;
@@ -35,12 +36,7 @@
 	let activeCitation = $state<CitationItem | null>(null);
 	let copiedId = $state<string | null>(null);
 
-	const starterPrompts = [
-		'Why is nuclear deterrence a misleading and dangerous narrative?',
-		'How can grassroots mass movements and everyday people abolish nuclear weapons?',
-		'What does the Treaty on the Prohibition of Nuclear Weapons (TPNW) require?',
-		'How do emerging technologies and AI increase nuclear crisis risks?'
-	];
+	const starterPrompts = STARTER_PROMPTS;
 
 	async function scrollToBottom(force = false) {
 		await tick();
@@ -485,6 +481,20 @@
 			{#if activeCitation.snippet}
 				<div class="mt-2 p-2 border border-border bg-background font-mono text-[10px] text-foreground/90 max-h-24 overflow-y-auto">
 					"{activeCitation.snippet}..."
+				</div>
+			{/if}
+
+			{#if doc.url}
+				<div class="mt-2.5">
+					<a
+						href={doc.url}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="inline-flex items-center gap-1 text-[11px] font-bold text-primary hover:underline"
+					>
+						<span>View source publication</span>
+						<span aria-hidden="true">↗</span>
+					</a>
 				</div>
 			{/if}
 		</div>
