@@ -1,3 +1,5 @@
+import { getEmailConfig } from '$lib/server/config/email.js';
+
 export interface SendMagicLinkOptions {
 	to: string;
 	url: string;
@@ -11,40 +13,12 @@ export interface SendMagicLinkOptions {
  * 3. In local development or fallback, logs the link directly to the console.
  */
 export async function sendMagicLinkEmail({ to, url, env }: SendMagicLinkOptions): Promise<void> {
-	const from = env.EMAIL_FROM ?? 'welcome@wedontneednukes.org';
-	const subject = 'Your one-time sign-in link · WeDoNotNeedNukes';
-	const text = `Sign in to WeDoNotNeedNukes:\n\n${url}\n\nClick the link above to sign in. This link will expire shortly.\nIf you didn't request this email, you can safely ignore it.`;
-	const html = `
-		<!DOCTYPE html>
-		<html>
-		<head>
-			<meta charset="utf-8">
-			<meta name="viewport" content="width=device-width, initial-scale=1.0">
-			<title>Sign in to WeDoNotNeedNukes</title>
-		</head>
-		<body style="background-color: #09090b; color: #f4f4f5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; padding: 40px 20px; margin: 0;">
-			<table align="center" width="100%" style="max-width: 480px; margin: 0 auto; background-color: #18181b; border: 1px solid #27272a; border-radius: 16px; padding: 32px;">
-				<tr>
-					<td align="center">
-						<div style="font-size: 32px; margin-bottom: 12px;">🕊️</div>
-						<h1 style="color: #ffffff; font-size: 22px; font-weight: 800; margin: 0 0 8px 0; letter-spacing: -0.02em;">
-							Your One-Time Sign-In Link
-						</h1>
-						<p style="color: #a1a1aa; font-size: 14px; line-height: 22px; margin: 0 0 28px 0;">
-							Click the button below to sign in and record your stance on nuclear disarmament.
-						</p>
-						<a href="${url}" target="_blank" style="display: inline-block; background-color: #ffffff; color: #09090b; font-size: 15px; font-weight: 700; text-decoration: none; padding: 14px 28px; border-radius: 12px; margin-bottom: 24px;">
-							Sign in to WeDoNotNeedNukes →
-						</a>
-						<p style="color: #71717a; font-size: 12px; line-height: 18px; margin: 0;">
-							If you didn't request this email, you can safely ignore it. This link will expire shortly.
-						</p>
-					</td>
-				</tr>
-			</table>
-		</body>
-		</html>
-	`;
+	const emailConfig = getEmailConfig(env);
+	const from = emailConfig.from;
+	const subject = emailConfig.subject;
+	const text = emailConfig.getText(url);
+	const html = emailConfig.getHtml(url);
+
 
 	// 1. Cloudflare Workers native Send Email binding (env.EMAIL)
 	if (env.EMAIL) {

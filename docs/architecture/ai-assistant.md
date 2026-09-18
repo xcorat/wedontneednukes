@@ -30,7 +30,7 @@ graph TD
     end
 
     subgraph OpenAI ["OpenAI Platform"]
-        Model["Model: gpt-5-nano\n(ENFORCED_MODEL)"]
+        Model["Configured Model\n(DEFAULT_OPENAI_MODEL / OPENAI_MODEL)"]
         VectorStore[("OpenAI Vector Store\n(OPENAI_VECTOR_STORE_ID)")]
         FileSearch["file_search Tool\n(Document Retrieval & Grounded Snippets)"]
 
@@ -78,7 +78,7 @@ downloads/
 pnpm run ingest:docs
 ```
 
-Document metadata (titles, publishing organizations, publication years, categories, and descriptions) is defined in `src/lib/types/chat.ts` (`DOCUMENT_METADATA_MAP`), allowing the UI to display rich citations and category filtering without querying external APIs.
+Document metadata (titles, publishing organizations, publication years, categories, descriptions, and source URLs) is defined in `src/lib/config/documents.ts` (`DOCUMENT_METADATA_MAP`), allowing the UI to display rich citations and category filtering without querying external APIs.
 
 ---
 
@@ -129,3 +129,18 @@ When `stream: false` or `Accept: application/json`, returns `200 OK` with JSON p
 - **Subtext**: `"Ask why, how and what we can do as part of the larger global community of nuclear disarmamant community."`
 - **Input Placeholder**: `"Ask away..."`
 - **Send Button Activation**: The Send button is enabled as soon as the user is authenticated. Clicking Send with an empty input focuses the textarea. The button is disabled only while actively generating (`isGenerating`).
+
+---
+
+## 6. Configuration Architecture
+
+The AI assistant subsystem is configured via decoupled, dedicated configuration modules:
+
+- **Server-side AI Config** (`src/lib/server/config/ai.ts`):
+  - Defines `DEFAULT_OPENAI_MODEL` (`gpt-5-nano`) and `SYSTEM_PROMPT`.
+  - `getAIConfig(env)` resolves the effective model dynamically by checking `platform.env.OPENAI_MODEL`, `process.env.OPENAI_MODEL`, and falling back to `DEFAULT_OPENAI_MODEL`.
+- **Client Starter Prompts** (`src/lib/config/chat.ts`):
+  - Defines `STARTER_PROMPTS` array with suggested campaign and treaty inquiries.
+- **Document Metadata & Publication URLs** (`src/lib/config/documents.ts`):
+  - Maps filename to `title`, `organization`, `category`, `year`, `description`, and external `url` for direct public access to authoritative sources.
+

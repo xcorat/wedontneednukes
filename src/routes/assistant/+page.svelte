@@ -102,6 +102,19 @@
 								<p class="text-[11px] text-muted-foreground leading-relaxed line-clamp-2">
 									{doc.description}
 								</p>
+								{#if doc.url}
+									<div class="pt-0.5">
+										<a
+											href={doc.url}
+											target="_blank"
+											rel="noopener noreferrer"
+											class="inline-flex items-center gap-1 text-[11px] font-bold text-primary hover:underline"
+										>
+											<span>Read publication</span>
+											<span aria-hidden="true">↗</span>
+										</a>
+									</div>
+								{/if}
 							</div>
 						{/each}
 					</div>
