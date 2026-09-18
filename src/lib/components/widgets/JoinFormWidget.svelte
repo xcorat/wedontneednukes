@@ -43,7 +43,7 @@
 	);
 
 	const resolvedCallbackUrl = $derived(
-		callbackUrl ?? (answer ? `/results?answer=${answer}` : '/dashboard')
+		callbackUrl ?? (answer ? `/onboarding/results?answer=${answer}` : '/dashboard')
 	);
 
 	let email = $state('');
@@ -138,7 +138,7 @@
 		if (onAnonymous) {
 			onAnonymous();
 		} else {
-			window.location.href = `/results?answer=${answer}&anon=1`;
+			window.location.href = `/onboarding/results?answer=${answer}&anon=1`;
 		}
 	}
 

@@ -24,7 +24,7 @@
 		<JoinFormWidget
 			answer={data.answer}
 			turnstileSiteKey={data.turnstileSiteKey}
-			callbackUrl={`/results?answer=${data.answer}`}
+			callbackUrl={`/onboarding/results?answer=${data.answer}`}
 			stepLabel="Step 3 of 4 · Record"
 			title="Record your voice!"
 			subtitle="Sign in and validate that you are real. You can also continue anonymously."

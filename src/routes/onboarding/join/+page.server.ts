@@ -10,7 +10,7 @@ export const load: PageServerLoad = async ({ locals, url, cookies, platform }) =
 	const answer = (url.searchParams.get('answer') === 'yes' ? 'yes' : 'no') as 'no' | 'yes';
 
 	if (locals.user) {
-		redirect(302, `/results?answer=${answer}`);
+		redirect(302, `/onboarding/results?answer=${answer}`);
 	}
 
 	const anonId = getOrCreateAnonId(cookies);

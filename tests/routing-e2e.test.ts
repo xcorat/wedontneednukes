@@ -113,8 +113,8 @@ describe('Routing Layer End-to-End & State Invariants', () => {
 
 		// 2. Step 2: Ally / Advocate / Contributor selection -> proceeds to Step 3 (Login/Record)
 		function getPledgeSubmitRedirect(userId: string | null | undefined, answer: string, levels: string[], isAnonUpdate = false) {
-			if (userId) return `/results?answer=${answer}`;
-			if (isAnonUpdate) return `/results?answer=${answer}&anon=1`;
+			if (userId) return `/onboarding/results?answer=${answer}`;
+			if (isAnonUpdate) return `/onboarding/results?answer=${answer}&anon=1`;
 			return `/onboarding/join?answer=${answer}&levels=${levels.join(',')}`;
 		}
 		assert.equal(
@@ -127,11 +127,11 @@ describe('Routing Layer End-to-End & State Invariants', () => {
 		);
 		assert.equal(
 			getPledgeSubmitRedirect('user_123', 'no', ['direct']),
-			'/results?answer=no'
+			'/onboarding/results?answer=no'
 		);
 		assert.equal(
 			getPledgeSubmitRedirect(null, 'no', ['passive'], true),
-			'/results?answer=no&anon=1'
+			'/onboarding/results?answer=no&anon=1'
 		);
 
 		// 3. Step 3: Login/Record page back button navigation
@@ -141,18 +141,18 @@ describe('Routing Layer End-to-End & State Invariants', () => {
 		assert.equal(getJoinBackTarget('no'), '/onboarding/pledge?answer=no');
 		assert.equal(getJoinBackTarget('yes'), '/onboarding/wedontneednukes');
 
-		// 4. Step 3: User continues anonymously or signs in -> proceeds to Step 4 (/results)
+		// 4. Step 3: User continues anonymously or signs in -> proceeds to Step 4 (/onboarding/results)
 		function getAnonymousOnboardingTarget(answer: string) {
-			return `/results?answer=${answer}&anon=1`;
+			return `/onboarding/results?answer=${answer}&anon=1`;
 		}
-		assert.equal(getAnonymousOnboardingTarget('no'), '/results?answer=no&anon=1');
-		assert.equal(getAnonymousOnboardingTarget('yes'), '/results?answer=yes&anon=1');
+		assert.equal(getAnonymousOnboardingTarget('no'), '/onboarding/results?answer=no&anon=1');
+		assert.equal(getAnonymousOnboardingTarget('yes'), '/onboarding/results?answer=yes&anon=1');
 
 		function getSignInCallbackTarget(answer: string) {
-			return `/results?answer=${answer}`;
+			return `/onboarding/results?answer=${answer}`;
 		}
-		assert.equal(getSignInCallbackTarget('no'), '/results?answer=no');
-		assert.equal(getSignInCallbackTarget('yes'), '/results?answer=yes');
+		assert.equal(getSignInCallbackTarget('no'), '/onboarding/results?answer=no');
+		assert.equal(getSignInCallbackTarget('yes'), '/onboarding/results?answer=yes');
 
 		// 5. Step 4: What's Next action targets
 		const whatsNextTargets = {
